@@ -1,0 +1,13 @@
+node_modules/
+.next/
+out/
+coverage/
+src/generated/
+.env
+.env.local
+.env.*.local
+public/uploads/
+test-results/
+playwright-report/
+*.tsbuildinfo
+next-env.d.ts

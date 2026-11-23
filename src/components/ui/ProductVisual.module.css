@@ -1,0 +1,8 @@
+.visual { position: relative; display: block; overflow: hidden; background: var(--sky-05); border-radius: 14px; flex: none; }
+.visual :global(svg) { width: 100%; height: 100%; }
+.img { object-fit: cover; }
+.sm { width: 56px; height: 56px; border-radius: 12px; }
+.md { width: 84px; height: 84px; }
+.lg { width: 100%; aspect-ratio: 1 / 1; border-radius: var(--r-lg); }
+.fill { width: 100%; height: 100%; border-radius: inherit; }
+@media (max-width: 640px) { .md { width: 66px; height: 66px; border-radius: 12px; } }
