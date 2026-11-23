@@ -2,6 +2,8 @@
 
 Status: living document. Update it when the architecture changes.
 
+**Implementation status (Phases 0–10 complete):** storefront, market builder, basket, checkout, orders and tracking, accounts, saved markets, traceability, producers, concierge, admin panel and operational workflows are implemented and covered by unit, integration and end-to-end tests. See the README for setup and `SECURITY.md` / `DEPLOYMENT.md` for operations.
+
 ## 1. Audit summary (Phase 0)
 
 | What exists | Use |
@@ -19,7 +21,7 @@ Status: living document. Update it when the architecture changes.
 | Database | **PostgreSQL 16** | Transactions and row-level conditional updates for slot capacity and stock reservation. |
 | ORM | **Prisma 7** with `@prisma/adapter-pg` | Typed schema and migrations; no native query-engine binary at runtime. |
 | Styling | **CSS Modules + global design tokens** (`src/styles/tokens.css`) | Strict four-colour palette enforced through tokens; no utility framework needed. |
-| Auth | **Custom session auth**: bcrypt password hashes, random session tokens stored as SHA-256 hashes, httpOnly cookies | Small, auditable, no third-party dependency. |
+| Auth | **Custom session auth**: bcrypt password hashes, random session tokens stored as HMAC-SHA256 hashes, httpOnly cookies | Small, auditable, no third-party dependency. |
 | Validation | **Zod** on every server boundary | One schema per input. |
 | i18n | Central dictionaries `src/i18n/{en,bn}.ts`, cookie `fth_lang`, server `getT()` | No hardcoded strings in components; Bangla fonts via `next/font`. Product content has optional `*Bn` columns with English fallback. |
 | QR | `qrcode` (SVG) | Batch traceability QR codes. |
@@ -68,6 +70,13 @@ Hashed passwords (bcrypt) and hashed session tokens; httpOnly, SameSite=Lax, Sec
 | 6 | Traceability (batch pages, QR, journey), producers, origins, Our Journey, Concierge |
 | 7–8 | Admin: dashboard, catalog, producers, procurement, batches, inspections, inventory, orders, delivery, customers, promotions, content, settings, audit |
 | 9–10 | Unit, integration and e2e tests; security, accessibility, performance and responsive review; deployment docs |
+
+## 8. Deviations from the original plan
+
+- Saved markets require an account (anonymous visitors are asked to sign in), so lists are durable and private.
+- The admin panel is English-only; customer-facing UI is fully bilingual.
+- `Cart.savedMarketId` was added so orders record which saved market they came from (saved-market history).
+- Test databases are prepared with `prisma migrate deploy` plus the seed's guarded wipe instead of `prisma migrate reset`.
 
 ## 7. Risks and mitigations
 
