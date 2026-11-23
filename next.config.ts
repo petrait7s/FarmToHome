@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
   agentRules: false,
   serverExternalPackages: ["pg", "bcryptjs"],
   images: { formats: ["image/avif", "image/webp"] },
+  // Product photos (5 MB) and quality report PDFs (10 MB) are uploaded through Server Actions.
+  experimental: { serverActions: { bodySizeLimit: "12mb" } },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
