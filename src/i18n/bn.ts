@@ -294,6 +294,7 @@ export const bn: Dict = {
     losses: "বাতিল / প্রক্রিয়াজাত / প্যাকেজিং ক্ষতি",
     stockedAt: "FarmToHome স্টকে গৃহীত",
     deliveryNote: "পরিবারের জন্য প্যাক করে নির্ধারিত সময়ে ডেলিভারি।",
+    batchStatus: { RECEIVED: "গৃহীত", INSPECTING: "পরিদর্শন চলছে", APPROVED: "অনুমোদিত", REJECTED: "বাতিল", PROCESSING: "প্রক্রিয়াজাত হচ্ছে", PACKED: "প্যাক করা", ACTIVE: "স্টকে আছে", DEPLETED: "শেষ", RECALLED: "প্রত্যাহার করা হয়েছে" },
   },
   basket: {
     title: "আপনার ঝুড়ি",
@@ -530,6 +531,7 @@ export const bn: Dict = {
     lead: "যে কৃষক, জেলে ও কারিগরদের কাছ থেকে আমরা সরাসরি কিনি।",
     products: "{name}-এর পণ্য",
     origin: "{place} থেকে",
+    demoNotice: "এই উৎপাদক প্রোফাইলটি ডেমো তথ্য। সংগ্রহের রেকর্ড নিশ্চিত হলে যাচাইকৃত গল্প যুক্ত হবে।",
     verification: { UNVERIFIED: "এখনও যাচাই হয়নি", PENDING: "যাচাই প্রক্রিয়াধীন", VERIFIED: "যাচাইকৃত উৎপাদক" },
   },
   errors: {

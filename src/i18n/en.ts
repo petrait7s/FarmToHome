@@ -296,6 +296,7 @@ export const en = {
     losses: "Rejected / processing / packaging loss",
     stockedAt: "Received into FarmToHome stock",
     deliveryNote: "Packed for households and delivered on scheduled slots.",
+    batchStatus: { RECEIVED: "Received", INSPECTING: "Inspecting", APPROVED: "Approved", REJECTED: "Rejected", PROCESSING: "Processing", PACKED: "Packed", ACTIVE: "In stock", DEPLETED: "Sold out", RECALLED: "Recalled" },
   },
   basket: {
     title: "Your basket",
@@ -532,6 +533,7 @@ export const en = {
     lead: "Farmers, fishers and artisans we buy from directly.",
     products: "Products from {name}",
     origin: "From {place}",
+    demoNotice: "This producer profile is demonstration content. A verified story will replace it once sourcing records are confirmed.",
     verification: { UNVERIFIED: "Not yet verified", PENDING: "Verification pending", VERIFIED: "Verified producer" },
   },
   errors: {

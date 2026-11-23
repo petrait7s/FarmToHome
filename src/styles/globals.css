@@ -129,3 +129,7 @@ html[lang="bn"] .eyebrow { letter-spacing: 0.04em; font-size: 12.5px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
+
+/* Content + aside layout (producer pages etc.) */
+.layout-aside { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.8fr); gap: 48px; }
+@media (max-width: 900px) { .layout-aside { grid-template-columns: 1fr; gap: 28px; } }

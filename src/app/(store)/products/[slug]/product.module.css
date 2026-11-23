@@ -19,7 +19,7 @@
 .trace { position: sticky; top: calc(var(--header-h) + 20px); display: flex; flex-direction: column; gap: 16px; }
 .traceCard { display: flex; flex-direction: column; gap: 16px; padding: 24px; border-radius: var(--r-lg); background: var(--sky-03); border: 1px solid var(--line); }
 .traceCard :global(.eyebrow) svg { color: var(--red); }
-.cert { display: grid; grid-template-columns: auto 1fr; gap: 10px 16px; font-size: 14px; }
+.cert { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 10px 16px; font-size: 14px; }
 .cert dt { font: 600 10px/1.5 var(--font-sans); letter-spacing: 0.14em; text-transform: uppercase; padding-top: 2px; }
 .reports { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); }
 .report { display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
