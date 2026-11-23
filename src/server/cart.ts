@@ -184,7 +184,7 @@ export async function swapVariant(cartId: string, fromVariantId: string, toVaria
 }
 
 export async function clearCart(cartId: string): Promise<void> {
-  await db.$transaction([db.cartItem.deleteMany({ where: { cartId } }), db.cart.update({ where: { id: cartId }, data: { promoCode: null } })]);
+  await db.$transaction([db.cartItem.deleteMany({ where: { cartId } }), db.cart.update({ where: { id: cartId }, data: { promoCode: null, savedMarketId: null } })]);
 }
 
 /** Add many lines at once (repeat saved market / reorder). Skips unavailable items and caps at stock. */

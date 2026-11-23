@@ -458,6 +458,7 @@ export const bn: Dict = {
     settings: "পছন্দসমূহ",
     concierge: "কনসিয়ার্জ অনুরোধ",
     profileSaved: "প্রোফাইল হালনাগাদ হয়েছে",
+    phoneHint: "সাইন-ইন ফোন নম্বর বদলাতে কনসিয়ার্জের সাথে যোগাযোগ করুন।",
     changePassword: "পাসওয়ার্ড বদলান",
     currentPassword: "বর্তমান পাসওয়ার্ড",
     newPassword: "নতুন পাসওয়ার্ড",

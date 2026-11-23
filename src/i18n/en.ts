@@ -460,6 +460,7 @@ export const en = {
     settings: "Preferences",
     concierge: "Concierge requests",
     profileSaved: "Profile updated",
+    phoneHint: "To change your sign-in phone number, please contact the concierge.",
     changePassword: "Change password",
     currentPassword: "Current password",
     newPassword: "New password",

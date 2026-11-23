@@ -47,7 +47,7 @@ export async function repeatMarket(input: { id: string; mode: "replace" | "merge
   if (!market) return { ok: false, error: "not_found" };
   const cartId = await getOrCreateCartId();
   const result = await addLinesToCart(cartId, market.items.map((i) => ({ variantId: i.variantId, quantity: i.quantity })), input.mode === "merge" ? "merge" : "replace");
-  await db.cart.update({ where: { id: cartId }, data: { mode: market.mode } });
+  await db.cart.update({ where: { id: cartId }, data: { mode: market.mode, savedMarketId: market.id } });
   await db.savedMarket.update({ where: { id }, data: { useCount: { increment: 1 }, lastUsedAt: new Date() } });
   revalidatePath("/account/markets");
   return { ok: true, cart: await loadCart(cartId), skipped: result.skipped };
