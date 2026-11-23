@@ -14,7 +14,9 @@ export async function addFromMarket(page: Page, name: string) {
   const row = page.locator("article", { hasText: name }).first();
   const header = row.locator("xpath=ancestor::section[1]").locator("button[aria-expanded]").first();
   if ((await header.getAttribute("aria-expanded")) === "false") await header.click();
+  const saved = page.waitForResponse((r) => r.url().endsWith("/api/cart") && r.request().method() === "POST" && r.status() === 200);
   await row.getByRole("button", { name: new RegExp(`^Add ${name.replace(/[()]/g, "\\$&")}`) }).click();
+  await saved;
   await expect(row.getByRole("group", { name: new RegExp(`${name.replace(/[()]/g, "\\$&")}: Quantity`) })).toBeVisible();
 }
 
