@@ -42,9 +42,14 @@ async function wipe() {
 async function main() {
   const existing = await db.product.count();
   if (existing > 0) {
+    const dbName = new URL(process.env.DATABASE_URL!).pathname.slice(1);
     if (process.env.SEED_FORCE !== "1") {
       console.log("Database already has products. Set SEED_FORCE=1 to wipe and reseed (development only).");
       return;
+    }
+    if (!/(^|_)(dev|test)$|^farmtohome$/.test(dbName) && process.env.SEED_ALLOW_ANY_DB !== "1") {
+      console.error(`Refusing to wipe "${dbName}". SEED_FORCE only runs on local development or *_test databases.`);
+      process.exit(1);
     }
     await wipe();
   }
