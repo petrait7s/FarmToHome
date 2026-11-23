@@ -516,6 +516,15 @@ export const en = {
     stepsTitle: "Seven steps, recorded against every batch",
     producersCta: "Meet our producers",
     originsTitle: "Origins",
+    stepBodies: {
+      source: "A named farmer, fisher or artisan producer in a known district.",
+      collection: "Harvested or collected, with the date recorded against the batch.",
+      inspection: "Checked and graded on arrival. Rejected produce is recorded, not hidden.",
+      processing: "Cleaned, dried, milled, sorted or cut, depending on the product.",
+      packaging: "Sealed in food-grade packaging with a batch number and QR code.",
+      farmtohome: "Received into FarmToHome stock and allocated to household orders.",
+      delivery: "Delivered to your door in the slot you chose.",
+    },
   },
   producers: {
     title: "Our producers",

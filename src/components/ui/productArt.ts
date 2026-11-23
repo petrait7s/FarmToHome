@@ -27,7 +27,7 @@ function grains(cx: number, cy: number, n: number, col: string, rx = 3.2, ry = 1
   return o;
 }
 
-export function artSvg(key: string | null | undefined): string {
+export function artSvg(key: string | null | undefined, slice = false): string {
   const [t, v] = parseArtKey(key);
   const bgc = [G, R, T][v % 3];
   const bg = `<rect width="120" height="120" fill="${I}"/><circle cx="84" cy="34" r="30" fill="${bgc}" opacity=".18"/><circle cx="34" cy="92" r="22" fill="${G}" opacity=".22"/>`;
@@ -87,5 +87,5 @@ export function artSvg(key: string | null | undefined): string {
       s = `<circle cx="54" cy="66" r="28" fill="${G}"/><circle cx="54" cy="66" r="28" fill="none" stroke="${T}" stroke-width="1.2" opacity=".5"/>${Array.from({ length: 12 }, (_, i) => { const a = (i * 30 * Math.PI) / 180; return `<circle cx="${(54 + Math.cos(a) * 16).toFixed(1)}" cy="${(66 + Math.sin(a) * 16).toFixed(1)}" r="1.4" fill="${T}" opacity=".45"/>`; }).join("")}<path d="M70 40c10-14 24-14 30-10-6 10-18 16-30 10z" fill="${T}"/><path d="M68 42l-6-6" stroke="${T}" stroke-width="2" stroke-linecap="round"/><circle cx="86" cy="86" r="12" fill="${G}" opacity=".85"/>`;
       break;
   }
-  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">${bg}${s}</svg>`;
+  return `<svg viewBox="0 0 120 120"${slice ? ' preserveAspectRatio="xMidYMid slice"' : ""} xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">${bg}${s}</svg>`;
 }

@@ -21,5 +21,5 @@ export function ProductVisual({ artKey, imageUrl, alt, size = "md", priority, cl
       </span>
     );
   }
-  return <span className={cls} role="img" aria-label={alt} dangerouslySetInnerHTML={{ __html: artSvg(artKey) }} />;
+  return <span className={cls} role="img" aria-label={alt} dangerouslySetInnerHTML={{ __html: artSvg(artKey, size === "fill") }} />;
 }

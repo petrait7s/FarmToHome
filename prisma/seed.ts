@@ -100,7 +100,7 @@ async function main() {
     const row = await db.product.create({
       data: {
         slug: p.slug, name: p.name, nameBn: p.nameBn, summary: p.summary, summaryBn: p.summaryBn, description: p.description,
-        story: p.story ?? `${p.description} Sourced from ${p.producer.replace(/-/g, " ")}. (Demonstration story.)`,
+        story: p.story ?? `${p.description} Sourced directly from ${producers.find((x) => x.slug === p.producer)?.name ?? "our producer"}. (Demonstration story.)`,
         categoryId: catIds.get(p.cat)!, producerId: prod.id, originId: prod.originId, originClass: p.originClass, qualityGrade: p.grade,
         processingInfo: p.processing, packagingInfo: p.packaging, storageInfo: p.storage, handlingInfo: p.handling, artKey: p.art,
         marketFit: p.fit, isEssential: !!p.essential, isSeasonal: !!p.seasonal, isNew: !!p.isNew, isFeatured: !!p.featured, isPerishable: !!p.perishable,
@@ -143,7 +143,7 @@ async function main() {
         procurementItemId: proc.items[0].id, collectedAt: collected, processedAt: sourced ? null : packed, packedAt: sourced ? null : packed,
         receivedQuantity: proc.items[0].quantity, rejectedQuantity: sourced ? 0 : 6, processingLoss: sourced ? 0 : 4, packagingLoss: sourced ? 0 : 1, quantityUnit: proc.items[0].unit,
         qualityGrade: p.grade, processingNotes: p.processing, packagingNotes: p.packaging, storageNotes: p.storage,
-        sourceNote: `Collected from ${p.producer.replace(/-/g, " ")} (demonstration).`, status: sourced ? "APPROVED" : "ACTIVE", isDemo: true,
+        sourceNote: `Collected from ${producers.find((x) => x.slug === p.producer)?.name} (demonstration).`, status: sourced ? "APPROVED" : "ACTIVE", isDemo: true,
       },
     });
     await db.qualityInspection.create({

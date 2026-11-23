@@ -99,7 +99,7 @@ export async function loadCart(cartId: string | null): Promise<CartView> {
   const lines: CartLine[] = cart.items.map((i) => {
     const v = i.variant;
     const p = v.product;
-    const availableQty = avail.get(v.id) ?? 0;
+    const availableQty = avail.has(v.id) ? (avail.get(v.id) as number | null) : 0;
     const available = v.active && p.status === "ACTIVE" && (availableQty === null || availableQty >= i.quantity);
     return {
       variantId: v.id,
@@ -156,7 +156,8 @@ export async function setCartQuantity(cartId: string, variantId: string, quantit
   });
   if (!variant) return { error: "not_found" };
   if (!variant.active || variant.product.status !== "ACTIVE") return { error: "unavailable", name: variant.product.name };
-  const available = (await availableByVariant([variantId])).get(variantId) ?? 0;
+  const availMap = await availableByVariant([variantId]);
+  const available = availMap.has(variantId) ? (availMap.get(variantId) as number | null) : 0;
   if (available !== null && qty > available) return { error: "out_of_stock", available, name: variant.product.name };
   await db.cartItem.upsert({
     where: { cartId_variantId: { cartId, variantId } },

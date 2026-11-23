@@ -10,8 +10,9 @@
 .lang { height: 34px; padding: 0 12px; border-radius: var(--r-pill); border: 1px solid var(--line-strong); font-size: 13px; font-weight: 600; transition: border-color 0.25s; }
 .lang:hover { border-color: var(--red-45); }
 .label { max-width: 10ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.skip { position: absolute; left: 16px; top: -60px; z-index: 100; background: var(--sky); color: var(--ivory); padding: 10px 16px; border-radius: var(--r-pill); font-weight: 600; }
-.skip:focus { top: 12px; }
-@media (max-width: 1240px) { .label { display: none; } .nav { margin-left: 8px; } .link { padding: 9px 9px; } }
+.skip { position: absolute; left: 16px; top: 12px; z-index: 100; background: var(--sky); color: var(--ivory); padding: 10px 16px; border-radius: var(--r-pill); font-weight: 600; transform: translateY(-200%); opacity: 0; pointer-events: none; transition: transform 0.2s var(--ease), opacity 0.2s; }
+.skip:focus { transform: none; opacity: 1; pointer-events: auto; }
+@media (max-width: 1480px) { .label { display: none; } }
+@media (max-width: 1240px) { .nav { margin-left: 8px; } .link { padding: 9px 9px; } }
 @media (max-width: 1060px) { .nav { display: none; } .actions { margin-left: auto; } }
 @media (max-width: 900px) { .hideMobile { display: none; } }
