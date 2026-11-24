@@ -41,16 +41,11 @@ export default async function HomePage() {
     <>
       {/* ── Hero ── */}
       <section className={`${styles.hero} on-red`}>
-        <svg className={styles.heroArt} viewBox="0 0 600 600" aria-hidden="true">
-          <circle className={styles.drift1} cx="380" cy="220" r="170" fill="#DDAA72" />
-          <circle className={styles.drift2} cx="240" cy="360" r="130" fill="#F4F1EA" opacity=".14" />
-          <circle cx="370" cy="370" r="180" fill="none" stroke="#F4F1EA" strokeWidth="1.2" opacity=".75" />
-        </svg>
         <div className={`container ${styles.heroGrid}`}>
           <div className={styles.heroCopy}>
             <p className={styles.pill}><span className="dot" aria-hidden="true" />{L(hero, "eyebrow", t("home.eyebrow"))}</p>
             <h1 className="display">
-              {t("home.titleA")} <em className={styles.em}>{t("home.titleB")}</em>
+              <span className={styles.titleA}>{t("home.titleA")}</span> <span className={styles.hl}>{t("home.titleB")}</span>
             </h1>
             <p className={styles.heroLead}>{L(hero, "body", t("home.lead"))}</p>
             <div className={styles.heroCtas}>
@@ -67,9 +62,7 @@ export default async function HomePage() {
           </div>
           <HeroStage
             items={heroProducts.map((p) => ({ id: p.id, artKey: p.artKey, imageUrl: p.imageUrl, name: localized(p, "name", locale), origin: p.originDistrict }))}
-            city={t("home.stageCity")}
-            cityNote={t("home.stageCityNote")}
-            trace={t("home.stageTrace")}
+            labels={{ field: t("home.scene.field"), river: t("home.scene.river"), town: t("home.scene.town"), city: t("home.stageCity"), cityNote: t("home.stageCityNote") }}
           />
         </div>
       </section>

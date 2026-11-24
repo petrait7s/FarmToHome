@@ -108,7 +108,7 @@ export const en = {
     stats: { products: "products", producers: "producers", areas: "Sylhet areas" },
     stageCity: "Sylhet",
     stageCityNote: "Scheduled home delivery",
-    stageTrace: "A batch identity on every pack",
+    scene: { field: "Fields", river: "Rivers", town: "Towns" },
     eyebrow: "Luxury digital grocery concierge",
     titleA: "The taste of Bengal’s fields, rivers and towns —",
     titleB: "brought home to your family.",

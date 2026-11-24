@@ -106,7 +106,7 @@ export const bn: Dict = {
     stats: { products: "পণ্য", producers: "উৎপাদক", areas: "সিলেটের এলাকা" },
     stageCity: "সিলেট",
     stageCityNote: "নির্ধারিত সময়ে হোম ডেলিভারি",
-    stageTrace: "প্রতিটি প্যাকে ব্যাচের পরিচয়",
+    scene: { field: "মাঠ", river: "নদী", town: "জনপদ" },
     eyebrow: "লাক্সারি ডিজিটাল গ্রোসারি কনসিয়ার্জ",
     titleA: "বাংলার মাঠ, নদী আর জনপদের স্বাদ—",
     titleB: "আপনার পরিবারের ঘরে।",
