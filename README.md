@@ -94,7 +94,7 @@ Only the five approved colours are used, plus opacity variations: **Sapphire Blu
 
 ## Preview photography
 
-The preview uses licensed Unsplash stock photographs from `public/images/` (landscape, products, lifestyle, journey). They are illustrative only — they do not show FarmToHome producers, facilities, products or customers — and are listed at `/credits`. The mapping lives in `src/lib/media.ts`; anything uploaded in the admin panel (product images, category and collection images, producer photos) takes precedence. Products without an accurate stock photo (shutki, gur, chira, lentils) keep their drawn illustration. Replace with real photography before launch.
+The preview uses licensed photographs from `public/images/` (Unsplash License, plus Creative Commons photos from Flickr for shutki, gur, dal and chira, credited on `/credits`) (landscape, products, lifestyle, journey). They are illustrative only — they do not show FarmToHome producers, facilities, products or customers — and are listed at `/credits`. The mapping lives in `src/lib/media.ts`; anything uploaded in the admin panel (product images, category and collection images, producer photos) takes precedence. Replace with real photography before launch.
 
 ## Languages
 

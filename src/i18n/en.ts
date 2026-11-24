@@ -572,7 +572,7 @@ export const en = {
   faq: { search: "Search questions — delivery, batch, refund…", empty: "No answers match that search. Try another word or ask the concierge.", stillTitle: "Still have a question?", stillBody: "Our concierge can help with markets, products, sourcing and orders." },
   pilotCta: "Ask the concierge",
   policy: { updated: "Last updated {date}" },
-  credits: { title: "Photo credits", body: "The photographs in this preview are licensed stock images used for illustration. They do not show FarmToHome producers, facilities, products or customers, and will be replaced with our own photography before launch.", license: "Unsplash License" },
+  credits: { title: "Photo credits", body: "The photographs in this preview are licensed stock and Creative Commons images used for illustration. They do not show FarmToHome producers, facilities, products or customers, and will be replaced with our own photography before launch.", license: "Unsplash License" },
   errors: {
     generic: "Something went wrong. Please try again.",
     required: "This field is required.",

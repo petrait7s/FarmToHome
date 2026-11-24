@@ -20,7 +20,13 @@ export default async function CreditsPage() {
             <span style={{ position: "relative", display: "block", aspectRatio: "4 / 3" }}><Image src={p.src} alt={altFor(p, locale)} fill sizes="240px" style={{ objectFit: "cover" }} /></span>
             <span style={{ display: "block", padding: "10px 12px", fontSize: 13 }}>
               {altFor(p, locale)}
-              <a href={p.credit} target="_blank" rel="noopener noreferrer" className="link" style={{ display: "block", marginTop: 4, fontSize: 12 }}>Unsplash · {t("credits.license")}</a>
+              {p.by ? (
+                <span style={{ display: "block", marginTop: 4, fontSize: 12 }}>
+                  <a href={p.credit} target="_blank" rel="noopener noreferrer" className="link">{p.by} · Flickr</a> · <a href={p.licenseUrl} target="_blank" rel="noopener noreferrer" className="link">{p.license}</a>
+                </span>
+              ) : (
+                <a href={p.credit} target="_blank" rel="noopener noreferrer" className="link" style={{ display: "block", marginTop: 4, fontSize: 12 }}>Unsplash · {t("credits.license")}</a>
+              )}
             </span>
           </li>
         ))}

@@ -1,7 +1,8 @@
 /**
  * PREVIEW STOCK PHOTOGRAPHY — illustrative only.
  *
- * Every image here is a licensed stock photograph (Unsplash License) stored in /public/images.
+ * Every image here is a licensed photograph stored in /public/images: Unsplash License, or
+ * Creative Commons (Flickr, via Openverse) where marked — those need the attribution on /credits.
  * None of them shows FarmToHome's actual producers, facilities, products or customers.
  * Uploaded images (Product images, Category.imageUrl, Collection.imageUrl, Producer.photoUrl)
  * always take precedence; these are only fallbacks so the preview looks complete.
@@ -9,10 +10,15 @@
  * Credits are listed at /credits (data below).
  */
 
-export type Photo = { src: string; alt: string; altBn: string; credit: string };
+/** `by`/`license`/`licenseUrl` are set for Creative Commons photos, which require attribution (shown at /credits). */
+export type Photo = { src: string; alt: string; altBn: string; credit: string; by?: string; license?: string; licenseUrl?: string };
 
 const U = (id: string) => `https://unsplash.com/photos/${id}`;
 const P = (src: string, alt: string, altBn: string, id: string): Photo => ({ src: `/images/${src}.jpg`, alt, altBn, credit: U(id) });
+const CC = (src: string, alt: string, altBn: string, page: string, by: string, license: string): Photo => ({
+  src: `/images/${src}.jpg`, alt, altBn, credit: page, by, license: `CC ${license}`,
+  licenseUrl: `https://creativecommons.org/licenses/${license.split(" ")[0].toLowerCase()}/${license.split(" ")[1]}/`,
+});
 
 export const photos = {
   goldenField: P("landscape/golden-field-sunrise", "Golden field at sunrise", "সূর্যোদয়ে সোনালি খেত", "1500382017468-9049fed747ef"),
@@ -50,17 +56,28 @@ export const photos = {
   greensChilies: P("journey/greens-chilies-carrots", "Greens, chilies and carrots sorted for market", "বাজারের জন্য বাছাই করা শাক, মরিচ ও গাজর", "1464226184884-fa280b87c399"),
   carrotsCrate: P("journey/carrots-crate", "Carrots packed in a wooden crate", "কাঠের ক্রেটে প্যাক করা গাজর", "1582515073490-39981397c445"),
   marketHall: P("journey/market-hall-crates", "A market hall stocked with crates", "ক্রেটে ভরা বাজার", "1533900298318-6b8da08a523e"),
+  // Creative Commons (Flickr) — attribution required, listed on /credits.
+  shutkiDryingYard: CC("products/shutki-drying-yard", "Fish laid out to dry in a drying yard", "শুঁটকি পল্লিতে রোদে শুকানো মাছ", "https://www.flickr.com/photos/72847119@N00/5251404013", "Faisal Akram Ether", "BY-SA 2.0"),
+  shutkiNets: CC("products/shutki-drying-nets", "Small fish drying on nets in Bangladesh", "বাংলাদেশে জালের ওপর শুকানো ছোট মাছ", "https://www.flickr.com/photos/51162085@N00/1774708652", "Tahmid Munaz", "BY-SA 2.0"),
+  shutkiSmall: CC("products/shutki-small-dried-fish", "A heap of small dried fish", "ছোট শুঁটকি মাছের স্তূপ", "https://www.flickr.com/photos/58789412@N00/28964978628", "Verity Cridland", "BY 2.0"),
+  shutkiPile: CC("products/shutki-dried-fish-pile", "Dried fish piled at a market", "বাজারে স্তূপ করা শুঁটকি", "https://www.flickr.com/photos/58789412@N00/42120231834", "Verity Cridland", "BY 2.0"),
+  gurHeap: CC("products/gur-jaggery-heap", "A heap of jaggery at a market", "বাজারে গুড়ের স্তূপ", "https://www.flickr.com/photos/64924693@N00/6544736187", "Nagarjun", "BY 2.0"),
+  gurTrays: CC("products/gur-jaggery-trays", "Jaggery setting in trays", "ট্রেতে জমানো গুড়", "https://www.flickr.com/photos/72746018@N00/14528469953", "dalbera", "BY 2.0"),
+  redLentils: CC("products/dal-red-lentils-bowl", "A bowl of red lentils", "এক বাটি লাল মসুর ডাল", "https://www.flickr.com/photos/29298849@N05/4039804495", "whitneyinchicago", "BY 2.0"),
+  dalBins: CC("products/dal-market-bins", "Loose lentils in market bins", "বাজারের পাত্রে খোলা ডাল", "https://www.flickr.com/photos/95914901@N08/32523345525", "joegoauk73", "BY-SA 2.0"),
+  chira: CC("products/chira-flattened-rice", "Flattened rice flakes", "চিড়া", "https://www.flickr.com/photos/83136374@N05/49684434042", "ajay_suresh", "BY 2.0"),
 } satisfies Record<string, Photo>;
 export type PhotoKey = keyof typeof photos;
 
 /**
- * Fallback photo per product illustration key. Products without an accurate stock photo
- * (shutki, gur, chira, lentils) keep their drawn illustration rather than a misleading picture.
+ * Fallback photo per product illustration key. Unknown keys fall back to the drawn illustration.
  */
 const byArt: Record<string, PhotoKey> = {
   "rice:0": "rawRice", "rice:1": "steamedRice", "rice:2": "rawRice", "grain:0": "flourSack",
   "fish:0": "fish", "fish:1": "fishPlate", "fish:2": "fishPlate", "fish:3": "fish", "prawn:0": "prawns",
   "spice:0": "spiceSpoons", "spice:1": "spiceSpoons", "spice:2": "spicesFlatlay", "seed:0": "spiceBowls",
+  "grain:1": "chira", "shutki:0": "shutkiDryingYard", "shutki:1": "shutkiPile", "shutki:2": "shutkiSmall",
+  "dal:0": "redLentils", "dal:1": "dalBins", "gur:0": "gurHeap",
   "chola:0": "chickpeas", "oil:0": "oil", "honey:0": "honey", "ghee:0": "butter", "doi:0": "yogurt", "citrus:0": "citrus",
 };
 export function photoForArt(artKey?: string | null): Photo | null {
@@ -68,8 +85,8 @@ export function photoForArt(artKey?: string | null): Photo | null {
 }
 
 export const categoryPhoto: Record<string, PhotoKey> = {
-  "rice-grains": "rawRice", "fish-seafood": "fish", "spices-herbs": "spicesFlatlay",
-  "pulses-lentils": "chickpeas", "oils-honey-ghee": "honeyJar", "regional-seasonal": "vegBaskets",
+  "rice-grains": "rawRice", "fish-seafood": "fish", "dried-fish": "shutkiNets", "spices-herbs": "spicesFlatlay",
+  "pulses-lentils": "dalBins", "oils-honey-ghee": "honeyJar", "regional-seasonal": "vegBaskets",
 };
 export const collectionPhoto: Record<string, PhotoKey> = {
   "winter-arrivals": "goldenField", "pantry-foundations": "spiceBowls", "a-bengali-fish-feast": "fishCurry",
@@ -79,11 +96,11 @@ export const collectionPhoto: Record<string, PhotoKey> = {
  * slug so neighbouring cards differ. Never a portrait of the named person.
  */
 const scenes: Record<string, PhotoKey[]> = {
-  fish: ["fishPlate", "fish", "fishCurry", "prawns"],
+  fish: ["fishPlate", "fish", "fishCurry", "prawns", "shutkiDryingYard", "shutkiNets"],
   field: ["harvestWorkers", "cropRowsHills", "youngCrop", "goldenField", "seedlings", "greenFieldEdge"],
   spice: ["spiceBowls", "spicesFlatlay", "spiceSpoons"],
   honey: ["honeyJar", "honey"],
-  kitchen: ["produceCrates", "butter", "yogurt", "curryPan", "oil"],
+  kitchen: ["produceCrates", "butter", "yogurt", "curryPan", "oil", "gurTrays"],
   other: ["cropRowsHills", "vegBaskets", "greensChilies", "citrus"],
 };
 export function producerScene(craft?: string | null, slug = ""): Photo {
