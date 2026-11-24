@@ -9,7 +9,7 @@ Status: living document. Update it when the architecture changes.
 | What exists | Use |
 |---|---|
 | `docs/design/01–07` | Business reading, visual language, IA, journeys, key experiences, motion. Source of truth for design. |
-| `docs/design/02-visual-language.md §2.1a` | Revised brand direction: **Red Orange is the main brand colour**; Ivory surfaces; Sky Blue supporting text; Harvest Gold highlights. Ivory on Red Orange is 2.95:1, so labels on orange stay large and bold; small text sits on Ivory. |
+| `docs/design/02-visual-language.md §2.1a` | Earlier brand direction (superseded November 2026 by the five-colour palette in `src/styles/tokens.css`): **Red Orange was the main brand colour**; Ivory surfaces; Sky Blue supporting text; Harvest Gold highlights. Ivory on Red Orange is 2.95:1, so labels on orange stay large and bold; small text sits on Ivory. |
 | `prototype/weekly-market/index.html` | Reference for the Weekly Market Builder: category accordion, inline size + quantity, live summary, household hints, suggestions that never auto-add, saved markets, Know Your Origin, checkout, success. **Reference only, not production code.** Its palette-only product illustrations are reused as image fallbacks until real photography exists. |
 | Application code, database, dependencies | None. Greenfield. |
 
@@ -20,7 +20,7 @@ Status: living document. Update it when the architecture changes.
 | Framework | **Next.js 16 (App Router) + React 19 + TypeScript** | Server components keep JS small on slow mobile connections; server actions and route handlers keep business logic on the server. |
 | Database | **PostgreSQL 16** | Transactions and row-level conditional updates for slot capacity and stock reservation. |
 | ORM | **Prisma 7** with `@prisma/adapter-pg` | Typed schema and migrations; no native query-engine binary at runtime. |
-| Styling | **CSS Modules + global design tokens** (`src/styles/tokens.css`) | Strict four-colour palette enforced through tokens; no utility framework needed. |
+| Styling | **CSS Modules + global design tokens** (`src/styles/tokens.css`) | Strict five-colour palette (Sapphire Blue, Warm Ivory, Deep Teal Green, Champagne Gold, Charcoal Black) enforced through tokens; no utility framework needed. |
 | Auth | **Custom session auth**: bcrypt password hashes, random session tokens stored as HMAC-SHA256 hashes, httpOnly cookies | Small, auditable, no third-party dependency. |
 | Validation | **Zod** on every server boundary | One schema per input. |
 | i18n | Central dictionaries `src/i18n/{en,bn}.ts`, cookie `fth_lang`, server `getT()` | No hardcoded strings in components; Bangla fonts via `next/font`. Product content has optional `*Bn` columns with English fallback. |

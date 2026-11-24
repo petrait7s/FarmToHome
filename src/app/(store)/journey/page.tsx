@@ -16,7 +16,7 @@ export default async function JourneyPage() {
   return (
     <div className="page-pad">
       <section className="on-red" style={{ padding: "64px 0 72px", position: "relative", overflow: "hidden" }}>
-        <svg viewBox="0 0 520 520" aria-hidden="true" style={{ position: "absolute", right: -100, top: -140, width: 560, height: 560 }}><circle cx="330" cy="190" r="150" fill="#DDAA72" /><circle cx="320" cy="320" r="150" fill="none" stroke="#F4F1EA" strokeWidth="1.2" opacity=".75" /></svg>
+        <svg viewBox="0 0 520 520" aria-hidden="true" style={{ position: "absolute", right: -100, top: -140, width: 560, height: 560 }}><circle cx="330" cy="190" r="150" fill="#C6A15B" /><circle cx="320" cy="320" r="150" fill="none" stroke="#F4EBDD" strokeWidth="1.2" opacity=".75" /></svg>
         <div className="container" style={{ position: "relative" }}>
           <h1 className="display">{t("journey.title")}</h1>
           <p style={{ fontSize: 19, fontWeight: 500, marginTop: 16, maxWidth: "52ch" }}>{t("journey.lead")}</p>

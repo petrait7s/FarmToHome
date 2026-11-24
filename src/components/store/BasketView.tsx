@@ -33,7 +33,7 @@ export function BasketView({ initialQuote, signedIn }: { initialQuote: Quote; si
   if (cart.lines.length === 0) {
     return (
       <div className={styles.empty}>
-        <svg viewBox="0 0 120 120" width="120" height="120" aria-hidden="true"><circle cx="72" cy="46" r="30" fill="#FF4B33" opacity=".9" /><circle cx="46" cy="70" r="26" fill="#DDAA72" /><circle cx="72" cy="74" r="34" fill="none" stroke="#0F766E" strokeWidth="1.2" /></svg>
+        <svg viewBox="0 0 120 120" width="120" height="120" aria-hidden="true"><circle cx="72" cy="46" r="30" fill="#164A83" opacity=".9" /><circle cx="46" cy="70" r="26" fill="#C6A15B" /><circle cx="72" cy="74" r="34" fill="none" stroke="#075B62" strokeWidth="1.2" /></svg>
         <h2 className="h2">{t("basket.empty")}</h2>
         <p>{t("basket.emptyBody")}</p>
         <div className={styles.emptyCtas}>

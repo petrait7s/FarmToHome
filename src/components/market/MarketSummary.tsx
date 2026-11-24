@@ -43,7 +43,7 @@ export function MarketSummary({ mode, categories, zone, countId, onSave, onClear
       <div className={styles.sumList}>
         {lines.length === 0 ? (
           <div className={styles.sumEmpty}>
-            <svg viewBox="0 0 120 120" width="104" height="104" aria-hidden="true"><circle cx="72" cy="46" r="30" fill="#FF4B33" opacity=".9" /><circle cx="46" cy="70" r="26" fill="#DDAA72" /><circle cx="72" cy="74" r="34" fill="none" stroke="#0F766E" strokeWidth="1.2" /></svg>
+            <svg viewBox="0 0 120 120" width="104" height="104" aria-hidden="true"><circle cx="72" cy="46" r="30" fill="#164A83" opacity=".9" /><circle cx="46" cy="70" r="26" fill="#C6A15B" /><circle cx="72" cy="74" r="34" fill="none" stroke="#075B62" strokeWidth="1.2" /></svg>
             <h3>{t("market.emptyTitle")}</h3>
             <p>{t("market.emptyBody")}</p>
           </div>

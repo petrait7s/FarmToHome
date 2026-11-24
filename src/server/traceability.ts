@@ -45,5 +45,5 @@ export function traceUrl(batchNumber: string): string {
 }
 
 export async function traceQrSvg(batchNumber: string): Promise<string> {
-  return QRCode.toString(traceUrl(batchNumber), { type: "svg", margin: 1, errorCorrectionLevel: "M", color: { dark: "#0F766E", light: "#F4F1EA" } });
+  return QRCode.toString(traceUrl(batchNumber), { type: "svg", margin: 1, errorCorrectionLevel: "M", color: { dark: "#075B62", light: "#F4EBDD" } });
 }

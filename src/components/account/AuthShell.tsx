@@ -7,9 +7,9 @@ export async function AuthShell({ title, lead, children, aside }: { title: strin
     <div className={styles.shell}>
       <section className={`${styles.brand} on-red`} aria-hidden="true">
         <svg className={styles.art} viewBox="0 0 400 400">
-          <circle cx="250" cy="150" r="120" fill="#DDAA72" />
-          <circle cx="150" cy="240" r="90" fill="#F4F1EA" opacity=".16" />
-          <circle cx="240" cy="250" r="130" fill="none" stroke="#F4F1EA" strokeWidth="1.2" opacity=".75" />
+          <circle cx="250" cy="150" r="120" fill="#C6A15B" />
+          <circle cx="150" cy="240" r="90" fill="#F4EBDD" opacity=".16" />
+          <circle cx="240" cy="250" r="130" fill="none" stroke="#F4EBDD" strokeWidth="1.2" opacity=".75" />
         </svg>
         <p className={styles.promise}>{t("brand.promise")}</p>
         <p className={styles.core}>{t("brand.core")}</p>

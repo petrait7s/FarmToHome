@@ -22,8 +22,8 @@
 
 /* 3D lift: the image tilts back slightly and gains depth on hover. */
 .card { perspective: 900px; }
-.media { transform-style: preserve-3d; box-shadow: 0 0 0 rgb(15 118 110 / 0); transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease); }
-.media:hover { transform: translateY(-6px) rotateX(4deg); box-shadow: 0 30px 40px -28px rgb(15 118 110 / 0.55); }
+.media { transform-style: preserve-3d; box-shadow: 0 0 0 rgb(7 91 98 / 0); transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease); }
+.media:hover { transform: translateY(-6px) rotateX(4deg); box-shadow: 0 30px 40px -28px rgb(7 91 98 / 0.55); }
 @media (prefers-reduced-motion: reduce) { .media:hover { transform: none; } }
 
 /* Mobile: card view tuned for thumbs — image first, tight text, full-width add button. */

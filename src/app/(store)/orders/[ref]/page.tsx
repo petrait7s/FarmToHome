@@ -28,7 +28,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
     <div className="page-pad">
       {placed ? (
         <section className={`${styles.hero} on-red`}>
-          <svg className={styles.bloom} viewBox="0 0 600 600" aria-hidden="true"><circle cx="420" cy="160" r="170" fill="#DDAA72" /><circle cx="300" cy="320" r="120" fill="#F4F1EA" opacity=".16" /><circle cx="400" cy="340" r="190" fill="none" stroke="#F4F1EA" strokeWidth="1.2" opacity=".7" /></svg>
+          <svg className={styles.bloom} viewBox="0 0 600 600" aria-hidden="true"><circle cx="420" cy="160" r="170" fill="#C6A15B" /><circle cx="300" cy="320" r="120" fill="#F4EBDD" opacity=".16" /><circle cx="400" cy="340" r="190" fill="none" stroke="#F4EBDD" strokeWidth="1.2" opacity=".7" /></svg>
           <div className={`container ${styles.heroInner}`}>
             <span className={styles.check}><Icon name="check" size={32} strokeWidth={2.6} /></span>
             <h1 className="display" style={{ fontSize: "clamp(36px,5vw,64px)" }}>{t("checkout.confirmTitle")}</h1>

@@ -33,11 +33,11 @@
 .toggle, .toggleLabel { display: none; }
 @media (max-width: 900px) {
   .toggleLabel { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: var(--r-pill); border: 1px solid var(--line-strong);
-    font-size: 14px; font-weight: 600; background: #fff; cursor: pointer; transition: transform 0.15s var(--ease); }
+    font-size: 14px; font-weight: 600; background: var(--ivory); cursor: pointer; transition: transform 0.15s var(--ease); }
   .toggleLabel:active { transform: scale(0.96); }
   .toggleLabel svg { width: 16px; height: 16px; color: var(--red); }
   .toggle:not(:checked) ~ .filterForm { display: none; }
-  .toggle:checked ~ .filterForm { margin-top: 14px; padding: 16px; border-radius: var(--r-lg); background: #fff; border: 1px solid var(--line); animation: drop 0.3s var(--ease); }
+  .toggle:checked ~ .filterForm { margin-top: 14px; padding: 16px; border-radius: var(--r-lg); background: var(--ivory); border: 1px solid var(--line); animation: drop 0.3s var(--ease); }
   .toggle:focus-visible + .toggleLabel { outline: 2px solid var(--sky); outline-offset: 2px; }
   .layout { padding-top: 18px; gap: 18px; }
 }

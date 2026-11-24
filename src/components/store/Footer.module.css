@@ -9,10 +9,10 @@
 .bottom { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--ivory-25); font-size: 14px; font-weight: 500; }
 @media (max-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } .brand { grid-column: 1 / -1; } }
 
-/* Colour grade: soft gold and Sky Blue light pools over the Red Orange base. */
+/* Colour grade: soft gold and deep teal light pools over the Sapphire base. */
 .footer { position: relative; overflow: hidden; background:
-  radial-gradient(60% 80% at 100% 0%, rgb(221 170 114 / 0.35), transparent 60%),
-  radial-gradient(50% 70% at 0% 100%, rgb(15 118 110 / 0.22), transparent 60%),
+  radial-gradient(50% 70% at 100% 0%, rgb(198 161 91 / 0.16), transparent 60%),
+  radial-gradient(50% 70% at 0% 100%, rgb(7 91 98 / 0.22), transparent 60%),
   var(--red); }
 .footer > * { position: relative; }
 .footer ul a { display: inline-block; transition: transform 0.25s var(--ease), opacity 0.25s; }

@@ -1,6 +1,6 @@
 .dialog { border: 0; padding: 0; background: var(--ivory); color: var(--sky); max-width: calc(100vw - 32px); max-height: calc(100vh - 48px); overflow: visible; }
-.dialog::backdrop { background: rgb(15 118 110 / 0.4); animation: fadeIn 0.3s var(--ease); }
-.center { margin: auto; width: 560px; border-radius: 24px; box-shadow: 0 40px 80px -30px rgb(15 118 110 / 0.5); animation: modalIn 0.45s var(--ease); }
+.dialog::backdrop { background: rgb(7 91 98 / 0.4); animation: fadeIn 0.3s var(--ease); }
+.center { margin: auto; width: 560px; border-radius: 24px; box-shadow: 0 40px 80px -30px rgb(7 91 98 / 0.5); animation: modalIn 0.45s var(--ease); }
 .wide { width: 860px; }
 .sheet { margin: auto auto 0; width: 100%; max-width: 100%; border-radius: 28px 28px 0 0; animation: sheetUp 0.45s var(--ease); max-height: 88vh; }
 .inner { position: relative; padding: 28px; max-height: inherit; overflow-y: auto; overscroll-behavior: contain; }

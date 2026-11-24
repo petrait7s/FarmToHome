@@ -80,7 +80,7 @@ src/app/api/cart/    JSON cart API used by the market builder
 src/server/          business logic: auth, cart, catalog, pricing, promotions, orders, inventory, delivery, payments, traceability, concierge, audit, storage, mail
 src/components/      design system (ui), storefront, market builder, checkout, account, admin
 src/i18n/            English and Bangla dictionaries
-src/styles/          brand tokens (four approved colours only) and global styles
+src/styles/          brand tokens (five approved colours only) and global styles
 tests/               unit, integration, e2e
 docs/                design research and architecture
 prototype/           original HTML prototype (reference only)
@@ -88,7 +88,9 @@ prototype/           original HTML prototype (reference only)
 
 ## Brand colours
 
-Only the four approved colours are used, plus opacity variations: **Red Orange `#FF4B33`** (main brand theme, primary actions, selected states), **Warm Ivory `#F4F1EA`** (surfaces), **Sky Blue `#0F766E`** (supporting text and UI), **Harvest Gold `#DDAA72`** (restrained highlights). See `src/styles/tokens.css`.
+Only the five approved colours are used, plus opacity variations: **Sapphire Blue `#164A83`** (main brand surfaces, primary actions, selected states), **Warm Ivory `#F4EBDD`** (background and surfaces), **Deep Teal Green `#075B62`** (supporting text and UI), **Champagne Gold `#C6A15B`** (restrained highlights) and **Charcoal Black `#252525`** (body text). See `src/styles/tokens.css`.
+
+**Typefaces:** Montserrat for English and Tiro Bangla for Bangla.
 
 ## Languages
 

@@ -183,7 +183,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── Quality (orange band) ── */}
+      {/* ── Quality (brand band) ── */}
       <section className={`${styles.quality} on-red`}>
         <div className={`container ${styles.qualityGrid}`}>
           <h2 className="h1">{t("home.qualityTitle")}</h2>

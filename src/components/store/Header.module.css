@@ -1,7 +1,7 @@
 /* Floating pill header: a white rounded bar sitting on the Ivory header strip. */
 .header { position: sticky; top: 0; z-index: 50; height: var(--header-h); padding: 10px 0; background: var(--ivory); }
 .wrap { height: 100%; }
-.bar { height: 100%; display: flex; align-items: center; gap: 20px; background: #fff; border-radius: var(--r-pill); padding: 0 8px 0 22px; box-shadow: 0 6px 24px rgb(15 118 110 / 0.12), 0 0 0 1px var(--line); }
+.bar { height: 100%; display: flex; align-items: center; gap: 20px; background: var(--ivory); border-radius: var(--r-pill); padding: 0 8px 0 22px; box-shadow: 0 6px 24px rgb(7 91 98 / 0.12), 0 0 0 1px var(--line); }
 
 .nav { display: flex; align-items: center; gap: 2px; margin: 0 auto; background: var(--ivory); border-radius: var(--r-pill); padding: 4px; min-width: 0; }
 .link { padding: 8px 16px; border-radius: var(--r-pill); font-size: 14.5px; font-weight: 500; white-space: nowrap; transition: background 0.25s var(--ease), color 0.25s var(--ease); }
@@ -29,8 +29,8 @@
 /* Mobile: compact glass app bar that slides away while scrolling down. */
 @media (max-width: 900px) {
   .header { background: transparent; transition: transform 0.35s var(--ease); }
-  .bar { background: rgb(255 255 255 / 0.8); backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%); }
+  .bar { background: rgb(244 235 221 / 0.8); backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%); }
   :global(html[data-chrome="hidden"]) .header { transform: translateY(-110%); }
-  :global(html[data-scrolled="true"]) .bar { box-shadow: 0 12px 30px -16px rgb(15 118 110 / 0.45), 0 0 0 1px var(--line); }
+  :global(html[data-scrolled="true"]) .bar { box-shadow: 0 12px 30px -16px rgb(7 91 98 / 0.45), 0 0 0 1px var(--line); }
   .iconBtn:active { transform: scale(0.9); }
 }

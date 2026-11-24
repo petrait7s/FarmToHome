@@ -189,9 +189,9 @@ export function MarketBuilder({ mode, products, categories, traces, householdSiz
       {/* ── Hero ── */}
       <section className={`${styles.hero} on-red`}>
         <svg className={styles.heroArt} viewBox="0 0 520 520" aria-hidden="true">
-          <circle className={styles.c1} cx="330" cy="190" r="150" fill="#DDAA72" />
-          <circle className={styles.c2} cx="200" cy="300" r="110" fill="#F4F1EA" opacity=".16" />
-          <circle cx="320" cy="320" r="150" fill="none" stroke="#F4F1EA" strokeWidth="1.2" opacity=".75" />
+          <circle className={styles.c1} cx="330" cy="190" r="150" fill="#C6A15B" />
+          <circle className={styles.c2} cx="200" cy="300" r="110" fill="#F4EBDD" opacity=".16" />
+          <circle cx="320" cy="320" r="150" fill="none" stroke="#F4EBDD" strokeWidth="1.2" opacity=".75" />
         </svg>
         <div className={`container ${styles.heroGrid}`}>
           <div>

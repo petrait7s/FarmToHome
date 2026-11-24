@@ -20,7 +20,7 @@ export default async function ProducerPage({ params }: { params: Promise<{ slug:
   return (
     <div className="page-pad">
       <section className="on-red" style={{ position: "relative", overflow: "hidden" }}>
-        <svg viewBox="0 0 400 400" aria-hidden="true" style={{ position: "absolute", right: -60, top: -80, width: 420, height: 420 }}><circle cx="250" cy="150" r="120" fill="#DDAA72" /><circle cx="240" cy="250" r="130" fill="none" stroke="#F4F1EA" strokeWidth="1.2" opacity=".75" /></svg>
+        <svg viewBox="0 0 400 400" aria-hidden="true" style={{ position: "absolute", right: -60, top: -80, width: 420, height: 420 }}><circle cx="250" cy="150" r="120" fill="#C6A15B" /><circle cx="240" cy="250" r="130" fill="none" stroke="#F4EBDD" strokeWidth="1.2" opacity=".75" /></svg>
         <div className="container" style={{ position: "relative", padding: "56px var(--gutter) 64px" }}>
           <p className="eyebrow" style={{ background: "var(--ivory)", color: "var(--sky)", padding: "7px 14px", borderRadius: 999 }}><Icon name="pin" size={14} />{[producer.village, producer.origin.district, producer.origin.division].filter(Boolean).join(", ")}</p>
           <h1 className="display" style={{ marginTop: 18, fontSize: "clamp(40px,6vw,76px)" }}>{name}</h1>

@@ -3,7 +3,7 @@
  * Used as an image fallback until real product photography is uploaded.
  * Output is generated entirely from code (whitelisted type + integer variant), never from user input.
  */
-const R = "#FF4B33", I = "#F4F1EA", T = "#0F766E", G = "#DDAA72";
+const R = "#164A83", I = "#F4EBDD", T = "#075B62", G = "#C6A15B";
 
 export const ART_TYPES = ["rice", "grain", "fish", "prawn", "shutki", "spice", "seed", "dal", "chola", "oil", "honey", "ghee", "gur", "doi", "citrus"] as const;
 export type ArtType = (typeof ART_TYPES)[number];

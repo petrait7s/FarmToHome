@@ -4,8 +4,8 @@ import styles from "./BrandLogo.module.css";
 export function BrandMark({ size = 32 }: { size?: number }) {
   return (
     <svg viewBox="0 0 40 40" width={size} height={size} aria-hidden="true" className={styles.mark}>
-      <circle cx="24" cy="15" r="11" fill="#FF4B33" />
-      <circle cx="15" cy="23" r="10" fill="#DDAA72" />
+      <circle cx="24" cy="15" r="11" fill="#164A83" />
+      <circle cx="15" cy="23" r="10" fill="#C6A15B" />
       <circle cx="26" cy="25" r="12" fill="none" stroke="currentColor" strokeWidth="1.4" />
     </svg>
   );
