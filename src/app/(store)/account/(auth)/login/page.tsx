@@ -5,7 +5,10 @@ import { LoginForm } from "@/components/account/AuthForms";
 import { getT } from "@/i18n";
 import { getCurrentUser } from "@/server/auth/session";
 
-export const metadata = { title: "Sign in" };
+export async function generateMetadata() {
+  const { t } = await getT();
+  return { title: t("account.login") };
+}
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string; reset?: string }> }) {
   const sp = await searchParams;

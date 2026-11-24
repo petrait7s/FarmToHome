@@ -4,7 +4,10 @@ import { getCurrentUser } from "@/server/auth/session";
 import { quoteCart } from "@/server/quote";
 import { BasketView } from "@/components/store/BasketView";
 
-export const metadata = { title: "Your basket" };
+export async function generateMetadata() {
+  const { t } = await getT();
+  return { title: t("basket.title") };
+}
 
 export default async function BasketPage() {
   const { t } = await getT();

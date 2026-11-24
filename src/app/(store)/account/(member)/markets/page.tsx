@@ -11,7 +11,10 @@ import { Icon } from "@/components/ui/Icon";
 import { formatMoney, formatNumber } from "@/lib/money";
 import styles from "./markets.module.css";
 
-export const metadata = { title: "Saved markets" };
+export async function generateMetadata() {
+  const { t } = await getT();
+  return { title: t("saved.title") };
+}
 
 export default async function MarketsPage() {
   const user = await requireUserPage("/account/markets");

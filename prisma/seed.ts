@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client.ts";
 import { categories, origins, producers, products, slotTimes } from "./seed-data.ts";
+import { applyContent } from "./content.ts";
 import { contact, deliveryFaq, heroSection, pageTitlesBn, pilotSection, sylhetZones as zones } from "./sylhet-launch.ts";
 
 if (process.env.NODE_ENV === "production") {
@@ -210,7 +211,7 @@ async function main() {
     ["Can I change or cancel an order?", "You can cancel from your account until the order is confirmed. After that, contact the concierge and we will help."],
   ];
   for (const [i, [q, a]] of faqs.entries()) await db.faqItem.create({ data: { question: q, answer: a, position: i < 1 ? i : i + 1 } });
-  await db.faqItem.create({ data: { ...deliveryFaq, position: 1 } });
+  await db.faqItem.create({ data: { ...deliveryFaq, position: 3 } });
   const draft = "DRAFT FOR DEVELOPMENT — this policy text is a placeholder and has not been reviewed. Replace it with approved legal text before launch.";
   await db.page.create({ data: { slug: "delivery-policy", titleBn: pageTitlesBn["delivery-policy"], title: "Delivery policy", body: `${draft}\n\nOrders are delivered in the slot you choose at checkout. Fresh items are packed on ice the morning of delivery. If we cannot deliver in your slot, your concierge will call you to reschedule.` } });
   await db.page.create({ data: { slug: "refund-policy", titleBn: pageTitlesBn["refund-policy"], title: "Refunds & replacements", body: `${draft}\n\nIf any item arrives below standard, tell your concierge within 24 hours with a photo. We will replace it or credit you.` } });
@@ -232,6 +233,7 @@ async function main() {
     },
   });
 
+  await applyContent(db);
   console.log("Seed complete.");
   console.log("  Admin:    01700000001 / Admin#2026demo");
   console.log("  Staff:    01700000002 / Staff#2026demo");

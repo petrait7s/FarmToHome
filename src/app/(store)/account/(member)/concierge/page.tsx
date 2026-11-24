@@ -4,7 +4,10 @@ import { db } from "@/lib/db";
 import { requireUserPage } from "@/server/auth/guards";
 import { customerReplyAction } from "@/app/actions/concierge";
 
-export const metadata = { title: "Concierge requests" };
+export async function generateMetadata() {
+  const { t } = await getT();
+  return { title: t("account.concierge") };
+}
 
 export default async function MyConciergePage() {
   const user = await requireUserPage("/account/concierge");

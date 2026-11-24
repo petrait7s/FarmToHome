@@ -5,7 +5,10 @@ import { db } from "@/lib/db";
 import { ProductVisual } from "@/components/ui/ProductVisual";
 import styles from "./producers.module.css";
 
-export const metadata = { title: "Our producers" };
+export async function generateMetadata() {
+  const { t } = await getT();
+  return { title: t("producers.title") };
+}
 
 export default async function ProducersPage() {
   const { t, locale } = await getT();
@@ -30,7 +33,7 @@ export default async function ProducersPage() {
             </div>
             <p className="eyebrow">{[p.village, p.origin.district].filter(Boolean).join(" · ")} {p.isDemo ? <span className="demo-tag">{t("common.demo")}</span> : null}</p>
             <h2 className="h3">{localized(p, "name", locale)}</h2>
-            <p className="muted-note">{p.craft} · {t(`producers.verification.${p.verificationStatus}`)}</p>
+            <p className="muted-note">{localized(p, "craft", locale)} · {t(`producers.verification.${p.verificationStatus}`)}</p>
             {p.products.length ? <p className={styles.products}>{p.products.map((x) => x.name).join(" · ")}</p> : null}
           </Link>
         ))}

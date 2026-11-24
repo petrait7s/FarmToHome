@@ -5,7 +5,10 @@ import { requireUserPage } from "@/server/auth/guards";
 import { formatMoney } from "@/lib/money";
 import { Icon } from "@/components/ui/Icon";
 
-export const metadata = { title: "My account" };
+export async function generateMetadata() {
+  const { t } = await getT();
+  return { title: t("account.title") };
+}
 
 export default async function AccountHome() {
   const user = await requireUserPage("/account");

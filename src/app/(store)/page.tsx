@@ -168,7 +168,7 @@ export default async function HomePage() {
                 </div>
                 <p className="eyebrow">{p.village} · {p.origin.district} {p.isDemo ? <span className="demo-tag">{t("common.demo")}</span> : null}</p>
                 <h3 className="h3">{localized(p, "name", locale)}</h3>
-                {p.quote ? <blockquote className={styles.quote}>“{p.quote}”</blockquote> : null}
+                {p.quote && !p.isDemo ? <blockquote className={styles.quote}>“{p.quote}”</blockquote> : null}
               </Link>
             ))}
           </div>
@@ -270,7 +270,7 @@ export default async function HomePage() {
           </form>
           {pilot ? (
             <div className={styles.pilot}>
-              <p className="eyebrow"><span className="dot" aria-hidden="true" />{localized(pilot, "eyebrow", locale) || "Pilot"}</p>
+              <p className="eyebrow"><span className="dot" aria-hidden="true" />{localized(pilot, "eyebrow", locale) || ""}</p>
               <h2 className="h2">{localized(pilot, "title", locale)}</h2>
               <p>{localized(pilot, "body", locale)}</p>
               {zones.length ? (

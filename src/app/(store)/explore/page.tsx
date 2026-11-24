@@ -7,7 +7,10 @@ import { ProductCard } from "@/components/store/ProductCard";
 import { Icon } from "@/components/ui/Icon";
 import styles from "./explore.module.css";
 
-export const metadata = { title: "Explore the market" };
+export async function generateMetadata() {
+  const { t } = await getT();
+  return { title: t("explore.title") };
+}
 
 type SP = Record<string, string | undefined>;
 const SORTS = ["curated", "newest", "price_asc", "price_desc", "popular"] as const;

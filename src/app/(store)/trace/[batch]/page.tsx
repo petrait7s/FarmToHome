@@ -68,7 +68,7 @@ export default async function BatchPage({ params }: { params: Promise<{ batch: s
             <div className={styles.story}>
               <p className="eyebrow"><span className="dot" aria-hidden="true" />{t("product.story")}</p>
               <p className={styles.storyText}>{localized(batch.product, "story", locale)}</p>
-              {batch.producer?.quote ? <blockquote>“{batch.producer.quote}” <cite>— {batch.producer.name}</cite></blockquote> : null}
+              {batch.producer?.quote && !batch.producer.isDemo ? <blockquote>“{batch.producer.quote}” <cite>— {batch.producer.name}</cite></blockquote> : null}
             </div>
           ) : null}
         </section>
@@ -78,7 +78,7 @@ export default async function BatchPage({ params }: { params: Promise<{ batch: s
             <p className="eyebrow">{t("trace.identity")}</p>
             <dl className={styles.dl}>
               <dt>{t("trace.product")}</dt><dd><Link className="link" href={`/products/${batch.product.slug}`}>{name}</Link></dd>
-              <dt>{t("trace.producer")}</dt><dd>{batch.producer ? <Link className="link" href={`/producers/${batch.producer.slug}`}>{batch.producer.name}</Link> : "—"}{batch.producer ? <span className="muted-note" style={{ display: "block" }}>{t(`producers.verification.${batch.producer.verificationStatus}`)}</span> : null}</dd>
+              <dt>{t("trace.producer")}</dt><dd>{batch.producer ? <Link className="link" href={`/producers/${batch.producer.slug}`}>{localized(batch.producer, "name", locale)}</Link> : "—"}{batch.producer ? <span className="muted-note" style={{ display: "block" }}>{t(`producers.verification.${batch.producer.verificationStatus}`)}</span> : null}</dd>
               <dt>{t("trace.location")}</dt><dd>{[batch.producer?.village, batch.origin?.district, batch.origin?.division].filter(Boolean).join(", ") || "—"}</dd>
               <dt>{t("product.originClass")}</dt><dd><OriginSeal cls={batch.product.originClass} /> {clsDef ?? t("common.definitionPending")}</dd>
               <dt>{t("product.grade")}</dt><dd>{batch.qualityGrade ?? "—"}</dd>

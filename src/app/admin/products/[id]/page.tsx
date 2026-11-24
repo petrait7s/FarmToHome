@@ -51,9 +51,13 @@ export default async function ProductEdit({ params, searchParams }: { params: Pr
             <F label="Origin class" name="originClass" defaultValue={p?.originClass} placeholder="O1 / O2 / O3" />
             <F label="Quality grade" name="qualityGrade" defaultValue={p?.qualityGrade} />
             <F label="Processing information" name="processingInfo" type="textarea" rows={2} defaultValue={p?.processingInfo} />
+            <F label="Processing information (বাংলা)" name="processingInfoBn" type="textarea" rows={2} defaultValue={p?.processingInfoBn} />
             <F label="Packaging information" name="packagingInfo" type="textarea" rows={2} defaultValue={p?.packagingInfo} />
+            <F label="Packaging information (বাংলা)" name="packagingInfoBn" type="textarea" rows={2} defaultValue={p?.packagingInfoBn} />
             <F label="Storage instructions" name="storageInfo" type="textarea" rows={2} defaultValue={p?.storageInfo} />
+            <F label="Storage instructions (বাংলা)" name="storageInfoBn" type="textarea" rows={2} defaultValue={p?.storageInfoBn} />
             <F label="Food handling" name="handlingInfo" type="textarea" rows={2} defaultValue={p?.handlingInfo} />
+            <F label="Food handling (বাংলা)" name="handlingInfoBn" type="textarea" rows={2} defaultValue={p?.handlingInfoBn} />
             <F label="Household use per person per week" name="householdUsePerPersonWeek" type="number" step="0.01" defaultValue={p?.householdUsePerPersonWeek} hint="Used only for quantity hints. Leave empty if not applicable." />
             <F label="Household use unit" name="householdUseUnit" defaultValue={p?.householdUseUnit} placeholder="kg or L" />
             <F label="Illustration fallback (used until a photo is uploaded)" name="artKey" defaultValue={p?.artKey ?? "grain:0"} options={artOptions} />

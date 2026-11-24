@@ -24,12 +24,12 @@ export default async function ProducerPage({ params }: { params: Promise<{ slug:
         <div className="container" style={{ position: "relative", padding: "56px var(--gutter) 64px" }}>
           <p className="eyebrow" style={{ background: "var(--ivory)", color: "var(--sky)", padding: "7px 14px", borderRadius: 999 }}><Icon name="pin" size={14} />{[producer.village, producer.origin.district, producer.origin.division].filter(Boolean).join(", ")}</p>
           <h1 className="display" style={{ marginTop: 18, fontSize: "clamp(40px,6vw,76px)" }}>{name}</h1>
-          <p style={{ fontSize: 19, fontWeight: 500, marginTop: 10 }}>{producer.craft}</p>
+          <p style={{ fontSize: 19, fontWeight: 500, marginTop: 10 }}>{localized(producer, "craft", locale)}</p>
         </div>
       </section>
       <div className="container layout-aside" style={{ paddingTop: 40, paddingBottom: 48 }}>
         <article className="stack" style={{ ["--stack" as string]: "18px" }}>
-          {producer.quote ? <blockquote style={{ font: "italic 400 26px/1.4 var(--font-serif)", paddingLeft: 18, borderLeft: "2px solid var(--gold)" }}>“{producer.quote}”</blockquote> : null}
+          {producer.quote && !producer.isDemo ? <blockquote style={{ font: "italic 400 26px/1.4 var(--font-serif)", paddingLeft: 18, borderLeft: "2px solid var(--gold)" }}>“{producer.quote}”</blockquote> : null}
           <p className="lead">{localized(producer, "story", locale)}</p>
           {producer.isDemo ? <p className="form-ok">{t("producers.demoNotice")}</p> : null}
         </article>

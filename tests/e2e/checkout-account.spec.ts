@@ -20,7 +20,7 @@ test("guest checkout with cash on delivery, tracking link and cancellation", asy
   await fillCheckout(page, uniquePhone());
   await page.getByRole("button", { name: "Place order" }).click();
   await page.waitForURL(/\/orders\/FTH-/);
-  await expect(page.getByRole("heading", { name: "Your market is confirmed." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "We’ve received your order." })).toBeVisible();
   const ref = page.url().match(/FTH-\d{6}-[A-Z0-9]{5}/)![0];
 
   // Without the secret link token the order is not visible.
@@ -36,11 +36,11 @@ test("simulated mobile payment is clearly labelled and records the outcome", asy
   await page.goto("/market/weekly");
   await addFromMarket(page, "Fresh Golda Prawns");
   await fillCheckout(page, uniquePhone());
-  await page.getByRole("radio", { name: /Mobile financial services/ }).click();
+  await page.getByRole("radio", { name: /Mobile banking/ }).click();
   await page.getByRole("button", { name: "Place order" }).click();
   await page.waitForURL(/\/pay\//);
   await expect(page.getByText("No money moves")).toBeVisible();
-  await page.getByRole("button", { name: "Simulate success" }).click();
+  await page.getByRole("button", { name: "Mark as successful" }).click();
   await page.waitForURL(/\/orders\//);
   await expect(page.getByText("Paid")).toBeVisible();
 });
@@ -63,10 +63,10 @@ test("register, save a market, repeat it and manage an address", async ({ page }
   await page.getByRole("dialog").getByRole("button", { name: "Save market" }).click();
   await expect(page.getByText("Saved as “E2E Weekly”")).toBeVisible();
 
-  await page.locator("aside").getByRole("button", { name: "Clear" }).click();
+  await page.locator("aside").getByRole("button", { name: "Clear all" }).click();
   await page.goto("/account/markets");
   await expect(page.getByRole("heading", { name: "E2E Weekly" })).toBeVisible();
-  await page.getByRole("button", { name: /Repeat \(replace basket\)/ }).click();
+  await page.getByRole("button", { name: /Load again \(replaces basket\)/ }).click();
   await page.waitForURL(/\/basket/);
   await expect(page.getByText("Deshi Masoor Dal")).toBeVisible();
 

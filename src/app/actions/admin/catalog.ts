@@ -32,7 +32,7 @@ export async function saveCategory(form: FormData) {
 
 // ───────── Producers ─────────
 const producerSchema = z.object({
-  slug, name: reqStr(80), nameBn: optStr, craft: optStr, village: optStr, originId: cuid, story: optStr, storyBn: optStr, quote: optStr,
+  slug, name: reqStr(80), nameBn: optStr, craft: optStr, craftBn: optStr, village: optStr, originId: cuid, story: optStr, storyBn: optStr, quote: optStr,
   verificationStatus: z.enum(["UNVERIFIED", "PENDING", "VERIFIED"]), contactPhone: optStr, contactNotes: optStr, active: checkbox, isDemo: checkbox,
 });
 
@@ -73,7 +73,7 @@ export async function saveOrigin(form: FormData) {
 const productSchema = z.object({
   slug, name: reqStr(120), nameBn: optStr, summary: reqStr(200), summaryBn: optStr, description: reqStr(5000), descriptionBn: optStr, story: optStr, storyBn: optStr,
   categoryId: cuid, producerId: z.string().optional().transform((v) => v || null), originId: z.string().optional().transform((v) => v || null),
-  originClass: optStr, qualityGrade: optStr, processingInfo: optStr, packagingInfo: optStr, storageInfo: optStr, handlingInfo: optStr,
+  originClass: optStr, qualityGrade: optStr, processingInfo: optStr, processingInfoBn: optStr, packagingInfo: optStr, packagingInfoBn: optStr, storageInfo: optStr, storageInfoBn: optStr, handlingInfo: optStr, handlingInfoBn: optStr,
   artKey: z.string().optional().transform((v) => (v && ART_TYPES.includes(v.split(":")[0] as (typeof ART_TYPES)[number]) ? v : null)),
   marketFit: z.enum(["WEEKLY", "MONTHLY", "BOTH"]), status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]),
   isEssential: checkbox, isSeasonal: checkbox, isNew: checkbox, isFeatured: checkbox, isPerishable: checkbox, isDemo: checkbox,

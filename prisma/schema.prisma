@@ -197,6 +197,7 @@ model Producer {
   name               String
   nameBn             String?
   craft              String?
+  craftBn            String?
   village            String?
   originId           String
   origin             Origin             @relation(fields: [originId], references: [id])
@@ -238,9 +239,13 @@ model Product {
   originClass     String?
   qualityGrade    String?
   processingInfo  String?
+  processingInfoBn String?
   packagingInfo   String?
+  packagingInfoBn String?
   storageInfo     String?
+  storageInfoBn   String?
   handlingInfo    String?
+  handlingInfoBn  String?
   artKey          String?
   marketFit       MarketFit       @default(BOTH)
   isEssential     Boolean         @default(false)

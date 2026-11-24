@@ -5,7 +5,10 @@ import { RegisterForm } from "@/components/account/AuthForms";
 import { getT } from "@/i18n";
 import { getCurrentUser } from "@/server/auth/session";
 
-export const metadata = { title: "Create account" };
+export async function generateMetadata() {
+  const { t } = await getT();
+  return { title: t("account.register") };
+}
 
 export default async function RegisterPage({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
   const sp = await searchParams;

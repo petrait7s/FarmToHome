@@ -8,6 +8,7 @@
  * - Homepage hero and pilot copy, the "Where do you deliver?" FAQ answer, Bangla policy titles.
  * - Creates the Sylhet delivery zones (if missing) with slots for the booking window, and
  *   deactivates any non-Sylhet zones. Existing orders keep their zone; nothing is deleted.
+ * - Catalogue and editorial copy from prisma/content.ts (text fields only).
  * Re-running is harmless.
  */
 import "dotenv/config";
@@ -15,6 +16,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client.ts";
 import { contact, deliveryFaq, heroSection, pageTitlesBn, pilotSection, sylhetZones } from "./sylhet-launch.ts";
 import { slotTimes } from "./seed-data.ts";
+import { applyContent } from "./content.ts";
 
 const { DATABASE_URL, CONTACT_EMAIL } = process.env;
 if (!DATABASE_URL) {
@@ -38,12 +40,14 @@ console.log("Homepage hero and pilot sections updated.");
 
 const faq = await db.faqItem.findFirst({ where: { question: deliveryFaq.question } });
 if (faq) await db.faqItem.update({ where: { id: faq.id }, data: deliveryFaq });
-else await db.faqItem.create({ data: { ...deliveryFaq, position: 1 } });
+else await db.faqItem.create({ data: { ...deliveryFaq, position: 3 } });
+if (faq) await db.faqItem.update({ where: { id: faq.id }, data: { position: 3 } });
 
 for (const [slug, titleBn] of Object.entries(pageTitlesBn)) {
   await db.page.updateMany({ where: { slug }, data: { titleBn } });
 }
 console.log("FAQ and policy titles updated.");
+console.log(`Catalogue and editorial copy updated (${await applyContent(db)} records).`);
 
 const s = await db.siteSettings.findUniqueOrThrow({ where: { id: 1 } });
 const now = new Date();

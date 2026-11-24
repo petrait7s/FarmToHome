@@ -4,7 +4,10 @@ import { getOrderForViewer } from "@/server/orders/access";
 import { simulatePaymentAction } from "@/app/actions/orders";
 import { formatMoney } from "@/lib/money";
 
-export const metadata = { title: "Simulated payment", robots: { index: false } };
+export async function generateMetadata() {
+  const { t } = await getT();
+  return { title: t("pay.title"), robots: { index: false } };
+}
 
 /** Development sandbox page standing in for a real payment provider. Clearly labelled; no money moves. */
 export default async function SimulatedPayPage({ params, searchParams }: { params: Promise<{ ref: string; paymentId: string }>; searchParams: Promise<{ t?: string }> }) {

@@ -3,7 +3,10 @@ import { AuthShell } from "@/components/account/AuthShell";
 import { ForgotForm } from "@/components/account/AuthForms";
 import { getT } from "@/i18n";
 
-export const metadata = { title: "Reset password" };
+export async function generateMetadata() {
+  const { t } = await getT();
+  return { title: t("account.forgotTitle") };
+}
 
 export default async function ForgotPage() {
   const { t } = await getT();

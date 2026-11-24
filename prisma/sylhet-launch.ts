@@ -33,13 +33,13 @@ export const sylhetZones = [
 
 export const heroSection = {
   key: "home.hero",
-  eyebrow: "Now delivering across Sylhet city",
-  eyebrowBn: "এখন সিলেট শহর জুড়ে ডেলিভারি",
+  eyebrow: "Now delivering in Sylhet city",
+  eyebrowBn: "এখন সিলেট শহরে ডেলিভারি",
   title: "The taste of Bengal’s fields, rivers and towns — brought home to your family.",
   titleBn: "বাংলার মাঠ, নদী আর জনপদের স্বাদ—আপনার পরিবারের ঘরে।",
   body: "Choose selected foods from regions across the country to suit your family’s tastes and needs. Build your weekly or monthly market from produce sourced from local farmers and producers.",
   bodyBn: "পরিবারের পছন্দ ও প্রয়োজন অনুযায়ী বেছে নিন দেশের বিভিন্ন অঞ্চলের নির্বাচিত খাদ্যপণ্য। স্থানীয় কৃষক ও উৎপাদকদের কাছ থেকে সংগ্রহ করা পণ্য নিয়ে সাজিয়ে ফেলুন আপনার সপ্তাহের কিংবা পুরো মাসের বাজার।",
-  ctaLabel: "Build Your Market",
+  ctaLabel: "Build your market",
   ctaLabelBn: "আপনার বাজার সাজান",
   ctaHref: "/market/weekly",
 };
@@ -50,10 +50,10 @@ export const pilotSection = {
   eyebrowBn: "সিলেটে যাত্রা শুরু",
   title: "Now welcoming founding households in Sylhet",
   titleBn: "সিলেটে প্রথম পরিবারগুলোকে স্বাগত জানাচ্ছি",
-  body: "We are starting with a limited number of households in Zindabazar, Amberkhana, Uposhohor, Shibganj, Tilagor and Akhalia, so we can get sourcing, quality and delivery right before we grow.",
-  bodyBn: "জিন্দাবাজার, আম্বরখানা, উপশহর, শিবগঞ্জ, টিলাগড় ও আখালিয়ায় সীমিত সংখ্যক পরিবার নিয়ে শুরু করছি, যাতে বড় হওয়ার আগে সংগ্রহ, মান ও ডেলিভারি ঠিকঠাক করতে পারি।",
+  body: "We are starting with a limited number of households in Zindabazar, Amberkhana, Uposhohor, Shibganj, Tilagor, Akhalia and nearby areas, so we can get sourcing, quality and delivery right before we grow.",
+  bodyBn: "জিন্দাবাজার, আম্বরখানা, উপশহর, শিবগঞ্জ, টিলাগড়, আখালিয়া ও আশপাশের এলাকায় সীমিত সংখ্যক পরিবার নিয়ে আমরা শুরু করছি। লক্ষ্য একটাই—বড় হওয়ার আগে সংগ্রহ, মান আর ডেলিভারি ঠিকঠাক করা।",
   ctaLabel: "Ask the concierge",
-  ctaLabelBn: "কনসিয়ার্জকে জিজ্ঞেস করুন",
+  ctaLabelBn: "আমাদের সঙ্গে কথা বলুন",
   ctaHref: "/concierge",
 };
 

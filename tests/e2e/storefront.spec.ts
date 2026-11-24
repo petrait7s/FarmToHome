@@ -5,7 +5,7 @@ test("home communicates the brand and routes to the market", async ({ page }) =>
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("fields, rivers and towns");
   await expect(page.getByText("Demo", { exact: false }).first()).toBeVisible();
-  await page.getByRole("link", { name: /Build Your Market/ }).click();
+  await page.getByRole("link", { name: /Build your market/i }).click();
   await expect(page).toHaveURL(/\/market\/weekly/);
 });
 

@@ -29,6 +29,7 @@ export default async function ProducerEdit({ params, searchParams }: { params: P
             <F label="Name (Bangla)" name="nameBn" defaultValue={p?.nameBn} />
             <F label="Slug" name="slug" defaultValue={p?.slug} required />
             <F label="Craft" name="craft" defaultValue={p?.craft} placeholder="e.g. Ghani oil presser" />
+            <F label="Craft (বাংলা)" name="craftBn" defaultValue={p?.craftBn} placeholder="যেমন ঘানির তেল ভাঙানো কারিগর" />
             <F label="Village / place" name="village" defaultValue={p?.village} />
             <F label="Origin district" name="originId" defaultValue={p?.originId} required options={origins.map((o) => ({ value: o.id, label: `${o.district}, ${o.division}` }))} />
             <F label="Verification status" name="verificationStatus" defaultValue={p?.verificationStatus ?? "UNVERIFIED"} required options={[{ value: "UNVERIFIED", label: "Unverified" }, { value: "PENDING", label: "Pending" }, { value: "VERIFIED", label: "Verified (records confirmed)" }]} hint="Only mark Verified when sourcing records and consent are confirmed." />

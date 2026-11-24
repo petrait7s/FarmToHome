@@ -64,7 +64,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <p className="lead">{localized(product, "summary", locale)}</p>
           {product.producer ? (
             <p className={styles.byline}>
-              <Link href={`/producers/${product.producer.slug}`} className="link">{product.producer.name}</Link> · {product.producer.village}, {product.producer.origin.district}
+              <Link href={`/producers/${product.producer.slug}`} className="link">{localized(product.producer, "name", locale)}</Link> · {product.producer.village}, {product.producer.origin.district}
             </p>
           ) : null}
           <ProductBuyBox product={dto} />
@@ -86,18 +86,18 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <article className={styles.story}>
           <p className="eyebrow"><span className="dot" aria-hidden="true" />{t("product.story")}</p>
           <p className={styles.storyText}>{localized(product, "story", locale) || localized(product, "description", locale)}</p>
-          <p>{localized(product, "description", locale)}</p>
-          {product.producer?.quote ? <blockquote className={styles.quote}>“{product.producer.quote}” <cite>— {product.producer.name}</cite></blockquote> : null}
+          {localized(product, "story", locale) ? <p>{localized(product, "description", locale)}</p> : null}
+          {product.producer?.quote && !product.producer.isDemo ? <blockquote className={styles.quote}>“{product.producer.quote}” <cite>— {product.producer.name}</cite></blockquote> : null}
 
           <h2 className="h3" style={{ marginTop: 40 }}>{t("product.details")}</h2>
           <dl className={styles.dl}>
             <dt>{t("product.origin")}</dt><dd>{product.producer?.village ? `${product.producer.village}, ` : ""}{product.origin?.district}{product.origin?.division ? `, ${product.origin.division}` : ""}</dd>
             {product.originClass ? (<><dt>{t("product.originClass")}</dt><dd>{product.originClass} — {clsDef ?? t("common.definitionPending")}</dd></>) : null}
             {product.qualityGrade ? (<><dt>{t("product.grade")}</dt><dd>{product.qualityGrade}</dd></>) : null}
-            {product.processingInfo ? (<><dt>{t("product.processing")}</dt><dd>{product.processingInfo}</dd></>) : null}
-            {product.packagingInfo ? (<><dt>{t("product.packaging")}</dt><dd>{product.packagingInfo}</dd></>) : null}
-            {product.storageInfo ? (<><dt>{t("product.storage")}</dt><dd>{product.storageInfo}</dd></>) : null}
-            {product.handlingInfo ? (<><dt>{t("product.handling")}</dt><dd>{product.handlingInfo}</dd></>) : null}
+            {product.processingInfo ? (<><dt>{t("product.processing")}</dt><dd>{localized(product, "processingInfo", locale)}</dd></>) : null}
+            {product.packagingInfo ? (<><dt>{t("product.packaging")}</dt><dd>{localized(product, "packagingInfo", locale)}</dd></>) : null}
+            {product.storageInfo ? (<><dt>{t("product.storage")}</dt><dd>{localized(product, "storageInfo", locale)}</dd></>) : null}
+            {product.handlingInfo ? (<><dt>{t("product.handling")}</dt><dd>{localized(product, "handlingInfo", locale)}</dd></>) : null}
             <dt>{t("product.netWeight")}</dt><dd>{product.variants.map((v) => v.label).join(" · ")}</dd>
           </dl>
         </article>
@@ -135,7 +135,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <Link href={`/producers/${product.producer.slug}`} className={styles.producerCard}>
               <span className={styles.avatar} aria-hidden="true">{product.producer.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
               <span>
-                <b className="serif">{t("product.meetProducer", { name: product.producer.name })}</b>
+                <b className="serif">{t("product.meetProducer", { name: localized(product.producer, "name", locale) })}</b>
                 <span className="muted-note" style={{ display: "block" }}>{product.producer.craft} · {t(`producers.verification.${product.producer.verificationStatus}`)}</span>
               </span>
             </Link>
