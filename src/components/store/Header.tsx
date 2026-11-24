@@ -20,42 +20,48 @@ export async function Header() {
     { href: "/journey", label: t("nav.journey") },
     { href: "/concierge", label: t("nav.concierge") },
   ];
+  const initial = user ? (Array.from(user.name.trim())[0] ?? "?").toUpperCase() : "";
   return (
     <header className={styles.header}>
       <a href="#main" className={styles.skip}>{t("nav.skip")}</a>
-      <div className={`container ${styles.row}`}>
-        <BrandLogo tagline={t("brand.positioning")} />
-        <nav aria-label={t("nav.primary")} className={styles.nav}>
-          {links.map((l) => (
-            <NavLink key={l.href} href={l.href} exact={l.exact} className={styles.link} activeClassName={styles.active}>
-              {l.label}
-            </NavLink>
-          ))}
-        </nav>
-        <div className={styles.actions}>
-          <Link href="/explore#search" className={styles.iconLink} aria-label={t("nav.search")}>
-            <Icon name="search" />
-          </Link>
-          <form action={setLocale}>
-            <input type="hidden" name="locale" value={locale === "en" ? "bn" : "en"} />
-            <button type="submit" className={styles.lang} aria-label={`${t("common.language")}: ${t("meta.other")}`} lang={locale === "en" ? "bn" : "en"}>
-              {t("meta.other")}
-            </button>
-          </form>
-          {isStaff(user) ? (
-            <Link href="/admin" className={`${styles.iconLink} ${styles.hideMobile}`}>
-              <Icon name="grid" />
-              <span className={styles.label}>{t("nav.admin")}</span>
+      <div className={`container ${styles.wrap}`}>
+        <div className={styles.bar}>
+          <BrandLogo />
+          <nav aria-label={t("nav.primary")} className={styles.nav}>
+            {links.map((l) => (
+              <NavLink key={l.href} href={l.href} exact={l.exact} className={styles.link} activeClassName={styles.active}>
+                {l.label}
+              </NavLink>
+            ))}
+          </nav>
+          <div className={styles.actions}>
+            <Link href="/explore#search" className={styles.iconBtn} aria-label={t("nav.search")} title={t("nav.search")}>
+              <Icon name="search" />
             </Link>
-          ) : null}
-          <Link href="/account/markets" className={`${styles.iconLink} ${styles.hideMobile}`} aria-label={t("nav.saved")}>
-            <Icon name="bookmark" />
-          </Link>
-          <Link href={user ? "/account" : "/account/login"} className={`${styles.iconLink} ${styles.hideMobile}`}>
-            <Icon name="user" />
-            <span className={styles.label}>{user ? user.name.split(" ")[0] : t("common.signIn")}</span>
-          </Link>
-          <BasketButton label={t("nav.myBasket")} className={styles.hideMobile} />
+            <form action={setLocale}>
+              <input type="hidden" name="locale" value={locale === "en" ? "bn" : "en"} />
+              <button type="submit" className={`${styles.iconBtn} ${styles.lang}`} aria-label={`${t("common.language")}: ${t("meta.other")}`} title={t("meta.other")} lang={locale === "en" ? "bn" : "en"}>
+                {t("meta.otherShort")}
+              </button>
+            </form>
+            {isStaff(user) ? (
+              <Link href="/admin" className={`${styles.iconBtn} ${styles.hideMobile}`} aria-label={t("nav.admin")} title={t("nav.admin")}>
+                <Icon name="grid" />
+              </Link>
+            ) : null}
+            <Link href="/account/markets" className={`${styles.iconBtn} ${styles.hideMobile}`} aria-label={t("nav.saved")} title={t("nav.saved")}>
+              <Icon name="bookmark" />
+            </Link>
+            <Link
+              href={user ? "/account" : "/account/login"}
+              className={`${styles.iconBtn} ${styles.hideMobile}`}
+              aria-label={user ? `${t("nav.account")}: ${user.name}` : t("common.signIn")}
+              title={user ? user.name : t("common.signIn")}
+            >
+              {user ? <span className={styles.avatar} aria-hidden="true">{initial}</span> : <Icon name="user" />}
+            </Link>
+            <BasketButton label={t("nav.basket")} className={styles.hideMobile} />
+          </div>
         </div>
       </div>
     </header>

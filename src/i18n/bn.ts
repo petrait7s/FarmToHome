@@ -2,7 +2,7 @@ import type { Dict } from "./shared";
 
 /** বাংলা UI অভিধান। en.ts-এর সাথে প্রতিটি কী মিলতে হবে (TypeScript এটি যাচাই করে)। */
 export const bn: Dict = {
-  meta: { locale: "bn", htmlLang: "bn", name: "বাংলা", other: "English" },
+  meta: { locale: "bn", htmlLang: "bn", name: "বাংলা", other: "English", otherShort: "EN" },
   brand: {
     name: "FarmToHome",
     positioning: "বিলাসবহুল ডিজিটাল গ্রোসারি কনসিয়ার্জ",
