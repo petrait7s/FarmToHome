@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { BrandLogo } from "@/components/ui/BrandLogo";
+import { Icon } from "@/components/ui/Icon";
 import { getT } from "@/i18n";
 import { getSettings } from "@/server/settings";
 import { db } from "@/lib/db";
 import styles from "./Footer.module.css";
 
 export async function Footer() {
-  const { t } = await getT();
+  const { t, locale } = await getT();
   const settings = await getSettings();
+  // tel: links need the international form; Bangladesh mobiles are stored as 01XXXXXXXXX.
+  const tel = settings.contactPhone?.replace(/[^\d+]/g, "").replace(/^0(1\d{9})$/, "+880$1");
   const pages = await db.page.findMany({ where: { published: true }, select: { slug: true, title: true, titleBn: true }, orderBy: { title: "asc" } });
-  const { locale } = await getT();
   return (
     <footer className={styles.footer}>
       <div className={`container ${styles.grid}`}>
@@ -17,6 +19,7 @@ export async function Footer() {
           <BrandLogo onRed />
           <p className={styles.promise}>{t("brand.promise")}</p>
           <p className={styles.core}>{t("brand.core")}</p>
+          <p className={styles.area}><span className={styles.ping} aria-hidden="true" />{t("footer.serviceArea")}</p>
         </div>
         <nav aria-label={t("footer.shop")}>
           <h2 className={styles.h}>{t("footer.shop")}</h2>
@@ -47,10 +50,16 @@ export async function Footer() {
         </nav>
         <div>
           <h2 className={styles.h}>{t("footer.contact")}</h2>
-          <ul>
-            {settings.contactPhone ? <li><a href={`tel:${settings.contactPhone}`}>{settings.contactPhone}</a></li> : null}
-            {settings.contactEmail ? <li><a href={`mailto:${settings.contactEmail}`}>{settings.contactEmail}</a></li> : null}
-            {settings.conciergeHours ? <li>{settings.conciergeHours}</li> : null}
+          <ul className={styles.contact}>
+            {settings.contactPhone ? (
+              <li>
+                <Icon name="headset" />
+                <span><a href={`tel:${tel}`} className={styles.phone}>{settings.contactPhone}</a><small>{t("footer.call")}</small></span>
+              </li>
+            ) : null}
+            {settings.contactEmail ? <li><Icon name="globe" /><a href={`mailto:${settings.contactEmail}`}>{settings.contactEmail}</a></li> : null}
+            {settings.contactAddress ? <li><Icon name="pin" /><span>{settings.contactAddress}<small>{t("footer.hub")}</small></span></li> : null}
+            {settings.conciergeHours ? <li><Icon name="calendar" /><span>{settings.conciergeHours}</span></li> : null}
           </ul>
         </div>
       </div>

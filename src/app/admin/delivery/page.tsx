@@ -85,7 +85,7 @@ export default async function Delivery({ searchParams }: { searchParams: Promise
         ))}
         <form action={saveZone} className="surface" style={{ padding: 14 }}>
           <p className="label" style={{ marginBottom: 8 }}>New zone</p>
-          <ZoneFields z={{ division: "Dhaka", district: "Dhaka", active: true }} />
+          <ZoneFields z={{ division: "Sylhet", district: "Sylhet", active: true }} />
           <button className="btn btn-primary btn-sm" style={{ marginTop: 10 }}>Create zone</button>
         </form>
       </Card>

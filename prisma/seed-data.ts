@@ -73,7 +73,7 @@ export const producers = [
   { slug: "ismail-gachhi", name: "Ismail Gachhi", nameBn: "ইসমাইল গাছি", origin: "jashore", village: "Keshabpur", craft: "Date-palm sap tapper (gachhi)", quote: "Only the coldest nights give the sweetest sap.", status: "PENDING" },
   { slug: "haripada-ghosh", name: "Haripada Ghosh", nameBn: "হরিপদ ঘোষ", origin: "bogura", village: "Sherpur", craft: "Doi maker", quote: "The clay pot breathes. That is what thickens the doi.", status: "UNVERIFIED" },
   { slug: "anwar-chowdhury", name: "Anwar Chowdhury", nameBn: "আনোয়ার চৌধুরী", origin: "sylhet", village: "Jaintiapur", craft: "Hill citrus grower", quote: "One shatkora perfumes a whole pot of curry.", status: "UNVERIFIED" },
-  { slug: "fth-quality-team", name: "FarmToHome Quality Team", nameBn: "FarmToHome মান নিয়ন্ত্রণ দল", origin: "dhaka", village: "Dhaka facility", craft: "Import lot cleaning and testing", quote: "Cumin is not grown at scale here, so we say exactly where it comes from and test every lot.", status: "UNVERIFIED" },
+  { slug: "fth-quality-team", name: "FarmToHome Quality Team", nameBn: "FarmToHome মান নিয়ন্ত্রণ দল", origin: "sylhet", village: "Sylhet hub", craft: "Import lot cleaning and testing", quote: "Cumin is not grown at scale here, so we say exactly where it comes from and test every lot.", status: "UNVERIFIED" },
 ] as const;
 
 export const products: SeedProduct[] = [
@@ -112,11 +112,6 @@ export const products: SeedProduct[] = [
   { slug: "sylhet-shatkora", cat: "regional-seasonal", name: "Sylhet Shatkora", nameBn: "সিলেটের সাতকরা", summary: "Aromatic wild citrus for meat & fish curries", summaryBn: "মাংস ও মাছের তরকারির সুগন্ধি সাতকরা", description: "Hand-picked from hill gardens and wrapped individually.", producer: "anwar-chowdhury", originClass: "O2", grade: "Grade A", processing: "Hand-picked, wrapped individually.", packaging: "Paper wrap in ventilated box.", storage: "Refrigerate up to two weeks.", art: "citrus:0", fit: "WEEKLY", seasonal: true, daysSinceHarvest: 3, variants: [{ label: "2 pcs", qty: 2, unit: "pc", price: 120 }, { label: "4 pcs", qty: 4, unit: "pc", price: 230 }] },
 ];
 
-export const zones = [
-  { name: "Dhaka — Gulshan, Banani & Baridhara (pilot)", division: "Dhaka", district: "Dhaka", areas: ["Gulshan", "Banani", "Baridhara", "Niketan", "Mohakhali DOHS"], fee: 60, freeThreshold: 2500 },
-  { name: "Dhaka — Dhanmondi & Lalmatia (pilot)", division: "Dhaka", district: "Dhaka", areas: ["Dhanmondi", "Lalmatia", "Kalabagan", "Jigatola"], fee: 60, freeThreshold: 2500 },
-  { name: "Dhaka — Uttara (pilot)", division: "Dhaka", district: "Dhaka", areas: ["Uttara"], fee: 90, freeThreshold: 3500 },
-];
 
 export const slotTimes = [
   ["08:00", "10:00"],

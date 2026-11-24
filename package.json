@@ -16,7 +16,8 @@
     "test:e2e": "playwright test --trace off",
     "postinstall": "prisma generate",
     "test:all": "npm run typecheck && npm test && npm run test:e2e",
-    "admin:create": "tsx prisma/create-admin.ts"
+    "admin:create": "tsx prisma/create-admin.ts",
+    "launch:sylhet": "tsx prisma/launch-sylhet.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.1",

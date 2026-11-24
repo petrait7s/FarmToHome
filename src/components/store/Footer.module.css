@@ -8,3 +8,22 @@
 .footer a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .bottom { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--ivory-25); font-size: 14px; font-weight: 500; }
 @media (max-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } .brand { grid-column: 1 / -1; } }
+
+/* Colour grade: soft gold and Sky Blue light pools over the Red Orange base. */
+.footer { position: relative; overflow: hidden; background:
+  radial-gradient(60% 80% at 100% 0%, rgb(221 170 114 / 0.35), transparent 60%),
+  radial-gradient(50% 70% at 0% 100%, rgb(15 118 110 / 0.22), transparent 60%),
+  var(--red); }
+.footer > * { position: relative; }
+.footer ul a { display: inline-block; transition: transform 0.25s var(--ease), opacity 0.25s; }
+.footer ul a:hover { transform: translateX(4px); }
+.area { display: inline-flex; align-items: center; gap: 10px; width: fit-content; margin-top: 6px; padding: 8px 16px 8px 12px; border-radius: var(--r-pill); background: var(--ivory); color: var(--sky); font-size: 14px; font-weight: 600; }
+.ping { position: relative; width: 10px; height: 10px; border-radius: 50%; background: var(--red); flex: none; }
+.ping::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--red); animation: ping 1.8s var(--ease) infinite; }
+@keyframes ping { from { transform: scale(1); opacity: 0.7; } to { transform: scale(2.6); opacity: 0; } }
+.contact li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; }
+.contact svg { width: 18px; height: 18px; margin-top: 3px; opacity: 0.9; }
+.contact span { display: flex; flex-direction: column; gap: 2px; }
+.contact small { font-size: 12.5px; font-weight: 500; opacity: 0.85; }
+.phone { font: 600 19px/1.2 var(--font-sans); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { .ping::after { animation: none; } }

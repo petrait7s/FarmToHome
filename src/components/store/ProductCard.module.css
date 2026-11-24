@@ -19,3 +19,9 @@
 .add svg { color: var(--red); transition: color 0.3s; }
 .add:hover { background: var(--red); color: var(--ivory); }
 .add:hover svg { color: var(--ivory); }
+
+/* 3D lift: the image tilts back slightly and gains depth on hover. */
+.card { perspective: 900px; }
+.media { transform-style: preserve-3d; box-shadow: 0 0 0 rgb(15 118 110 / 0); transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease); }
+.media:hover { transform: translateY(-6px) rotateX(4deg); box-shadow: 0 30px 40px -28px rgb(15 118 110 / 0.55); }
+@media (prefers-reduced-motion: reduce) { .media:hover { transform: none; } }

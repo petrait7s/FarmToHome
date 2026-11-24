@@ -7,8 +7,8 @@ async function fillCheckout(page: import("@playwright/test").Page, phone: string
   await page.getByLabel("Phone number").fill(phone);
   const area = page.getByLabel("Area");
   if (await area.isEnabled()) {
-    await area.selectOption("Gulshan");
-    await page.getByLabel("House, road and block").fill("House 1, Road 2, Gulshan 1");
+    await area.selectOption("Amberkhana");
+    await page.getByLabel("House, road and block").fill("House 1, Road 2, Amberkhana");
   }
   await page.locator("[aria-labelledby=slot-label] button:not([disabled])").first().click();
 }
@@ -75,10 +75,10 @@ test("register, save a market, repeat it and manage an address", async ({ page }
   const dialog = page.getByRole("dialog");
   await dialog.getByLabel("Recipient").fill("E2E Customer");
   await dialog.getByLabel("Phone number").fill(phone);
-  await dialog.getByLabel("Area").selectOption("Banani");
-  await dialog.getByLabel("House, road and block").fill("House 5, Road 11, Banani");
+  await dialog.getByLabel("Area").selectOption("Shibganj");
+  await dialog.getByLabel("House, road and block").fill("House 5, Road 11, Shibganj");
   await dialog.getByRole("button", { name: "Save" }).click();
-  await expect(page.getByText("House 5, Road 11, Banani")).toBeVisible();
+  await expect(page.getByText("House 5, Road 11, Shibganj")).toBeVisible();
 
   await page.getByRole("button", { name: "Sign out" }).click();
   await login(page, phone, "Testing#1234");
