@@ -1,13 +1,20 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getT } from "@/i18n";
 import { db } from "@/lib/db";
-import { JourneySteps } from "@/components/store/JourneySteps";
+import { JOURNEY_KEYS } from "@/components/store/JourneySteps";
 import { Icon } from "@/components/ui/Icon";
+import { formatNumber } from "@/lib/money";
+import { photos, stagePhoto, altFor } from "@/lib/media";
+import styles from "./journey.module.css";
 
-export const metadata = { title: "Our Journey" };
+export async function generateMetadata() {
+  const { t } = await getT();
+  return { title: t("journey.title"), description: t("journey.lead") };
+}
 
 export default async function JourneyPage() {
-  const { t } = await getT();
+  const { t, locale } = await getT();
   const origins = await db.origin.findMany({
     where: { producers: { some: { active: true } } },
     orderBy: [{ division: "asc" }, { district: "asc" }],
@@ -15,37 +22,59 @@ export default async function JourneyPage() {
   });
   return (
     <div className="page-pad">
-      <section className="on-red" style={{ padding: "64px 0 72px", position: "relative", overflow: "hidden" }}>
-        <svg viewBox="0 0 520 520" aria-hidden="true" style={{ position: "absolute", right: -100, top: -140, width: 560, height: 560 }}><circle cx="330" cy="190" r="150" fill="#C6A15B" /><circle cx="320" cy="320" r="150" fill="none" stroke="#F4EBDD" strokeWidth="1.2" opacity=".75" /></svg>
-        <div className="container" style={{ position: "relative" }}>
+      <section className={styles.hero}>
+        <Image src={photos.goldenField.src} alt={altFor(photos.goldenField, locale)} fill priority sizes="100vw" className={styles.heroImg} />
+        <div className={`container ${styles.heroInner}`}>
+          <p className="eyebrow"><span className="dot gold" aria-hidden="true" />{t("nav.journey")}</p>
           <h1 className="display">{t("journey.title")}</h1>
-          <p style={{ fontSize: 19, fontWeight: 500, marginTop: 16, maxWidth: "52ch" }}>{t("journey.lead")}</p>
+          <p className={styles.heroLead}>{t("journey.lead")}</p>
         </div>
       </section>
+
       <section className="container section">
-        <h2 className="h1" style={{ marginBottom: 36 }}>{t("journey.stepsTitle")}</h2>
-        <JourneySteps />
+        <h2 className="h1" style={{ marginBottom: 12 }}>{t("journey.stepsTitle")}</h2>
+        <p className="lead" style={{ color: "var(--muted)", marginBottom: 48 }}>{t("home.journeyLead")}</p>
+        <ol className={styles.chapters}>
+          {JOURNEY_KEYS.map((k, i) => {
+            const ph = photos[stagePhoto[k]];
+            return (
+              <li key={k} className={styles.chapter}>
+                <div className={styles.chapterImg}><Image src={ph.src} alt={altFor(ph, locale)} fill sizes="(max-width: 900px) 100vw, 50vw" /></div>
+                <div className={styles.chapterText}>
+                  <span className={styles.chapterNum}>{formatNumber(i + 1, locale).padStart(2, locale === "bn" ? "০" : "0")}</span>
+                  <h3 className="h2">{t(`trace.stages.${k}`)}</h3>
+                  <p>{t(`journey.stepBodies.${k}`)}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
       </section>
-      <section className="section" style={{ background: "var(--gold-15)" }}>
-        <div className="container" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 48, alignItems: "center" }}>
-          <h2 className="h1">{t("journey.fairTitle")}</h2>
-          <div className="panel" style={{ padding: 28 }}>
-            <p style={{ fontSize: 17 }}>{t("journey.fairBody")}</p>
-            <Link href="/producers" className="btn btn-primary" style={{ marginTop: 20 }}>{t("journey.producersCta")} <Icon name="arrowRight" /></Link>
+
+      <section className={`section on-red ${styles.fair}`}>
+        <div className={`container ${styles.fairGrid}`}>
+          <div>
+            <p className="eyebrow"><span className="dot gold" aria-hidden="true" />30%</p>
+            <h2 className="h1">{t("journey.fairTitle")}</h2>
+          </div>
+          <div>
+            <p className={styles.fairBody}>{t("journey.fairBody")}</p>
+            <Link href="/producers" className="btn btn-ivory" style={{ marginTop: 24 }}>{t("journey.producersCta")} <Icon name="arrowRight" /></Link>
           </div>
         </div>
       </section>
+
       <section className="container section">
         <h2 className="h2" style={{ marginBottom: 24 }}>{t("journey.originsTitle")}</h2>
-        <ul style={{ listStyle: "none", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "6px 28px" }}>
+        <ul className={styles.origins}>
           {origins.map((o) => (
-            <li key={o.id} style={{ padding: "14px 0", borderBottom: "1px solid var(--line)" }}>
-              <Link href={`/explore?origin=${o.slug}`} className="serif" style={{ fontSize: 20 }}>{o.district}</Link>
-              <span className="muted-note" style={{ display: "block" }}>{o.division} · {o.producers.map((p) => p.name).join(", ")}</span>
+            <li key={o.id}>
+              <Link href={`/explore?origin=${o.slug}`} className={styles.originName}>{o.district}</Link>
+              <span>{o.division} · {o.producers.map((p) => p.name).join(", ")}</span>
             </li>
           ))}
         </ul>
-        <p style={{ marginTop: 28 }}><Link className="link" href="/trace">{t("nav.trace")}</Link></p>
+        <p style={{ marginTop: 28 }}><Link className="btn" href="/trace"><Icon name="qr" /> {t("trace.lookup")}</Link></p>
       </section>
     </div>
   );

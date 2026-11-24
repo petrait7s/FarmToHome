@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: { default: "FarmToHome — Thoughtfully Sourced. Honestly Delivered.", template: "%s · FarmToHome" },
   description: "A premium digital grocery concierge. Plan your household's weekly market or monthly stock from directly sourced, traceable producers, delivered on schedule.",
   icons: { icon: "/favicon.svg", apple: "/apple-touch-icon.png" },
+  openGraph: { type: "website", siteName: "FarmToHome", images: [{ url: "/images/lifestyle/rice-and-curries-table.jpg", width: 1600, height: 1066 }] },
   appleWebApp: { capable: true, title: "FarmToHome", statusBarStyle: "default" },
 };
 

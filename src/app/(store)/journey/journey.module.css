@@ -1,0 +1,29 @@
+.hero { position: relative; isolation: isolate; min-height: 480px; display: flex; align-items: flex-end; color: var(--ivory); overflow: hidden; }
+.heroImg { object-fit: cover; z-index: -2; }
+.hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgb(37 37 37 / 0.05), rgb(22 74 131 / 0.85)); }
+.heroInner { padding-top: 96px; padding-bottom: 56px; }
+.heroInner :global(.display) { margin-top: 12px; font-size: clamp(38px, 5.4vw, 76px); }
+.heroLead { font-size: 19px; max-width: 54ch; margin-top: 14px; opacity: 0.94; }
+.chapters { list-style: none; display: flex; flex-direction: column; gap: clamp(36px, 6vw, 80px); }
+.chapter { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 72px); align-items: center; }
+.chapter:nth-child(even) .chapterImg { order: 2; }
+.chapterImg { position: relative; aspect-ratio: 4 / 3; border-radius: var(--r-lg); overflow: hidden; }
+.chapterImg img { object-fit: cover; transition: transform 1.2s var(--ease); }
+.chapter:hover .chapterImg img { transform: scale(1.04); }
+.chapterText { display: flex; flex-direction: column; gap: 12px; max-width: 46ch; }
+.chapterText p { font-size: 17px; color: var(--muted); }
+html[lang="bn"] .chapterText p { color: var(--charcoal); }
+.chapterNum { font: 600 15px/1 var(--font-sans); color: var(--gold); letter-spacing: 0.2em; }
+.fair { background: var(--red); }
+.fairGrid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 48px; align-items: center; }
+.fairBody { font-size: 18px; opacity: 0.94; }
+.origins { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px 28px; }
+.origins li { padding: 14px 0; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 2px; }
+.origins span { font-size: 13px; color: var(--muted); }
+.originName { font: 600 19px/1.3 var(--font-serif); }
+.originName:hover { color: var(--red); }
+@media (max-width: 900px) {
+  .chapter, .fairGrid { grid-template-columns: 1fr; }
+  .chapter:nth-child(even) .chapterImg { order: 0; }
+  .hero { min-height: 400px; }
+}

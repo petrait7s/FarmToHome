@@ -256,7 +256,7 @@ export async function listProducersForFilter() {
 export async function featuredProducers(take = 3) {
   return db.producer.findMany({
     where: { active: true, products: { some: { status: "ACTIVE", isFeatured: true } } },
-    include: { origin: true, products: { where: { status: "ACTIVE" }, select: { artKey: true, name: true, slug: true }, take: 3 } },
+    include: { origin: true, products: { where: { status: "ACTIVE" }, select: { artKey: true, name: true, nameBn: true, slug: true }, take: 3 } },
     take,
     orderBy: { name: "asc" },
   });

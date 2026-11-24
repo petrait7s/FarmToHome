@@ -210,3 +210,17 @@
   .toolbar { transition: top 0.35s var(--ease); }
   :global(html[data-chrome="hidden"]) .toolbar { top: 0; }
 }
+
+/* Redesign: photographic hero with a sapphire wash; order progress strip. */
+.hero { isolation: isolate; background: var(--red); }
+.heroImg { object-fit: cover; z-index: -2; }
+.hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgb(22 74 131 / 0.94) 20%, rgb(22 74 131 / 0.55)); }
+.h1 { font-weight: 600; }
+html[lang="bn"] .h1 { font-weight: 400; line-height: 1.2; }
+.hh, .modes { background: var(--white); }
+.progress { list-style: none; display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+.progress li { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--muted); padding: 6px 12px 6px 6px; border-radius: var(--r-pill); border: 1px solid var(--line); background: var(--white); }
+.progress li span { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; background: var(--sky-08); color: var(--sky); }
+.progress li[aria-current="step"] { color: var(--charcoal); border-color: var(--red); }
+.progress li[aria-current="step"] span { background: var(--red); color: var(--ivory); }
+@media (max-width: 640px) { .progress { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } .progress li { white-space: nowrap; } }

@@ -51,10 +51,10 @@ test("monthly stock excludes fresh fish and preselects bulk sizes", async ({ pag
 
 test("language switch to Bangla persists", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: /Language/ }).click();
+  await page.getByRole("banner").getByRole("button", { name: /Language/ }).click();
   await expect(page.locator("html")).toHaveAttribute("lang", "bn");
   await page.goto("/explore");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("বাজার ঘুরে দেখুন");
-  await page.getByRole("button", { name: /ভাষা/ }).click();
+  await page.getByRole("banner").getByRole("button", { name: /ভাষা/ }).click();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
 });

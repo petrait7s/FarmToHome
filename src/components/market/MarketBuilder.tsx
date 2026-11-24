@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { photos } from "@/lib/media";
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import type { MarketCategory, Mode, ProductDTO, SavedMarketSummary, TraceInfo, ZoneRule } from "./types";
 import { suggestPick } from "./types";
@@ -188,11 +190,7 @@ export function MarketBuilder({ mode, products, categories, traces, householdSiz
     <>
       {/* ── Hero ── */}
       <section className={`${styles.hero} on-red`}>
-        <svg className={styles.heroArt} viewBox="0 0 520 520" aria-hidden="true">
-          <circle className={styles.c1} cx="330" cy="190" r="150" fill="#C6A15B" />
-          <circle className={styles.c2} cx="200" cy="300" r="110" fill="#F4EBDD" opacity=".16" />
-          <circle cx="320" cy="320" r="150" fill="none" stroke="#F4EBDD" strokeWidth="1.2" opacity=".75" />
-        </svg>
+        <Image src={(mode === "MONTHLY" ? photos.spiceBowls : mode === "CUSTOM" ? photos.vegMarket : photos.vegBaskets).src} alt="" fill priority sizes="100vw" className={styles.heroImg} />
         <div className={`container ${styles.heroGrid}`}>
           <div>
             <p className={styles.pill}><span className="dot" aria-hidden="true" />{t(`market.modes.${mode}.sub`)}</p>
@@ -226,6 +224,12 @@ export function MarketBuilder({ mode, products, categories, traces, householdSiz
           ))}
         </nav>
       </div>
+
+      <ol className={`container ${styles.progress}`} aria-label={t("market.progressLabel")}>
+        {(["choose", "review", "slot", "confirm"] as const).map((k, i) => (
+          <li key={k} aria-current={i === 0 ? "step" : undefined}><span>{i + 1}</span>{t(`market.progress.${k}`)}</li>
+        ))}
+      </ol>
 
       <div className={`container ${styles.layout}`}>
         <section className={styles.main} aria-label={modeText}>

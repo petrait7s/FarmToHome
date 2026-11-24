@@ -1,0 +1,11 @@
+.gallery { display: flex; flex-direction: column; gap: 12px; }
+.main { position: relative; aspect-ratio: 1 / 1; border-radius: var(--r-lg); overflow: hidden; background: var(--sky-05); }
+.img { object-fit: cover; animation: fade 0.5s var(--ease); }
+.note { position: absolute; left: 12px; bottom: 12px; font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: var(--r-pill); background: rgb(255 255 255 / 0.88); color: var(--charcoal); }
+.thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.thumb { position: relative; aspect-ratio: 1; border-radius: var(--r); overflow: hidden; border: 2px solid transparent; opacity: 0.7; transition: opacity 0.25s, border-color 0.25s, transform 0.15s; }
+.thumb img { object-fit: cover; }
+.thumb:hover { opacity: 1; }
+.thumb[aria-selected="true"] { border-color: var(--red); opacity: 1; }
+.thumb:active { transform: scale(0.96); }
+@keyframes fade { from { opacity: 0.4; } to { opacity: 1; } }

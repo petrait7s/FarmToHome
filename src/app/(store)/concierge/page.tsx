@@ -4,32 +4,37 @@ import { getCurrentUser } from "@/server/auth/session";
 import { getSettings } from "@/server/settings";
 import { ConciergeForm } from "@/components/store/ConciergeForm";
 import { Icon } from "@/components/ui/Icon";
+import Image from "next/image";
+import { photos, altFor } from "@/lib/media";
+import styles from "./concierge.module.css";
 
-export const metadata = { title: "Concierge" };
+export async function generateMetadata() {
+  const { t } = await getT();
+  return { title: t("concierge.title"), description: t("concierge.lead") };
+}
 
 export default async function ConciergePage({ searchParams }: { searchParams: Promise<{ topic?: string; order?: string; product?: string }> }) {
   const sp = await searchParams;
-  const { t } = await getT();
+  const { t, locale } = await getT();
   const [user, settings] = await Promise.all([getCurrentUser(), getSettings()]);
   return (
     <div className="page-pad">
-      <section className="on-red" style={{ padding: "56px 0 64px" }}>
-        <div className="container narrow">
-          <p className="eyebrow" style={{ background: "var(--ivory)", color: "var(--sky)", padding: "7px 14px", borderRadius: 999 }}><Icon name="headset" size={15} />{t("nav.concierge")}</p>
-          <h1 className="display" style={{ marginTop: 18 }}>{t("concierge.title")}</h1>
-          <p style={{ fontSize: 19, fontWeight: 500, marginTop: 14 }}>{t("concierge.lead")}</p>
-        </div>
-      </section>
-      <div className="container layout-aside" style={{ paddingTop: 40, paddingBottom: 80 }}>
-        <div className="panel" style={{ padding: 28 }}>
+      <div className={`container ${styles.split}`}>
+        <section className={styles.intro}>
+          <p className="eyebrow"><Icon name="headset" size={15} />{t("nav.concierge")}</p>
+          <h1 className="h1">{t("concierge.title")}</h1>
+          <p className="lead">{t("concierge.lead")}</p>
+          <div className={styles.photo}><Image src={photos.vegMarket.src} alt={altFor(photos.vegMarket, locale)} fill sizes="(max-width: 900px) 100vw, 40vw" /></div>
+          <ul className={styles.contact}>
+            {settings.contactPhone ? <li><Icon name="headset" /><span><a className="link" href={`tel:${settings.contactPhone}`}>{settings.contactPhone}</a>{settings.conciergeHours ? <small>{t("concierge.hours")}: {settings.conciergeHours}</small> : null}</span></li> : null}
+            {settings.contactEmail ? <li><Icon name="globe" /><a className="link" href={`mailto:${settings.contactEmail}`}>{settings.contactEmail}</a></li> : null}
+            <li><Icon name="info" /><Link className="link" href="/faq">{t("footer.faq")}</Link></li>
+            {user ? <li><Icon name="repeat" /><Link className="link" href="/account/concierge">{t("concierge.myRequests")}</Link></li> : null}
+          </ul>
+        </section>
+        <section className={styles.formPanel}>
           <ConciergeForm defaults={{ name: user?.name ?? "", phone: user?.phone ?? "", email: user?.email ?? "", topic: sp.topic, orderRef: sp.order, productSlug: sp.product }} />
-        </div>
-        <aside className="surface" style={{ padding: 24, display: "flex", flexDirection: "column", gap: 10, alignSelf: "start" }}>
-          {settings.conciergeHours ? <p><b>{t("concierge.hours")}:</b> {settings.conciergeHours}</p> : null}
-          {settings.contactPhone ? <p><a className="link" href={`tel:${settings.contactPhone}`}>{settings.contactPhone}</a></p> : null}
-          {settings.contactEmail ? <p><a className="link" href={`mailto:${settings.contactEmail}`}>{settings.contactEmail}</a></p> : null}
-          {user ? <Link className="link" href="/account/concierge">{t("concierge.myRequests")}</Link> : null}
-        </aside>
+        </section>
       </div>
     </div>
   );

@@ -116,6 +116,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
             <button className="btn btn-primary btn-block">{t("common.apply")}</button>
             {hasFilters ? <Link href="/explore" className="link" style={{ textAlign: "center" }}>{t("explore.clearFilters")}</Link> : null}
           </form>
+          <label htmlFor="filter-toggle" className={styles.backdrop} aria-hidden="true" />
         </aside>
 
         <section aria-live="polite">

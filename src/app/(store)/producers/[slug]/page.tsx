@@ -6,6 +6,8 @@ import { db } from "@/lib/db";
 import { productsBySlugs } from "@/server/catalog";
 import { ProductCard } from "@/components/store/ProductCard";
 import { Icon } from "@/components/ui/Icon";
+import Image from "next/image";
+import { producerScene, altFor } from "@/lib/media";
 
 export default async function ProducerPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -19,12 +21,14 @@ export default async function ProducerPage({ params }: { params: Promise<{ slug:
   const name = localized(producer, "name", locale);
   return (
     <div className="page-pad">
-      <section className="on-red" style={{ position: "relative", overflow: "hidden" }}>
-        <svg viewBox="0 0 400 400" aria-hidden="true" style={{ position: "absolute", right: -60, top: -80, width: 420, height: 420 }}><circle cx="250" cy="150" r="120" fill="#C6A15B" /><circle cx="240" cy="250" r="130" fill="none" stroke="#F4EBDD" strokeWidth="1.2" opacity=".75" /></svg>
-        <div className="container" style={{ position: "relative", padding: "56px var(--gutter) 64px" }}>
-          <p className="eyebrow" style={{ background: "var(--ivory)", color: "var(--sky)", padding: "7px 14px", borderRadius: 999 }}><Icon name="pin" size={14} />{[producer.village, producer.origin.district, producer.origin.division].filter(Boolean).join(", ")}</p>
-          <h1 className="display" style={{ marginTop: 18, fontSize: "clamp(40px,6vw,76px)" }}>{name}</h1>
+      <section className="on-red" style={{ position: "relative", overflow: "hidden", isolation: "isolate", minHeight: 420, display: "flex", alignItems: "flex-end" }}>
+        <Image src={producer.photoUrl ?? producerScene(producer.craft, producer.slug).src} alt={producer.photoUrl ? name : altFor(producerScene(producer.craft, producer.slug), locale)} fill priority sizes="100vw" style={{ objectFit: "cover", zIndex: -2 }} />
+        <span aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: -1, background: "linear-gradient(180deg, rgb(37 37 37 / 0.1), rgb(22 74 131 / 0.88))" }} />
+        <div className="container" style={{ position: "relative", padding: "96px var(--gutter) 48px", width: "100%" }}>
+          <p className="eyebrow" style={{ background: "rgb(255 255 255 / 0.9)", color: "var(--sky)", padding: "7px 14px", borderRadius: 999, width: "fit-content" }}><Icon name="pin" size={14} />{[producer.village, producer.origin.district, producer.origin.division].filter(Boolean).join(", ")}</p>
+          <h1 className="display" style={{ marginTop: 18, fontSize: "clamp(36px,5.4vw,72px)" }}>{name}</h1>
           <p style={{ fontSize: 19, fontWeight: 500, marginTop: 10 }}>{localized(producer, "craft", locale)}</p>
+          {!producer.photoUrl ? <p style={{ fontSize: 12.5, marginTop: 14, opacity: 0.85 }}>{t("product.illustrative")} · {t("home.peopleNote")}</p> : null}
         </div>
       </section>
       <div className="container layout-aside" style={{ paddingTop: 40, paddingBottom: 48 }}>

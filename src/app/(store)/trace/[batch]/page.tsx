@@ -9,6 +9,8 @@ import { ProductVisual } from "@/components/ui/ProductVisual";
 import { OriginSeal } from "@/components/ui/OriginSeal";
 import { Icon } from "@/components/ui/Icon";
 import { formatNumber } from "@/lib/money";
+import Image from "next/image";
+import { photos, photoForArt, stagePhoto } from "@/lib/media";
 import styles from "./trace.module.css";
 
 export async function generateMetadata({ params }: { params: Promise<{ batch: string }> }): Promise<Metadata> {
@@ -30,6 +32,7 @@ export default async function BatchPage({ params }: { params: Promise<{ batch: s
   return (
     <div className="page-pad">
       <section className={`${styles.hero} on-red`}>
+        <Image src={(photoForArt(batch.product.artKey) ?? photos.harvestWorkers).src} alt="" fill priority sizes="100vw" className={styles.heroBg} />
         <div className={`container ${styles.heroGrid}`}>
           <div className={styles.heroThumb}><ProductVisual artKey={batch.product.artKey} alt={name} size="fill" /></div>
           <div>
@@ -48,7 +51,9 @@ export default async function BatchPage({ params }: { params: Promise<{ batch: s
             {stages.map((s, i) => (
               <li key={s.key} className={s.recorded ? styles.recorded : styles.missing} style={{ animationDelay: `${i * 90}ms` }}>
                 <span className={styles.num}>{formatNumber(i + 1, locale)}</span>
-                <div>
+                <div className={styles.stageBody}>
+                  <span className={styles.stageImg} aria-hidden="true"><Image src={photos[stagePhoto[s.key]].src} alt="" fill sizes="88px" /></span>
+                  <div>
                   <h3>{t(`trace.stages.${s.key}`)}</h3>
                   {s.recorded ? (
                     <>
@@ -59,6 +64,7 @@ export default async function BatchPage({ params }: { params: Promise<{ batch: s
                   ) : (
                     <p className="muted-note">{s.key === "delivery" ? t("trace.deliveryNote") : t("trace.notRecorded")}</p>
                   )}
+                  </div>
                 </div>
               </li>
             ))}

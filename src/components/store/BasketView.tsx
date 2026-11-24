@@ -12,6 +12,8 @@ import { useI18n } from "@/i18n/client";
 import { formatMoney, formatNumber } from "@/lib/money";
 import { applyPromoCode, getQuote, removePromoCode } from "@/app/actions/cart";
 import { saveCartAsMarket } from "@/app/actions/markets";
+import Image from "next/image";
+import { photos } from "@/lib/media";
 import styles from "./BasketView.module.css";
 
 export function BasketView({ initialQuote, signedIn }: { initialQuote: Quote; signedIn: boolean }) {
@@ -33,12 +35,16 @@ export function BasketView({ initialQuote, signedIn }: { initialQuote: Quote; si
   if (cart.lines.length === 0) {
     return (
       <div className={styles.empty}>
-        <svg viewBox="0 0 120 120" width="120" height="120" aria-hidden="true"><circle cx="72" cy="46" r="30" fill="#164A83" opacity=".9" /><circle cx="46" cy="70" r="26" fill="#C6A15B" /><circle cx="72" cy="74" r="34" fill="none" stroke="#075B62" strokeWidth="1.2" /></svg>
-        <h2 className="h2">{t("basket.empty")}</h2>
+        <h2 className="h1">{t("basket.empty")}</h2>
         <p>{t("basket.emptyBody")}</p>
-        <div className={styles.emptyCtas}>
-          <Link href="/market/weekly" className="btn btn-primary">{t("nav.weekly")}</Link>
-          <Link href="/market/monthly" className="btn">{t("nav.monthly")}</Link>
+        <div className={styles.emptyCards}>
+          {([["/market/weekly", "weekly", photos.vegBaskets], ["/market/monthly", "monthly", photos.spiceBowls]] as const).map(([href, k, ph]) => (
+            <Link key={k} href={href} className={`${styles.emptyCard} press`}>
+              <Image src={ph.src} alt="" fill sizes="(max-width: 640px) 90vw, 40vw" />
+              <span className={styles.emptyShade} aria-hidden="true" />
+              <span className={styles.emptyLabel}>{t(`home.${k}Title`)}<small>{t(`home.${k}PhotoCta`)} →</small></span>
+            </Link>
+          ))}
         </div>
       </div>
     );

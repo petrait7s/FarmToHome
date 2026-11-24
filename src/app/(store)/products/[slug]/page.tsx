@@ -13,6 +13,9 @@ import { OriginSeal } from "@/components/ui/OriginSeal";
 import { ProductBuyBox } from "@/components/store/ProductBuyBox";
 import { ProductCard } from "@/components/store/ProductCard";
 import { Icon } from "@/components/ui/Icon";
+import { ProductGallery } from "@/components/store/ProductGallery";
+import { photos, photoForArt, categoryPhoto, producerScene, altFor } from "@/lib/media";
+import Image from "next/image";
 import styles from "./product.module.css";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -48,12 +51,20 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
       <section className={`container ${styles.top}`}>
         <div className={styles.gallery}>
-          <ProductVisual artKey={product.artKey} imageUrl={product.images[0]?.url} alt={product.images[0]?.alt ?? name} size="lg" priority />
-          {product.images.length > 1 ? (
-            <div className={styles.thumbs}>
-              {product.images.slice(1, 5).map((img) => <ProductVisual key={img.id} imageUrl={img.url} alt={img.alt} size="md" />)}
-            </div>
-          ) : null}
+          {(() => {
+            const uploaded = product.images.map((img) => ({ src: img.url, alt: img.alt ?? name }));
+            const own = photoForArt(product.artKey);
+            const cat = categoryPhoto[product.category.slug];
+            const extra = [own, cat ? photos[cat] : null, photos.produceCrates, photos.harvestWorkers].filter((p, k, arr): p is NonNullable<typeof p> => !!p && arr.findIndex((q) => q?.src === p.src) === k);
+            const shots = uploaded.length ? uploaded : extra.map((p) => ({ src: p.src, alt: altFor(p, locale) }));
+            return (
+              <ProductGallery
+                shots={shots}
+                note={uploaded.length ? undefined : t("product.illustrative")}
+                fallback={<ProductVisual artKey={product.artKey} alt={name} size="fill" />}
+              />
+            );
+          })()}
         </div>
         <div className={styles.info}>
           <p className="eyebrow">
@@ -85,8 +96,16 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <section className={`container ${styles.body}`}>
         <article className={styles.story}>
           <p className="eyebrow"><span className="dot" aria-hidden="true" />{t("product.story")}</p>
-          <p className={styles.storyText}>{localized(product, "story", locale) || localized(product, "description", locale)}</p>
-          {localized(product, "story", locale) ? <p>{localized(product, "description", locale)}</p> : null}
+          {/* Only show a story in the reader's language; otherwise lead with the description. */}
+          {(() => {
+            const story = locale === "bn" ? product.storyBn : product.story;
+            return (
+              <>
+                <p className={styles.storyText}>{story || localized(product, "description", locale)}</p>
+                {story ? <p>{localized(product, "description", locale)}</p> : null}
+              </>
+            );
+          })()}
           {product.producer?.quote && !product.producer.isDemo ? <blockquote className={styles.quote}>“{product.producer.quote}” <cite>— {product.producer.name}</cite></blockquote> : null}
 
           <h2 className="h3" style={{ marginTop: 40 }}>{t("product.details")}</h2>
@@ -133,10 +152,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
           {product.producer ? (
             <Link href={`/producers/${product.producer.slug}`} className={styles.producerCard}>
-              <span className={styles.avatar} aria-hidden="true">{product.producer.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
+              <span className={styles.producerImg} aria-hidden="true"><Image src={product.producer.photoUrl ?? producerScene(product.producer.craft, product.producer.slug).src} alt="" fill sizes="80px" /></span>
               <span>
                 <b className="serif">{t("product.meetProducer", { name: localized(product.producer, "name", locale) })}</b>
-                <span className="muted-note" style={{ display: "block" }}>{product.producer.craft} · {t(`producers.verification.${product.producer.verificationStatus}`)}</span>
+                <span className="muted-note" style={{ display: "block" }}>{localized(product.producer, "craft", locale)} · {t(`producers.verification.${product.producer.verificationStatus}`)}</span>
               </span>
             </Link>
           ) : null}

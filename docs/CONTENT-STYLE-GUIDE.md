@@ -154,3 +154,4 @@
 - **Promo codes:** WELCOME10, WINTER100, OLD50.
 - **Payments:** simulated mobile and online payment methods. Only Cash on Delivery is real.
 - **Policy pages:** the DRAFT policy texts.
+- **Photography:** illustrative Unsplash stock photos in `public/images` (listed at `/credits`, mapped in `src/lib/media.ts`). Producer cards use scene photos, never portraits of the named person.

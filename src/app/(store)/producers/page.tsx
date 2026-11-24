@@ -1,42 +1,86 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getT } from "@/i18n";
 import { localized } from "@/i18n/shared";
 import { db } from "@/lib/db";
-import { ProductVisual } from "@/components/ui/ProductVisual";
+import { listCategories } from "@/server/catalog";
+import { photos, producerScene, altFor } from "@/lib/media";
 import styles from "./producers.module.css";
 
 export async function generateMetadata() {
   const { t } = await getT();
-  return { title: t("producers.title") };
+  return { title: t("producers.title"), description: t("producers.lead") };
 }
 
-export default async function ProducersPage() {
+export default async function ProducersPage({ searchParams }: { searchParams: Promise<{ district?: string; category?: string }> }) {
+  const sp = await searchParams;
   const { t, locale } = await getT();
-  const producers = await db.producer.findMany({
-    where: { active: true },
-    orderBy: [{ origin: { division: "asc" } }, { name: "asc" }],
-    include: { origin: true, products: { where: { status: "ACTIVE" }, select: { slug: true, name: true, artKey: true }, take: 3 } },
-  });
+  const [all, categories] = await Promise.all([
+    db.producer.findMany({
+      where: { active: true },
+      orderBy: [{ origin: { division: "asc" } }, { name: "asc" }],
+      include: { origin: true, products: { where: { status: "ACTIVE" }, select: { slug: true, name: true, nameBn: true, category: { select: { slug: true } } }, take: 4 } },
+    }),
+    listCategories(),
+  ]);
+  const districts = [...new Map(all.map((p) => [p.origin.slug, p.origin.district])).entries()].sort((a, b) => a[1].localeCompare(b[1]));
+  const producers = all.filter((p) => (!sp.district || p.origin.slug === sp.district) && (!sp.category || p.products.some((x) => x.category.slug === sp.category)));
   return (
     <div className="page-pad">
-      <section className="container" style={{ padding: "48px var(--gutter) 24px" }}>
-        <p className="eyebrow"><span className="dot" aria-hidden="true" />{t("nav.producers")}</p>
-        <h1 className="h1" style={{ marginTop: 10 }}>{t("producers.title")}</h1>
-        <p className="lead" style={{ marginTop: 12 }}>{t("producers.lead")}</p>
+      <section className={styles.banner}>
+        <Image src={photos.cropRowsHills.src} alt={altFor(photos.cropRowsHills, locale)} fill priority sizes="100vw" className={styles.bannerImg} />
+        <div className={`container ${styles.bannerInner}`}>
+          <p className="eyebrow"><span className="dot gold" aria-hidden="true" />{t("nav.producers")}</p>
+          <h1 className="display">{t("home.peopleTitle")}</h1>
+          <p className={styles.bannerLead}>{t("producers.lead")}</p>
+        </div>
       </section>
-      <div className={`container ${styles.grid}`}>
-        {producers.map((p) => (
-          <Link key={p.id} href={`/producers/${p.slug}`} className={styles.card}>
-            <div className={styles.art}>
-              <ProductVisual artKey={p.products[0]?.artKey} alt="" size="fill" />
-              <span className={styles.initials}>{p.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
-            </div>
-            <p className="eyebrow">{[p.village, p.origin.district].filter(Boolean).join(" · ")} {p.isDemo ? <span className="demo-tag">{t("common.demo")}</span> : null}</p>
-            <h2 className="h3">{localized(p, "name", locale)}</h2>
-            <p className="muted-note">{localized(p, "craft", locale)} · {t(`producers.verification.${p.verificationStatus}`)}</p>
-            {p.products.length ? <p className={styles.products}>{p.products.map((x) => x.name).join(" · ")}</p> : null}
-          </Link>
-        ))}
+
+      <div className="container">
+        <form className={styles.filters} action="/producers" method="get">
+          <label className={styles.field}>
+            <span>{t("explore.origin")}</span>
+            <select name="district" defaultValue={sp.district ?? ""} className="input">
+              <option value="">{t("explore.allOrigins")}</option>
+              {districts.map(([slug, name]) => <option key={slug} value={slug}>{name}</option>)}
+            </select>
+          </label>
+          <label className={styles.field}>
+            <span>{t("explore.category")}</span>
+            <select name="category" defaultValue={sp.category ?? ""} className="input">
+              <option value="">{t("market.allCategories")}</option>
+              {categories.map((c) => <option key={c.slug} value={c.slug}>{localized(c, "name", locale)}</option>)}
+            </select>
+          </label>
+          <button className="btn btn-primary">{t("explore.show")}</button>
+          {sp.district || sp.category ? <Link href="/producers" className="link">{t("explore.clearFilters")}</Link> : null}
+          <span className={styles.count}>{t("producers.count", { n: producers.length })}</span>
+        </form>
+        <p className={styles.note}>{t("home.peopleNote")}</p>
+
+        {producers.length ? (
+          <div className={styles.grid}>
+            {producers.map((p) => {
+              const scene = p.photoUrl ? null : producerScene(p.craft, p.slug);
+              return (
+                <Link key={p.id} href={`/producers/${p.slug}`} className={`${styles.card} press`}>
+                  <div className={styles.art}>
+                    <Image src={p.photoUrl ?? scene!.src} alt={scene ? altFor(scene, locale) : localized(p, "name", locale)} fill sizes="(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 33vw" />
+                    {scene ? <span className={styles.illus}>{t("product.illustrative")}</span> : null}
+                  </div>
+                  <div className={styles.cardBody}>
+                    <p className={styles.meta}>{[p.village, p.origin.district].filter(Boolean).join(" · ")} {p.isDemo ? <span className="demo-tag">{t("common.demo")}</span> : null}</p>
+                    <h2 className={styles.name}>{localized(p, "name", locale)}</h2>
+                    <p className={styles.craft}>{localized(p, "craft", locale)} · {t(`producers.verification.${p.verificationStatus}`)}</p>
+                    {p.products.length ? <p className={styles.products}>{p.products.map((x) => localized(x, "name", locale)).join(" · ")}</p> : null}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          <p className={styles.empty}>{t("explore.noResults")}</p>
+        )}
       </div>
     </div>
   );

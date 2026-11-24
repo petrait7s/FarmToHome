@@ -9,7 +9,7 @@ import { Icon } from "@/components/ui/Icon";
 import { QuantityStepper } from "@/components/market/QuantityStepper";
 import { useCart } from "./CartProvider";
 import { useI18n } from "@/i18n/client";
-import { formatMoney } from "@/lib/money";
+import { formatMoney, unitPrice } from "@/lib/money";
 import { localized } from "@/i18n/shared";
 import styles from "./ProductCard.module.css";
 
@@ -45,6 +45,7 @@ export function ProductCard({ product, priority }: { product: ProductDTO; priori
           {product.isDemo ? <span className="demo-tag">{t("common.demo")}</span> : null}
         </p>
         <h3 className={styles.name}><Link href={`/products/${product.slug}`}>{name}</Link></h3>
+        {product.producerName ? <p className={styles.producer}>{product.producerName}</p> : null}
         <p className={styles.summary}>{localized(product, "summary", locale)}</p>
         {product.variants.length > 1 ? (
           <div className={styles.sizes} role="radiogroup" aria-label={`${name} — ${t("product.sizes")}`}>
@@ -58,7 +59,10 @@ export function ProductCard({ product, priority }: { product: ProductDTO; priori
           <p className={styles.single}>{variant.label}</p>
         )}
         <div className={styles.buy}>
-          <span className={styles.price}>{formatMoney(variant.priceMinor, locale)}</span>
+          <span className={styles.priceWrap}>
+            <span className={styles.price}>{formatMoney(variant.priceMinor, locale)}</span>
+            {variant.unit !== "pc" ? <span className={styles.unit}>{unitPrice(variant.priceMinor, variant.netQuantity, variant.unit, locale)}</span> : null}
+          </span>
           {soldOut ? (
             <span className="badge badge-line">{t("market.outOfStock")}</span>
           ) : qty > 0 ? (

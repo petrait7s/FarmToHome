@@ -8,6 +8,7 @@
  *   --sky      Deep Teal Green #075B62  Supporting — secondary text, UI details, accents
  *   --gold     Champagne Gold  #C6A15B  Restrained premium highlights
  *   --charcoal Charcoal Black  #252525  Body text
+ * Supporting neutrals: White #FFFFFF (cards), Soft Border #E5E0D7, Muted Text #77736C.
  * Contrast: Ivory on Sapphire 8.3:1; Charcoal on Ivory 13.6:1; Deep Teal on Ivory 6.6:1.
  */
 :root {
@@ -16,6 +17,10 @@
   --sky: #075b62;
   --gold: #c6a15b;
   --charcoal: #252525;
+  /* Supporting neutrals (approved): */
+  --white: #ffffff;
+  --border-soft: #e5e0d7;
+  --muted: #77736c;
   --charcoal-70: rgb(37 37 37 / 0.7);
 
   --red-06: rgb(22 74 131 / 0.06);
@@ -36,8 +41,8 @@
   --ivory-25: rgb(244 235 221 / 0.25);
   --ivory-70: rgb(244 235 221 / 0.7);
 
-  --line: var(--sky-12);
-  --line-strong: var(--sky-20);
+  --line: var(--border-soft);
+  --line-strong: rgb(37 37 37 / 0.16);
 
   --shadow-soft: 0 18px 40px -24px rgb(7 91 98 / 0.35);
   --shadow-lift: 0 30px 60px -36px rgb(7 91 98 / 0.45);
@@ -50,9 +55,9 @@
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
 
-  --r-sm: 10px;
-  --r: 16px;
-  --r-lg: 22px;
+  --r-sm: 6px;
+  --r: 10px;
+  --r-lg: 14px;
   --r-pill: 999px;
 
   --header-h: 80px;

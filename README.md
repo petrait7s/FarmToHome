@@ -92,6 +92,10 @@ Only the five approved colours are used, plus opacity variations: **Sapphire Blu
 
 **Typefaces:** Montserrat for English and Tiro Bangla for Bangla.
 
+## Preview photography
+
+The preview uses licensed Unsplash stock photographs from `public/images/` (landscape, products, lifestyle, journey). They are illustrative only — they do not show FarmToHome producers, facilities, products or customers — and are listed at `/credits`. The mapping lives in `src/lib/media.ts`; anything uploaded in the admin panel (product images, category and collection images, producer photos) takes precedence. Products without an accurate stock photo (shutki, gur, chira, lentils) keep their drawn illustration. Replace with real photography before launch.
+
 ## Languages
 
 English and Bangla. UI strings live in `src/i18n/en.ts` and `src/i18n/bn.ts` (a test checks both have the same keys). Product, category, producer and content records have optional Bangla columns that fall back to English. The choice is stored in a cookie and, for signed-in customers, in their profile. The admin panel is English-only for now.

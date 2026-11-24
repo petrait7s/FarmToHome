@@ -27,3 +27,7 @@
 .contact small { font-size: 12.5px; font-weight: 500; opacity: 0.85; }
 .phone { font: 600 19px/1.2 var(--font-sans); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
 @media (prefers-reduced-motion: reduce) { .ping::after { animation: none; } }
+
+.bottomLinks { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.lang { display: inline-flex; align-items: center; gap: 6px; font: inherit; color: inherit; padding: 6px 12px; border-radius: var(--r-pill); border: 1px solid var(--ivory-25); }
+.lang:hover { background: var(--ivory-12); }

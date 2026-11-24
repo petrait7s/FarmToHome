@@ -13,3 +13,18 @@
   .title { margin-top: 10px; }
   .body { grid-column: 2; }
 }
+
+/* Photo variant: each stage gets an illustrative photograph above its number. */
+.photo { position: relative; display: block; aspect-ratio: 4 / 5; border-radius: var(--r); overflow: hidden; margin-bottom: 14px; background: var(--sky-05); }
+.photo img { object-fit: cover; transition: transform 0.9s var(--ease); }
+.step:hover .photo img { transform: scale(1.05); }
+.photoSteps { gap: 0 14px; }
+.photoSteps::before { top: auto; bottom: auto; display: none; }
+.photoSteps .step { padding-right: 0; }
+.photoSteps .num { width: 34px; height: 34px; font-size: 14px; }
+@media (max-width: 1060px) {
+  .photoSteps { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px; scrollbar-width: none; margin-inline: calc(var(--gutter) * -1); padding: 0 var(--gutter) 10px; scroll-padding-inline: var(--gutter); }
+  .photoSteps::-webkit-scrollbar { display: none; }
+  .photoSteps .step { display: block; flex: 0 0 62%; scroll-snap-align: start; padding: 0; }
+  .photoSteps .title { margin-top: 12px; }
+}

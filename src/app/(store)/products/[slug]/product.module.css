@@ -36,3 +36,11 @@
   .dl dd { margin-bottom: 10px; }
 }
 @media (max-width: 640px) { .related { grid-template-columns: 1fr 1fr; gap: 18px; } }
+
+/* Redesign: white panels, photo producer card. */
+.traceCard { background: var(--white); }
+.producerCard { background: var(--white); }
+.producerImg { position: relative; width: 64px; height: 64px; border-radius: var(--r); overflow: hidden; flex: none; }
+.producerImg img { object-fit: cover; }
+.info :global(.lead) { color: var(--muted); }
+@media (max-width: 900px) { .gallery { position: static; } }

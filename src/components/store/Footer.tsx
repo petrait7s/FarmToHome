@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { Icon } from "@/components/ui/Icon";
+import { setLocale } from "@/app/actions/locale";
 import { getT } from "@/i18n";
 import { getSettings } from "@/server/settings";
 import { db } from "@/lib/db";
@@ -65,6 +66,13 @@ export async function Footer() {
       </div>
       <div className={`container ${styles.bottom}`}>
         <span>{t("footer.rights", { year: new Date().getFullYear() })}</span>
+        <span className={styles.bottomLinks}>
+          <Link href="/credits">{t("footer.credits")}</Link>
+          <form action={setLocale}>
+            <input type="hidden" name="locale" value={locale === "en" ? "bn" : "en"} />
+            <button type="submit" className={styles.lang} lang={locale === "en" ? "bn" : "en"}><Icon name="globe" size={15} /> {t("footer.languageLabel")}: {t("meta.other")}</button>
+          </form>
+        </span>
         {settings.demoMode ? <span>{t("footer.demo")}</span> : null}
       </div>
     </footer>

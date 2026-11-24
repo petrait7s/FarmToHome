@@ -9,3 +9,11 @@
 .body { margin-top: 28px; }
 .aside { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 14.5px; }
 @media (max-width: 900px) { .shell { grid-template-columns: 1fr; } .brand { display: none; } .form { align-items: flex-start; padding-top: 36px; } }
+
+/* Photo panel with a sapphire wash so the promise stays readable. */
+.brand { isolation: isolate; background: var(--red); }
+.photo { object-fit: cover; z-index: -2; }
+.brand::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgb(22 74 131 / 0.2), rgb(22 74 131 / 0.92)); }
+.form { background: var(--ivory); }
+.inner { background: var(--white); border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(24px, 4vw, 40px); }
+@media (max-width: 640px) { .inner { border: 0; background: transparent; padding: 0; } }
