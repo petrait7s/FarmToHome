@@ -15,8 +15,8 @@ export function MobileNav({ signedIn }: { signedIn: boolean }) {
   const items: { href: string; label: string; icon: IconName; match: (p: string) => boolean }[] = [
     { href: "/", label: t("nav.home"), icon: "home", match: (p) => p === "/" },
     { href: "/explore", label: t("nav.explore"), icon: "compass", match: (p) => p.startsWith("/explore") || p.startsWith("/products") || p.startsWith("/trace") || p.startsWith("/producers") },
+    { href: "/basket", label: t("nav.basket"), icon: "basket", match: (p) => p.startsWith("/basket") || p.startsWith("/checkout") },
     { href: "/market/weekly", label: t("nav.market"), icon: "market", match: (p) => p.startsWith("/market") },
-    { href: "/basket", label: t("nav.myBasket"), icon: "basket", match: (p) => p.startsWith("/basket") || p.startsWith("/checkout") },
     { href: signedIn ? "/account" : "/account/login", label: t("nav.account"), icon: "user", match: (p) => p.startsWith("/account") },
   ];
   return (
@@ -24,7 +24,7 @@ export function MobileNav({ signedIn }: { signedIn: boolean }) {
       {items.map((it) => {
         const active = it.match(pathname);
         return (
-          <Link key={it.href} href={it.href} className={`${styles.item} ${active ? styles.active : ""}`} aria-current={active ? "page" : undefined}>
+          <Link key={it.href} href={it.href} className={`${styles.item} ${it.icon === "basket" ? styles.basket : ""} ${active ? styles.active : ""}`} aria-current={active ? "page" : undefined}>
             <span className={styles.icon}>
               <Icon name={it.icon} size={22} />
               {it.icon === "basket" && cart.productCount > 0 ? <span className={styles.badge}>{formatNumber(cart.productCount, locale)}</span> : null}

@@ -4,7 +4,7 @@
  * The admin area is an internal English-only tool for now.
  */
 export const en = {
-  meta: { locale: "en", htmlLang: "en", name: "English", other: "বাংলা" },
+  meta: { locale: "en", htmlLang: "en", name: "English", other: "বাংলা", otherShort: "বাং" },
   brand: {
     name: "FarmToHome",
     positioning: "Luxury digital grocery concierge",

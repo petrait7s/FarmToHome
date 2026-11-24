@@ -50,7 +50,7 @@
   --r-lg: 22px;
   --r-pill: 999px;
 
-  --header-h: 68px;
+  --header-h: 80px;
   --gutter: 32px;
   --max: 1360px;
   --bottom-nav-h: 0px;
@@ -58,7 +58,7 @@
 
 @media (max-width: 900px) {
   :root {
-    --header-h: 60px;
+    --header-h: 64px;
     --gutter: 20px;
     --bottom-nav-h: calc(64px + env(safe-area-inset-bottom));
   }
