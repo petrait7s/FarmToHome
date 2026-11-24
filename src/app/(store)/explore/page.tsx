@@ -78,6 +78,11 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
 
       <div className={`container ${styles.layout}`}>
         <aside className={styles.filters} aria-label={t("explore.filters")}>
+          {/* Mobile: filters fold away behind a toggle (no JavaScript needed). */}
+          <input type="checkbox" id="filter-toggle" className={styles.toggle} />
+          <label htmlFor="filter-toggle" className={styles.toggleLabel}>
+            <Icon name="scale" /> {t("explore.filters")}
+          </label>
           <form action="/explore" method="get" className={styles.filterForm}>
             {sp.category ? <input type="hidden" name="category" value={sp.category} /> : null}
             {sp.q ? <input type="hidden" name="q" value={sp.q} /> : null}

@@ -7,8 +7,8 @@
 .heroGrid { position: relative; display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 40px; align-items: end; padding-top: 48px; padding-bottom: 96px; }
 .pill { display: inline-flex; align-items: center; gap: 10px; background: var(--ivory); color: var(--sky); padding: 7px 14px 7px 12px; border-radius: var(--r-pill); font: 600 11px/1.3 var(--font-sans); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 20px; }
 .h1 { font: 400 clamp(40px, 6vw, 76px)/1.02 var(--font-serif); letter-spacing: -0.025em; max-width: 13ch; }
-.h1 em { font-style: italic; position: relative; white-space: nowrap; }
-.h1 em::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0.04em; height: 0.06em; background: var(--ivory); transform-origin: left; animation: drawLine 1.2s 0.4s var(--ease) both; }
+.h1 em { font-style: normal; position: relative; white-space: nowrap; display: inline-block; padding: 0 0.12em; margin-left: -0.12em; background: linear-gradient(180deg, transparent 56%, rgb(244 241 234 / 0.24) 56%, rgb(244 241 234 / 0.24) 92%, transparent 92%); }
+
 .lead { font-size: 19px; font-weight: 500; line-height: 1.55; max-width: 50ch; margin-top: 18px; }
 .hh { background: var(--ivory); color: var(--sky); border-radius: 18px; padding: 16px 18px; box-shadow: 0 26px 50px -30px rgb(15 118 110 / 0.55); max-width: 360px; width: 100%; justify-self: end; }
 .hhLabel { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 10px; }
@@ -72,7 +72,7 @@
 .cats { display: flex; flex-direction: column; }
 .cat { border-bottom: 1px solid var(--line); }
 .catHead { width: 100%; display: grid; grid-template-columns: 52px 1fr auto 30px; gap: 16px; align-items: center; padding: 22px 4px; text-align: left; }
-.catNum { font: italic 400 30px/1 var(--font-serif); color: var(--red); position: relative; }
+.catNum { font: 400 30px/1 var(--font-serif); color: var(--red); position: relative; }
 .catNum::after { content: ""; position: absolute; left: 0; bottom: -8px; width: 22px; height: 2px; background: var(--gold); border-radius: 2px; }
 .catName { display: block; font: 500 clamp(20px, 2.2vw, 26px)/1.15 var(--font-serif); letter-spacing: -0.01em; }
 .catStory { display: block; font-size: 13px; margin-top: 4px; }
@@ -203,4 +203,10 @@
   .suggList { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding-right: 16px; scrollbar-width: none; }
   .sg { flex: 0 0 82%; scroll-snap-align: start; }
   .repeatMenu { right: auto; left: 0; }
+}
+
+/* Follow the mobile app bar: when it hides, the toolbar takes the top edge. */
+@media (max-width: 900px) {
+  .toolbar { transition: top 0.35s var(--ease); }
+  :global(html[data-chrome="hidden"]) .toolbar { top: 0; }
 }

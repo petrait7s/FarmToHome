@@ -12,7 +12,7 @@
 .body { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.8fr); gap: clamp(28px, 5vw, 72px); padding-top: 48px; border-top: 1px solid var(--line); align-items: start; }
 .story { display: flex; flex-direction: column; gap: 16px; }
 .storyText { font: 400 clamp(20px, 2vw, 26px)/1.45 var(--font-serif); }
-.quote { font: italic 400 19px/1.5 var(--font-serif); padding-left: 18px; border-left: 2px solid var(--gold); }
+.quote { font: 400 19px/1.5 var(--font-serif); padding-left: 18px; border-left: 2px solid var(--gold); }
 .quote cite { display: block; font: 500 13px/1.4 var(--font-sans); font-style: normal; margin-top: 6px; }
 .dl { display: grid; grid-template-columns: 180px 1fr; gap: 12px 20px; font-size: 14.5px; }
 .dl dt { font: 600 10.5px/1.5 var(--font-sans); letter-spacing: 0.14em; text-transform: uppercase; padding-top: 2px; }

@@ -29,7 +29,7 @@ export default async function ProducerPage({ params }: { params: Promise<{ slug:
       </section>
       <div className="container layout-aside" style={{ paddingTop: 40, paddingBottom: 48 }}>
         <article className="stack" style={{ ["--stack" as string]: "18px" }}>
-          {producer.quote && !producer.isDemo ? <blockquote style={{ font: "italic 400 26px/1.4 var(--font-serif)", paddingLeft: 18, borderLeft: "2px solid var(--gold)" }}>“{producer.quote}”</blockquote> : null}
+          {producer.quote && !producer.isDemo ? <blockquote style={{ font: "400 26px/1.4 var(--font-serif)", paddingLeft: 18, borderLeft: "2px solid var(--gold)" }}>“{producer.quote}”</blockquote> : null}
           <p className="lead">{localized(producer, "story", locale)}</p>
           {producer.isDemo ? <p className="form-ok">{t("producers.demoNotice")}</p> : null}
         </article>

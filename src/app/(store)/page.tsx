@@ -83,14 +83,14 @@ export default async function HomePage() {
       <section className="section">
         <div className="container">
           <p className="eyebrow"><span className="dot" aria-hidden="true" />{t("home.modesTitle")}</p>
-          <div className={styles.modes}>
-            <Link href="/market/weekly" className={`${styles.mode} ${styles.modeWeekly}`}>
+          <div className={`${styles.modes} rail`} style={{ ["--rail-w" as string]: "84%" }}>
+            <Link href="/market/weekly" className={`${styles.mode} ${styles.modeWeekly} press`}>
               <span className={styles.modeNum}>01</span>
               <h2 className="h2">{t("home.weeklyTitle")}</h2>
               <p>{t("home.weeklyBody")}</p>
               <span className={styles.modeCta}>{t("home.weeklyCta")} <Icon name="arrowRight" /></span>
             </Link>
-            <Link href="/market/monthly" className={`${styles.mode} ${styles.modeMonthly}`}>
+            <Link href="/market/monthly" className={`${styles.mode} ${styles.modeMonthly} press`}>
               <span className={styles.modeNum}>02</span>
               <h2 className="h2">{t("home.monthlyTitle")}</h2>
               <p>{t("home.monthlyBody")}</p>
@@ -111,7 +111,7 @@ export default async function HomePage() {
               </div>
               <p className="lead">{t("home.seasonalLead")}</p>
             </div>
-            <div className={styles.cardRow}>
+            <div className={`${styles.cardRow} rail`} style={{ ["--rail-w" as string]: "66%" }}>
               {seasonal.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
           </div>
@@ -152,9 +152,9 @@ export default async function HomePage() {
             </div>
             <p className="lead">{t("home.producersLead")}</p>
           </div>
-          <div className={styles.producerGrid}>
+          <div className={`${styles.producerGrid} rail`} style={{ ["--rail-w" as string]: "78%" }}>
             {producers.map((p) => (
-              <Link key={p.id} href={`/producers/${p.slug}`} className={styles.producer}>
+              <Link key={p.id} href={`/producers/${p.slug}`} className={`${styles.producer} press`}>
                 <div className={styles.producerArt}>
                   <ProductVisual artKey={p.products[0]?.artKey} alt="" size="fill" />
                   <span className={styles.initials}>{p.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
@@ -199,9 +199,9 @@ export default async function HomePage() {
         <section className="section">
           <div className="container">
             <h2 className="h1">{t("home.collectionsTitle")}</h2>
-            <div className={styles.collections}>
+            <div className={`${styles.collections} rail`} style={{ ["--rail-w" as string]: "80%" }}>
               {collections.map((c) => (
-                <Link key={c.id} href={`/explore?collection=${c.slug}`} className={styles.collection}>
+                <Link key={c.id} href={`/explore?collection=${c.slug}`} className={`${styles.collection} press`}>
                   <div className={styles.collectionArt}>
                     {c.products.filter((cp) => cp.product.status === "ACTIVE").slice(0, 3).map((cp) => (
                       <ProductVisual key={cp.productId} artKey={cp.product.artKey} alt="" size="md" />
@@ -220,7 +220,7 @@ export default async function HomePage() {
       <section className={`section ${styles.how}`}>
         <div className="container">
           <h2 className="h1">{t("home.howTitle")}</h2>
-          <ol className={styles.howGrid}>
+          <ol className={`${styles.howGrid} rail`} style={{ ["--rail-w" as string]: "70%" }}>
             {(["plan", "schedule", "prepare", "receive"] as const).map((k, i) => (
               <li key={k}>
                 <span className={styles.howNum}>{formatNumber(i + 1, locale)}</span>

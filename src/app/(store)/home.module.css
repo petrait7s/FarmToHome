@@ -43,7 +43,7 @@
 .modeWeekly { background: var(--red); color: var(--ivory); box-shadow: var(--shadow-red); }
 .modeMonthly { background: var(--sky-05); border: 1px solid var(--line); }
 .modeWeekly p, .modeMonthly p { font-size: 17px; font-weight: 500; max-width: 38ch; }
-.modeNum { font: italic 400 46px/1 var(--font-serif); }
+.modeNum { font: 400 46px/1 var(--font-serif); }
 .modeMonthly .modeNum { color: var(--red); }
 .modeCta { margin-top: auto; display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; }
 
@@ -55,7 +55,7 @@
 .cats { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; }
 .cat { display: grid; grid-template-columns: 56px 1fr auto; gap: 18px; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--line); transition: padding 0.4s var(--ease); }
 .cat:hover { padding-left: 8px; }
-.catNum { font: italic 400 30px/1 var(--font-serif); color: var(--red); }
+.catNum { font: 400 30px/1 var(--font-serif); color: var(--red); }
 .catText { display: flex; flex-direction: column; gap: 4px; }
 .catName { font: 500 22px/1.2 var(--font-serif); }
 .catDesc { font-size: 13.5px; }
@@ -67,7 +67,7 @@
 .producerArt { position: relative; aspect-ratio: 4 / 3; border-radius: var(--r-lg); overflow: hidden; margin-bottom: 8px; transition: transform 0.5s var(--ease); }
 .producer:hover .producerArt { transform: translateY(-3px); }
 .initials { position: absolute; right: 14px; bottom: 14px; width: 54px; height: 54px; border-radius: 50%; background: var(--red); color: var(--ivory); display: grid; place-items: center; font: 500 20px/1 var(--font-serif); }
-.quote { font: italic 400 17px/1.5 var(--font-serif); padding-left: 14px; border-left: 2px solid var(--gold); }
+.quote { font: 400 17px/1.5 var(--font-serif); padding-left: 14px; border-left: 2px solid var(--gold); }
 
 /* Quality band */
 .quality { padding: clamp(56px, 8vw, 104px) 0; }
@@ -84,7 +84,7 @@
 .how { background: var(--gold-15); }
 .howGrid { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; margin-top: 36px; }
 .howGrid li { display: flex; flex-direction: column; gap: 10px; }
-.howNum { width: 48px; height: 48px; border-radius: 50%; background: var(--red); color: var(--ivory); display: grid; place-items: center; font: italic 500 20px/1 var(--font-serif); }
+.howNum { width: 48px; height: 48px; border-radius: 50%; background: var(--red); color: var(--ivory); display: grid; place-items: center; font: 500 20px/1 var(--font-serif); }
 
 /* Split */
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 96px); }

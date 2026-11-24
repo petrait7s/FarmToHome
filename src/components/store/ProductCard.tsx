@@ -32,7 +32,7 @@ export function ProductCard({ product, priority }: { product: ProductDTO; priori
 
   return (
     <article className={styles.card}>
-      <Link href={`/products/${product.slug}`} className={styles.media} aria-label={name}>
+      <Link href={`/products/${product.slug}`} className={`${styles.media} press`} aria-label={name}>
         <ProductVisual artKey={product.artKey} imageUrl={product.imageUrl} alt={name} size="lg" priority={priority} />
         <span className={styles.tags}>
           {product.isNew ? <span className="badge badge-red"><span className="dot" aria-hidden="true" />{t("market.freshThisWeek")}</span> : null}
