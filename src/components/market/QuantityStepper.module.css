@@ -1,0 +1,19 @@
+.stepper { display: inline-flex; align-items: center; border-radius: var(--r-pill); animation: popIn 0.35s var(--ease); }
+.red { background: var(--red); color: var(--ivory); box-shadow: var(--shadow-red); }
+.line { border: 1px solid var(--line-strong); }
+.stepper button { display: grid; place-items: center; border-radius: 50%; transition: background 0.25s; }
+.red button:hover:not(:disabled) { background: var(--ivory-12); }
+.line button:hover:not(:disabled) { background: var(--sky-08); }
+.stepper button:disabled { opacity: 0.4; }
+.md { height: 42px; }
+.md button { width: 42px; height: 42px; }
+.sm { height: 30px; }
+.sm button { width: 30px; height: 30px; }
+.q { min-width: 30px; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; overflow: hidden; height: 22px; line-height: 22px; }
+.sm .q { min-width: 22px; font-size: 13px; }
+.q span { display: block; }
+.up { animation: rollUp 0.32s var(--ease); }
+.down { animation: rollDown 0.32s var(--ease); }
+@keyframes rollUp { from { transform: translateY(100%); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes rollDown { from { transform: translateY(-100%); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (max-width: 640px) { .md { height: 44px; } .md button { width: 44px; height: 44px; } }

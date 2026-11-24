@@ -1,0 +1,1464 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Build My Weekly Market · FarmToHome</title>
+<meta name="description" content="FarmToHome interactive prototype: build a weekly household market from one page, then place a simulated order. All prices are demonstration data.">
+<!-- Fonts are an enhancement only. The prototype works offline with the system fallbacks below. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   FarmToHome — Weekly Market Builder prototype
+   Palette: ONLY the four approved brand colours (docs/design/02-visual-language.md).
+   Tints are opacity of these four colours; no other hex values are used.
+   Brand direction v2: Red Orange is the MAIN brand theme (hero, primary CTAs,
+   active/selected states). Warm Ivory is the light ground and the text colour on
+   Red Orange. Sky Blue supports: readable body text and secondary UI.
+   Harvest Gold is a restrained premium highlight.
+   Contrast: Ivory on Red Orange is 2.95:1, so labels on orange are kept large and
+   bold, and small text sits on Ivory surfaces (Sky Blue on Ivory is 4.85:1).
+   ========================================================================== */
+:root{
+  --red:#FF4B33;      /* Red Orange   — Primary: main brand theme, CTAs, active states */
+  --ivory:#F4F1EA;    /* Warm Ivory   — Secondary (ground) */
+  --sky:#0F766E;      /* Sky Blue     — Accent: supporting text and secondary UI */
+  --gold:#DDAA72;     /* Harvest Gold — Highlight (rules, numerals, washes) */
+
+  --sky-03:rgba(15,118,110,.03); --sky-05:rgba(15,118,110,.05); --sky-08:rgba(15,118,110,.08);
+  --sky-12:rgba(15,118,110,.12); --sky-20:rgba(15,118,110,.20); --sky-40:rgba(15,118,110,.40);
+  --gold-15:rgba(221,170,114,.15); --gold-25:rgba(221,170,114,.25); --gold-45:rgba(221,170,114,.45);
+  --red-06:rgba(255,75,51,.06); --red-12:rgba(255,75,51,.12); --red-40:rgba(255,75,51,.40);
+  --ivory-12:rgba(244,241,234,.12); --ivory-25:rgba(244,241,234,.25); --ivory-60:rgba(244,241,234,.6);
+  --line:var(--sky-12);
+
+  --serif:'Fraunces','Iowan Old Style','Palatino Linotype',Palatino,Georgia,'Noto Serif Bengali',serif;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans Bengali','Hind Siliguri',sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --ease-in:cubic-bezier(.4,0,1,1);
+  --shadow:0 18px 40px -22px rgba(15,118,110,.35);
+  --shadow-red:0 18px 36px -18px rgba(255,75,51,.55);
+  --hdr:64px;
+  --r-sm:10px; --r:16px; --r-lg:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{background:var(--ivory);color:var(--sky);font:400 15px/1.55 var(--sans);-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+img,svg{display:block;max-width:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer}
+button:disabled{cursor:not-allowed}
+:focus-visible{outline:2px solid var(--sky);outline-offset:2px;border-radius:6px}
+.on-red :focus-visible{outline-color:var(--ivory)}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.serif{font-family:var(--serif)}
+.eyebrow{font:600 11px/1.3 var(--sans);letter-spacing:.18em;text-transform:uppercase}
+.wrap{max-width:1360px;margin:0 auto;padding:0 32px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);flex:none}
+.dot.gold{background:var(--gold)}
+.dot.sky{background:var(--sky)}
+
+/* ---------- Demo ribbon + header ---------- */
+.ribbon{background:var(--gold-25);color:var(--sky);font-size:12px;letter-spacing:.03em;text-align:center;padding:7px 16px;border-bottom:1px solid var(--line)}
+.ribbon b::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-right:8px;vertical-align:1px}
+.ribbon b{font-weight:600}
+.top{position:sticky;top:0;z-index:40;background:var(--ivory);border-bottom:1px solid var(--line);height:var(--hdr)}
+.top .wrap{height:100%;display:flex;align-items:center;gap:24px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--sky)}
+.brand-mark{width:30px;height:30px;flex:none}
+.brand-name{font:500 23px/1 var(--serif);letter-spacing:-.01em;color:var(--red)}
+.brand-sub{font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-top:3px;display:block}
+.top-nav{display:flex;gap:4px;margin-left:auto;align-items:center}
+.top-btn{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;font-weight:500;font-size:14px;transition:background .3s var(--ease)}
+.top-btn:hover{background:var(--sky-08)}
+.top-btn svg{width:18px;height:18px}
+.top-basket{background:var(--red);color:var(--ivory);font-weight:600;padding:9px 12px 9px 16px}
+.top-basket:hover{background:var(--red);box-shadow:var(--shadow-red)}
+.count-pill{min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--ivory);color:var(--sky);font-size:12px;font-weight:600;display:inline-grid;place-items:center;position:relative}
+.count-pill.has::after{content:"";position:absolute;top:-2px;right:-2px;width:8px;height:8px;border-radius:50%;background:var(--gold);border:2px solid var(--red)}
+
+/* ---------- Hero ---------- */
+.hero{background:var(--red);color:var(--ivory);position:relative;overflow:hidden}
+.hero .wrap{position:relative;z-index:1;padding-top:52px;padding-bottom:92px;display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:end}
+.hero .eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:22px;background:var(--ivory);color:var(--sky);padding:7px 14px 7px 12px;border-radius:999px}
+.hero .eyebrow .rule{width:7px;height:7px;border-radius:50%;background:var(--red)}
+.hero h1{font:400 clamp(40px,6vw,76px)/1.02 var(--serif);letter-spacing:-.025em;max-width:13ch}
+.hero h1 em{font-style:italic;position:relative;white-space:nowrap}
+.hero h1 em::after{content:"";position:absolute;left:0;right:0;bottom:.04em;height:.06em;background:var(--ivory);border-radius:2px;transform-origin:left;animation:drawLine 1.2s .4s var(--ease) both}
+@keyframes drawLine{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.hero .lead{font-size:19px;font-weight:500;line-height:1.55;max-width:50ch;margin-top:18px}
+.hero-side{display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.hero-art{position:absolute;right:-90px;top:-120px;width:520px;height:520px;z-index:0;pointer-events:none}
+.hero-art .c1{animation:drift 14s ease-in-out infinite alternate}
+.hero-art .c2{animation:drift 11s ease-in-out infinite alternate-reverse}
+@keyframes drift{from{transform:translate(0,0)}to{transform:translate(-10px,12px)}}
+
+.modebar{position:relative;z-index:3;margin-top:-44px}
+.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;max-width:800px;padding:6px;background:var(--ivory);border-radius:20px;border:1px solid var(--line);box-shadow:0 26px 50px -30px rgba(15,118,110,.5)}
+.mode{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:13px 16px;border-radius:15px;color:var(--sky);transition:background .35s var(--ease),color .35s var(--ease),box-shadow .35s var(--ease)}
+.mode:hover{background:var(--red-06)}
+.mode .m-t{font:500 18px/1.2 var(--serif);display:flex;align-items:center;gap:8px}
+.mode .m-s{font-size:13px;font-weight:500}
+.mode[aria-pressed="true"]{background:var(--red);color:var(--ivory);box-shadow:var(--shadow-red)}
+.mode[aria-pressed="true"] .m-t{font-weight:600}
+.mode .badge{font:600 11px/1 var(--sans);padding:3px 7px;border-radius:999px;background:var(--red);color:var(--ivory)}
+.mode[aria-pressed="true"] .badge{background:var(--ivory);color:var(--sky)}
+.mode .primary-dot{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+
+.hh{border-radius:18px;padding:16px 18px;width:100%;max-width:360px;background:var(--ivory);color:var(--sky);position:relative;box-shadow:0 26px 50px -30px rgba(15,118,110,.55)}
+.hh-label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px;font-size:13px}
+.hh-label > span:last-child{white-space:nowrap;font-weight:600}
+.hh-label .eyebrow{font-size:10px}
+.hh-opts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.hh-opt{padding:9px 0;border-radius:10px;border:1px solid var(--sky-20);font-weight:600;font-size:15px;transition:all .3s var(--ease)}
+.hh-opt:hover{border-color:var(--red-40)}
+.hh-opt[aria-pressed="true"]{background:var(--red);color:var(--ivory);border-color:var(--red)}
+.hh-note{font-size:12px;margin-top:9px}
+.deliv{display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:500;background:var(--ivory);color:var(--sky);padding:9px 16px;border-radius:999px}
+.deliv svg{color:var(--red)}
+.deliv svg{width:18px;height:18px;flex:none}
+
+/* ---------- Trust strip ---------- */
+.trust{border-bottom:1px solid var(--line)}
+.trust ul{list-style:none;display:flex;gap:10px 30px;flex-wrap:wrap;justify-content:space-between;padding:16px 0}
+.trust li{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:500}
+.trust svg{width:20px;height:20px;flex:none;color:var(--red)}
+
+/* ---------- Layout ---------- */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:40px;padding-top:28px;padding-bottom:80px;align-items:start}
+.layout.single{grid-template-columns:minmax(0,1fr)}
+
+/* ---------- Toolbar ---------- */
+.toolbar{position:sticky;top:var(--hdr);z-index:20;background:var(--ivory);padding:14px 0 12px;margin-bottom:6px;border-bottom:1px solid transparent;transition:border-color .3s}
+.toolbar.stuck{border-bottom-color:var(--line)}
+.tb-row{display:flex;gap:12px;align-items:center}
+.search{position:relative;flex:1;min-width:0}
+.search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;pointer-events:none}
+.search input{width:100%;height:46px;border-radius:999px;border:1px solid var(--sky-20);background:var(--sky-03);padding:0 44px 0 42px;font-size:15px;transition:border-color .3s,background .3s}
+.search input::placeholder{color:var(--sky);opacity:.75}
+.search input:focus{outline:none;border-color:var(--sky);background:var(--ivory)}
+.search .clear-q{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;display:grid;place-items:center}
+.search .clear-q:hover{background:var(--sky-08)}
+.tb-link{font-size:13px;font-weight:500;padding:10px 12px;border-radius:999px;white-space:nowrap}
+.tb-link:hover{background:var(--sky-08)}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-top:12px;padding-bottom:2px;-webkit-mask-image:linear-gradient(90deg,var(--sky) 92%,transparent);mask-image:linear-gradient(90deg,var(--sky) 92%,transparent)}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:7px 13px;border-radius:999px;border:1px solid var(--sky-20);font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:background .3s var(--ease),border-color .3s}
+.chip:hover{border-color:var(--red-40)}
+.chip[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:var(--ivory);font-weight:600}
+.chip .n{font-size:11px;font-weight:600;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--red);color:var(--ivory);display:inline-grid;place-items:center}
+.chip[aria-pressed="true"] .n{background:var(--ivory);color:var(--sky)}
+
+/* ---------- Suggestions ---------- */
+.sugg{margin:14px 0 8px;padding:18px 20px;border-radius:var(--r);background:var(--gold-15);position:relative}
+.sugg-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.sugg-head h2{font:500 19px/1.25 var(--serif)}
+.sugg-head p{font-size:12px}
+.sugg-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.sg{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;padding:10px;border-radius:12px;background:var(--ivory);border:1px solid var(--gold-45)}
+.sg .t{width:44px;height:44px;border-radius:10px;background:var(--sky-05);overflow:hidden}
+.sg h3{font:500 14px/1.25 var(--sans)}
+.sg p{font-size:12px;line-height:1.4;margin-top:2px}
+.sg-act{grid-column:1/-1;display:flex;gap:6px;justify-content:flex-end}
+.btn-xs{font-size:12px;font-weight:600;padding:6px 11px;border-radius:999px;border:1px solid var(--sky-20)}
+.btn-xs:hover{border-color:var(--red)}
+.btn-xs.fill{background:var(--red);color:var(--ivory);border-color:var(--red)}
+
+/* ---------- Categories ---------- */
+.cats{display:flex;flex-direction:column}
+.cat{border-bottom:1px solid var(--line)}
+.cat-head{width:100%;display:grid;grid-template-columns:48px 1fr auto 28px;gap:16px;align-items:center;padding:22px 4px;text-align:left}
+.cat-num{font:400 30px/1 var(--serif);font-style:italic;position:relative;color:var(--red)}
+.cat-num::after{content:"";position:absolute;left:0;bottom:-8px;width:22px;height:2px;background:var(--gold);border-radius:2px}
+.cat-name{display:block;font:500 clamp(20px,2.2vw,26px)/1.15 var(--serif);letter-spacing:-.01em}
+.cat-story{display:block;font-size:13px;margin-top:4px}
+.cat-meta{text-align:right;font-size:12px;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.cat-in{display:inline-flex;align-items:center;gap:6px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--red-12);opacity:0;transform:translateY(4px);transition:all .4s var(--ease)}
+.cat-in.on{opacity:1;transform:none}
+.chev{width:28px;height:28px;border-radius:50%;border:1px solid var(--sky-20);display:grid;place-items:center;transition:transform .5s var(--ease),background .3s}
+.chev svg{width:14px;height:14px}
+.cat-head:hover .chev{background:var(--sky-08)}
+.cat-head[aria-expanded="true"] .chev{transform:rotate(180deg);background:var(--red);border-color:var(--red);color:var(--ivory)}
+.cat-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s var(--ease)}
+.cat.open .cat-body{grid-template-rows:1fr}
+.cat-inner{overflow:hidden;min-height:0}
+.cat-list{padding:0 0 18px}
+
+/* ---------- Product rows ---------- */
+.row{display:grid;grid-template-columns:84px minmax(0,1fr) minmax(250px,300px);gap:18px;align-items:center;padding:16px 4px;border-top:1px solid var(--sky-08);transition:background .4s var(--ease)}
+.row:first-child{border-top:0}
+.row.in{background:linear-gradient(90deg,var(--red-06),transparent 75%);box-shadow:inset 3px 0 0 var(--red)}
+.thumb{width:84px;height:84px;border-radius:14px;background:var(--sky-05);overflow:hidden;position:relative;transition:transform .5s var(--ease)}
+.row:hover .thumb{transform:translateY(-2px) rotate(-1deg)}
+.thumb svg{width:100%;height:100%}
+.info{min-width:0}
+.info .eyebrow{display:flex;align-items:center;gap:8px;font-size:10.5px;letter-spacing:.14em}
+.seal{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1px solid var(--red);font:600 9px/1 var(--sans);letter-spacing:0}
+.pname{font:500 18px/1.25 var(--serif);margin-top:5px}
+.pdesc{font-size:13px;margin-top:3px}
+.tags{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:7px;font-size:12px;align-items:center}
+.tag{display:inline-flex;align-items:center;gap:6px}
+.origin-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;text-decoration:underline;text-decoration-color:var(--red);text-underline-offset:4px;text-decoration-thickness:2px;padding:2px 0}
+.origin-link:hover{text-decoration-color:var(--sky)}
+.origin-link svg{width:14px;height:14px}
+.buy{display:flex;flex-direction:column;gap:10px}
+.sizes{display:flex;flex-wrap:wrap;gap:6px}
+.size{padding:6px 11px;border-radius:999px;border:1px solid var(--sky-20);font-size:12.5px;font-weight:500;transition:all .3s var(--ease)}
+.size:hover{border-color:var(--red-40)}
+.size[aria-checked="true"]{background:var(--red-12);color:var(--sky);border-color:var(--red);box-shadow:inset 0 0 0 .5px var(--red);font-weight:600}
+.buy-line{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.price{font:500 19px/1.1 var(--serif);font-variant-numeric:tabular-nums}
+.price small{display:block;font:400 11.5px/1.3 var(--sans);margin-top:3px}
+.add{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 18px;border-radius:999px;border:1.5px solid var(--red);font-weight:600;font-size:14px;transition:background .3s var(--ease),color .3s var(--ease),transform .2s var(--ease)}
+.add:hover{background:var(--red);color:var(--ivory)}
+.add:hover svg{color:var(--ivory)}
+.add:active{transform:scale(.97)}
+.add svg{width:14px;height:14px;color:var(--red)}
+.stepper{display:inline-flex;align-items:center;height:40px;border-radius:999px;background:var(--red);color:var(--ivory);box-shadow:var(--shadow-red);font-size:16px;animation:popIn .35s var(--ease)}
+.stepper button{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;transition:background .25s}
+.stepper button:hover{background:var(--ivory-12)}
+.stepper button svg{width:14px;height:14px}
+.stepper .q{min-width:34px;text-align:center;font-weight:600;font-variant-numeric:tabular-nums;overflow:hidden;height:22px;line-height:22px}
+.stepper .q span{display:block}
+.q.up span{animation:rollUp .32s var(--ease)}
+.q.down span{animation:rollDown .32s var(--ease)}
+@keyframes rollUp{from{transform:translateY(100%);opacity:0}to{transform:none;opacity:1}}
+@keyframes rollDown{from{transform:translateY(-100%);opacity:0}to{transform:none;opacity:1}}
+@keyframes popIn{from{transform:scale(.9);opacity:.4}to{transform:none;opacity:1}}
+@keyframes fadeUp{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+.hint{display:flex;align-items:center;gap:6px;font-size:11.5px}
+.empty-search{padding:56px 16px;text-align:center}
+.empty-search h3{font:500 22px/1.3 var(--serif);margin:14px 0 6px}
+.empty-search svg{width:96px;height:96px;margin:0 auto}
+
+/* ---------- Summary ---------- */
+.summary{position:sticky;top:calc(var(--hdr) + 20px);max-height:calc(100vh - var(--hdr) - 40px);display:flex;flex-direction:column;border-radius:var(--r-lg);background:var(--ivory);border:1px solid var(--line);box-shadow:inset 0 4px 0 var(--red),0 30px 60px -40px rgba(15,118,110,.4);overflow:hidden}
+.sum{display:flex;flex-direction:column;min-height:0;height:100%}
+.sum-head{padding:22px 22px 16px;border-bottom:1px solid var(--line)}
+.sum-head .eyebrow{display:flex;align-items:center;gap:8px;font-size:10px}
+.sum-head h2{font:500 24px/1.15 var(--serif);margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sum-count{font:600 12px/1 var(--sans);padding:6px 10px;border-radius:999px;background:var(--red);color:var(--ivory);white-space:nowrap}
+.sum-count.pulse{animation:pulse .6s var(--ease)}
+@keyframes pulse{0%{transform:scale(1)}40%{transform:scale(1.14)}100%{transform:scale(1)}}
+.sum-deliv{font-size:13px;margin-top:6px;display:flex;gap:8px;align-items:center}
+.sum-deliv svg{width:15px;height:15px;flex:none}
+.sum-list{flex:1;overflow-y:auto;padding:6px 22px;min-height:80px;overscroll-behavior:contain}
+.sum-group{padding:12px 0 6px}
+.sum-group + .sum-group{border-top:1px solid var(--sky-08)}
+.sum-group h3{font-size:10px;margin-bottom:6px}
+.li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:8px 0}
+.li-name{font-weight:500;font-size:14px;line-height:1.3}
+.li-meta{font-size:12px;grid-column:1}
+.li-total{font:500 15px/1.3 var(--serif);text-align:right;font-variant-numeric:tabular-nums}
+.li-ctrl{grid-column:2;display:flex;gap:4px;justify-content:flex-end;align-items:center}
+.mini{width:26px;height:26px;border-radius:50%;border:1px solid var(--sky-20);display:grid;place-items:center;transition:all .25s}
+.mini:hover{background:var(--red);color:var(--ivory);border-color:var(--red)}
+.mini svg{width:11px;height:11px}
+.mini-q{min-width:20px;text-align:center;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.sum-empty{text-align:center;padding:26px 8px 20px}
+.sum-empty svg{width:110px;height:110px;margin:0 auto 12px}
+.sum-empty h3{font:500 19px/1.3 var(--serif);margin-bottom:6px}
+.sum-empty p{font-size:13px;max-width:30ch;margin:0 auto}
+.sum-foot{padding:16px 22px 20px;border-top:1px solid var(--line);background:var(--sky-03)}
+.tot{display:flex;justify-content:space-between;font-size:13.5px;padding:3px 0;font-variant-numeric:tabular-nums}
+.tot.big{font:500 22px/1.2 var(--serif);padding-top:10px;margin-top:6px;border-top:1px dashed var(--sky-20)}
+.free-meter{margin:8px 0 2px;height:4px;border-radius:4px;background:var(--sky-08);overflow:hidden}
+.free-meter i{display:block;height:100%;background:var(--red);border-radius:4px;transition:width .6s var(--ease)}
+.free-note{font-size:11.5px;margin-top:5px}
+.honest{display:flex;gap:7px;align-items:center;font-size:11.5px;margin-top:10px}
+.honest svg{width:14px;height:14px;flex:none}
+.cta{width:100%;height:54px;margin-top:14px;border-radius:999px;background:var(--red);color:var(--ivory);font-weight:600;font-size:17px;letter-spacing:.01em;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .25s var(--ease),box-shadow .35s var(--ease),opacity .3s;box-shadow:var(--shadow-red)}
+.cta:hover:not(:disabled){transform:translateY(-1px)}
+.cta:active:not(:disabled){transform:scale(.985)}
+.cta:disabled{opacity:.45;box-shadow:none}
+.cta svg{width:18px;height:18px;transition:transform .3s var(--ease)}
+.cta:hover:not(:disabled) svg{transform:translateX(3px)}
+.sum-actions{display:flex;justify-content:center;gap:4px;margin-top:10px}
+.ghost{font-size:13px;font-weight:500;padding:8px 12px;border-radius:999px;display:inline-flex;gap:6px;align-items:center}
+.ghost:hover:not(:disabled){background:var(--sky-08)}
+.ghost:disabled{opacity:.45}
+.ghost svg{width:15px;height:15px}
+
+/* ---------- Mobile basket bar + sheet ---------- */
+.mbar{display:none}
+.sheet{position:fixed;inset:0;z-index:60;display:none}
+.sheet.open{display:block}
+.sheet-bg{position:absolute;inset:0;background:var(--sky-40);animation:fadeIn .35s var(--ease)}
+.sheet-panel{position:absolute;left:0;right:0;bottom:0;max-height:88vh;background:var(--ivory);border-radius:28px 28px 0 0;display:flex;flex-direction:column;animation:sheetUp .45s var(--ease);padding-bottom:env(safe-area-inset-bottom)}
+.sheet.closing .sheet-panel{animation:sheetDown .3s var(--ease-in) forwards}
+.sheet.closing .sheet-bg{animation:fadeOut .3s forwards}
+.grab{width:40px;height:4px;border-radius:4px;background:var(--sky-20);margin:10px auto 0}
+.sheet-close{position:absolute;right:14px;top:14px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--sky-20);background:var(--ivory);z-index:2}
+.sheet-close svg{width:14px;height:14px}
+.sheet .sum-head{padding-top:12px;padding-right:64px}
+.sheet .sum-list{min-height:28vh}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:none}}
+@keyframes sheetDown{to{transform:translateY(100%)}}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes fadeOut{to{opacity:0}}
+
+/* ---------- Saved markets ---------- */
+.view-head{padding:8px 0 22px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.view-head .eyebrow{margin-bottom:10px;display:flex;gap:8px;align-items:center}
+.view-head h2{font:400 clamp(28px,3.4vw,40px)/1.1 var(--serif);letter-spacing:-.015em}
+.view-head p{margin-top:8px;max-width:60ch}
+.saved-list{display:flex;flex-direction:column}
+.sv{display:grid;grid-template-columns:120px 1fr auto;gap:22px;align-items:center;padding:22px 4px;border-bottom:1px solid var(--line);animation:fadeUp .5s var(--ease) both}
+.sv-stack{position:relative;height:84px}
+.sv-stack .t{position:absolute;top:0;width:68px;height:68px;border-radius:14px;background:var(--ivory);border:1px solid var(--line);overflow:hidden;box-shadow:var(--shadow);transition:transform .5s var(--ease)}
+.sv-stack .t:nth-child(1){left:0;transform:rotate(-6deg)}
+.sv-stack .t:nth-child(2){left:26px;top:8px;transform:rotate(2deg)}
+.sv-stack .t:nth-child(3){left:52px;top:2px;transform:rotate(8deg)}
+.sv:hover .sv-stack .t:nth-child(1){transform:rotate(-10deg) translateX(-4px)}
+.sv:hover .sv-stack .t:nth-child(3){transform:rotate(12deg) translateX(4px)}
+.sv h3{font:500 22px/1.2 var(--serif)}
+.sv-meta{font-size:13px;margin-top:4px;display:flex;gap:6px 14px;flex-wrap:wrap}
+.sv-items{font-size:13px;margin-top:6px}
+.sv-act{display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;font-weight:600;font-size:14px;border:1.5px solid var(--sky);transition:all .3s var(--ease);white-space:nowrap}
+.btn.fill{background:var(--red);border-color:var(--red);color:var(--ivory)}
+.btn:hover{transform:translateY(-1px)}
+.btn.fill:hover{box-shadow:var(--shadow-red)}
+.btn svg{width:16px;height:16px}
+.icon-btn{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--sky-20)}
+.icon-btn:hover{background:var(--sky-08)}
+.icon-btn svg{width:16px;height:16px}
+
+/* ---------- Checkout ---------- */
+.co-head{padding:34px 0 10px}
+.back{display:inline-flex;align-items:center;gap:8px;font-weight:500;font-size:14px;padding:8px 12px 8px 8px;border-radius:999px;margin-left:-8px}
+.back:hover{background:var(--sky-08)}
+.back svg{width:16px;height:16px}
+.co-head h1{font:400 clamp(32px,4.4vw,54px)/1.05 var(--serif);letter-spacing:-.02em;margin-top:14px}
+.co-head p{margin-top:8px}
+.steps{display:flex;gap:8px;margin-top:22px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;padding:6px 12px 6px 6px;border-radius:999px;border:1px solid var(--sky-20)}
+.step i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:600;background:var(--red);color:var(--ivory)}
+.step.done{background:var(--red-12);border-color:var(--red-40)}
+.co-grid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:48px;align-items:start;padding:24px 0 90px}
+.fs{border:0;padding:26px 0;border-top:1px solid var(--line)}
+.fs legend{display:flex;align-items:baseline;gap:12px;font:500 22px/1.2 var(--serif);padding:0;margin-bottom:18px;float:left;width:100%}
+.fs legend + *{clear:both}
+.fs legend .num{font:600 11px/1 var(--sans);letter-spacing:.18em}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.field label,.lbl{font-size:13px;font-weight:600}
+.field input,.field textarea{width:100%;border:1px solid var(--sky-20);background:var(--sky-03);border-radius:12px;padding:13px 14px;font-size:15px;transition:border-color .3s,background .3s,box-shadow .3s}
+.field textarea{min-height:84px;resize:vertical}
+.field input::placeholder,.field textarea::placeholder{color:var(--sky);opacity:.7}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--sky);background:var(--ivory);box-shadow:0 0 0 4px var(--sky-08)}
+.field.err input,.field.err textarea{border-color:var(--red);box-shadow:0 0 0 4px var(--red-12)}
+.err-msg{display:none;align-items:center;gap:6px;font-size:12.5px;font-weight:500}
+.err-msg::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--red);flex:none}
+.field.err .err-msg,.group.err .err-msg{display:flex}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.helper{font-size:12px}
+.linkish{font-size:13px;font-weight:600;text-decoration:underline;text-decoration-color:var(--red);text-underline-offset:4px;text-decoration-thickness:2px}
+.opt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.opt{border:1px solid var(--sky-20);border-radius:14px;padding:11px 8px;text-align:center;transition:all .3s var(--ease);position:relative}
+.opt:hover:not(:disabled){border-color:var(--red-40);transform:translateY(-1px)}
+.opt[aria-checked="true"]{background:var(--red);color:var(--ivory);border-color:var(--red);box-shadow:var(--shadow-red);font-weight:600}
+.opt:disabled{opacity:.45;text-decoration:line-through}
+.opt .d1{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+.opt .d2{display:block;font:500 22px/1.2 var(--serif)}
+.opt .d3{display:block;font-size:11.5px}
+.slots{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.slots .opt{font-weight:500;font-size:14px;padding:13px 8px}
+.pay{display:grid;gap:10px}
+.pay-opt{display:grid;grid-template-columns:22px 1fr;gap:14px;align-items:start;text-align:left;border:1px solid var(--sky-20);border-radius:16px;padding:16px 18px;transition:all .3s var(--ease)}
+.pay-opt:hover{border-color:var(--red-40)}
+.pay-opt[aria-checked="true"]{border-color:var(--red);background:var(--red-06);box-shadow:inset 0 0 0 1px var(--red)}
+.radio{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--red);display:grid;place-items:center;margin-top:1px}
+.pay-opt[aria-checked="true"] .radio::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--red)}
+.pay-opt b{display:block;font:500 17px/1.3 var(--serif)}
+.pay-opt span{font-size:13px}
+.mfs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.co-sum{position:sticky;top:calc(var(--hdr) + 20px);border-radius:var(--r-lg);background:var(--ivory);border:1px solid var(--line);box-shadow:inset 0 4px 0 var(--red),0 30px 60px -40px rgba(15,118,110,.4);overflow:hidden}
+.co-sum .sum-list{max-height:min(42vh,420px)}
+.place{margin-top:14px}
+.place.loading{pointer-events:none}
+.spinner{width:20px;height:20px;position:relative}
+.spinner i{position:absolute;inset:0;border-radius:50%;animation:orbit 1s var(--ease) infinite}
+.spinner i:nth-child(1){background:var(--ivory);transform:translateX(-4px) scale(.6)}
+.spinner i:nth-child(2){background:var(--gold);animation-delay:-.5s;transform:translateX(4px) scale(.6)}
+@keyframes orbit{0%{transform:translateX(-5px) scale(.6)}50%{transform:translateX(5px) scale(.75)}100%{transform:translateX(-5px) scale(.6)}}
+.sim-note{display:flex;gap:8px;align-items:flex-start;font-size:12px;margin-top:12px}
+.sim-note svg{width:15px;height:15px;flex:none;margin-top:1px}
+
+/* ---------- Success ---------- */
+.success{min-height:calc(100vh - var(--hdr) - 31px);background:var(--red);color:var(--ivory);position:relative;overflow:hidden}
+.success .wrap{position:relative;z-index:1;padding-top:64px;padding-bottom:80px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.bloom{position:absolute;inset:0;pointer-events:none}
+.bloom circle{transform-origin:center;transform-box:fill-box}
+.bloom .b1{animation:bloom 1.6s var(--ease) both}
+.bloom .b2{animation:bloom 1.6s .15s var(--ease) both}
+.bloom .b3{animation:bloom 1.8s .3s var(--ease) both}
+@keyframes bloom{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.check{width:72px;height:72px;border-radius:50%;background:var(--ivory);display:grid;place-items:center;animation:popIn .6s .3s var(--ease) both}
+.check svg{width:34px;height:34px}
+.check path{stroke-dasharray:40;stroke-dashoffset:40;animation:dash .6s .7s var(--ease) forwards}
+@keyframes dash{to{stroke-dashoffset:0}}
+.success h1{font:400 clamp(36px,5vw,64px)/1.04 var(--serif);letter-spacing:-.02em;margin-top:26px;animation:fadeUp .8s .4s var(--ease) both}
+.success .lead{font-size:19px;font-weight:500;margin-top:14px;max-width:46ch;animation:fadeUp .8s .55s var(--ease) both}
+.oid{display:inline-flex;gap:10px;align-items:center;margin-top:24px;padding:10px 18px;border-radius:999px;background:var(--ivory);color:var(--sky);font-variant-numeric:tabular-nums;animation:fadeUp .8s .65s var(--ease) both}
+.oid b{font-weight:600;letter-spacing:.06em}
+.s-card{background:var(--ivory);color:var(--sky);border-radius:var(--r-lg);padding:26px;animation:fadeUp .9s .5s var(--ease) both}
+.s-card h2{font:500 22px/1.2 var(--serif);margin-bottom:14px}
+.dl{display:grid;grid-template-columns:auto 1fr;gap:10px 20px;font-size:14px}
+.dl dt{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;padding-top:3px}
+.dl dd{font-variant-numeric:tabular-nums}
+.next{list-style:none;margin-top:12px;display:grid;gap:14px;animation:fadeUp .8s .8s var(--ease) both}
+.next li{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;font-size:14px}
+.next li i{width:34px;height:34px;border-radius:50%;border:1px solid var(--red);color:var(--sky);display:grid;place-items:center;font:italic 400 16px/1 var(--serif)}
+.next b{display:block;font-weight:600}
+.s-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.btn.inv{border-color:var(--ivory);color:var(--ivory);font-size:15px}
+.btn.inv.fill{background:var(--ivory);border-color:var(--ivory);color:var(--sky)}
+
+/* ---------- Modal ---------- */
+.modal{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:24px}
+.modal.open{display:flex}
+.modal-bg{position:absolute;inset:0;background:var(--sky-40);animation:fadeIn .35s var(--ease)}
+.modal-panel{position:relative;width:100%;max-width:560px;max-height:calc(100vh - 48px);overflow:auto;background:var(--ivory);border-radius:24px;animation:modalIn .5s var(--ease);box-shadow:0 40px 80px -30px rgba(15,118,110,.5)}
+.modal-panel.wide{max-width:820px}
+.modal.closing .modal-panel{animation:modalOut .25s var(--ease-in) forwards}
+.modal.closing .modal-bg{animation:fadeOut .25s forwards}
+@keyframes modalIn{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes modalOut{to{opacity:0;transform:translateY(12px) scale(.98)}}
+.modal-x{position:absolute;right:16px;top:16px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--ivory);border:1px solid var(--sky-20);z-index:3}
+.modal-x svg{width:14px;height:14px}
+.modal-x.on-red-x{background:var(--ivory);border-color:var(--ivory);color:var(--sky)}
+.m-body{padding:30px}
+.m-body h2{font:500 26px/1.2 var(--serif);padding-right:40px}
+.m-body p{margin-top:8px}
+.m-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:24px}
+
+/* Know Your Origin */
+.og-hero{background:var(--red);color:var(--ivory);padding:30px 30px 26px;display:grid;grid-template-columns:120px 1fr;gap:22px;align-items:center;position:relative;overflow:hidden}
+.og-hero .thumb{width:120px;height:120px;background:var(--ivory);border-radius:18px;transform-style:preserve-3d;transition:transform .2s ease-out;box-shadow:0 20px 40px -18px rgba(15,118,110,.8)}
+.og-hero h2{font:400 32px/1.1 var(--serif);margin-top:8px}
+.og-hero .eyebrow{display:inline-flex;gap:8px;align-items:center;background:var(--ivory);color:var(--sky);padding:6px 12px;border-radius:999px}
+.og-hero p{font-size:14px;margin-top:6px}
+.og-ring{position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;border:1px solid var(--ivory-25)}
+.og-body{padding:26px 30px 30px;display:grid;grid-template-columns:1fr 1fr;gap:30px}
+.producer{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:center;padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:18px}
+.avatar{width:64px;height:64px;border-radius:50%;background:var(--gold-25);display:grid;place-items:center;font:500 22px/1 var(--serif);position:relative}
+.avatar::after{content:"";position:absolute;right:2px;bottom:2px;width:12px;height:12px;border-radius:50%;background:var(--red);border:2px solid var(--ivory)}
+.producer b{font:500 18px/1.2 var(--serif);display:block}
+.producer span{font-size:13px}
+blockquote{font:italic 400 17px/1.5 var(--serif);padding-left:16px;border-left:2px solid var(--gold);margin-bottom:20px}
+.cert{display:grid;grid-template-columns:auto 1fr;gap:9px 16px;font-size:13px;padding:16px;border-radius:14px;border:1px solid var(--line);background:var(--sky-03)}
+.cert dt{font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-weight:600;padding-top:2px}
+.cert dd{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.mono{font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;font-size:12.5px;letter-spacing:.02em}
+.journey{list-style:none;position:relative}
+.journey::before{content:"";position:absolute;left:17px;top:18px;bottom:18px;width:1px;background:var(--sky-20)}
+.journey .line{position:absolute;left:17px;top:18px;width:2px;background:var(--red);height:0;transition:height 1.6s var(--ease)}
+.journey li{display:grid;grid-template-columns:36px 1fr;gap:14px;padding:0 0 18px;position:relative;opacity:0;transform:translateY(8px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.journey.go li{opacity:1;transform:none}
+.journey li i{width:36px;height:36px;border-radius:50%;background:var(--ivory);border:1px solid var(--sky);display:grid;place-items:center;font:italic 500 15px/1 var(--serif);position:relative;z-index:1}
+.journey li:last-child i{background:var(--red);border-color:var(--red);color:var(--ivory)}
+.journey b{display:block;font-weight:600;font-size:14px;padding-top:2px}
+.journey span{font-size:13px;display:block}
+.report{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
+.report-toggle{display:flex;width:100%;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;padding:6px 0}
+.report-toggle svg{width:14px;height:14px;transition:transform .4s var(--ease)}
+.report-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
+.report-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ease)}
+.report-body.open{grid-template-rows:1fr}
+.report-body > div{overflow:hidden}
+.rt{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.rt td{padding:7px 0;border-bottom:1px solid var(--sky-08)}
+.rt td:last-child{text-align:right;font-weight:600}
+.og-foot{padding:0 30px 28px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.og-foot .price{font-size:22px}
+
+/* ---------- Toast + fly ---------- */
+.toasts{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:90;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:max-content;max-width:calc(100vw - 32px)}
+.toast{pointer-events:auto;display:flex;align-items:center;gap:14px;background:var(--sky);color:var(--ivory);padding:12px 14px 12px 18px;border-radius:999px;font-size:14px;box-shadow:var(--shadow);animation:toastIn .45s var(--ease)}
+.toast .dot{background:var(--gold)}
+.toast button{font-weight:600;padding:6px 12px;border-radius:999px;border:1px solid var(--ivory-25);font-size:13px}
+.toast button:hover{background:var(--ivory-12)}
+.toast.out{animation:toastOut .3s var(--ease-in) forwards}
+@keyframes toastIn{from{opacity:0;transform:translateY(16px) scale(.96)}}
+@keyframes toastOut{to{opacity:0;transform:translateY(10px)}}
+.fly{position:fixed;z-index:95;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--red);pointer-events:none;box-shadow:0 0 0 4px rgba(255,75,51,.18)}
+
+/* ---------- Footer ---------- */
+.foot{border-top:3px solid var(--red);padding:26px 0 120px;font-size:12.5px}
+.foot .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+[hidden]{display:none!important}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1180px){
+  .layout{grid-template-columns:minmax(0,1fr) 340px;gap:28px}
+  .row{grid-template-columns:72px minmax(0,1fr);gap:8px 16px}
+  .thumb{width:72px;height:72px}
+  .buy{grid-column:2;flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  .buy-line{gap:14px}
+  .co-grid{grid-template-columns:minmax(0,1fr) 360px;gap:32px}
+}
+@media (max-width:900px){
+  .wrap{padding:0 20px}
+  .layout{grid-template-columns:minmax(0,1fr);padding-bottom:120px}
+  .summary{display:none}
+  .hero .wrap{grid-template-columns:1fr;padding-top:36px;padding-bottom:72px;gap:24px}
+  .hero-art{width:360px;height:360px;right:-140px;top:-120px;opacity:.85}
+  .hh{max-width:none}
+  .top-basket{display:none}
+  .mbar{display:flex;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:50;background:var(--red);color:var(--ivory);border-radius:20px;padding:8px 8px 8px 18px;align-items:center;gap:12px;box-shadow:0 18px 40px -16px rgba(255,75,51,.7);transform:translateY(0);transition:transform .45s var(--ease)}
+  .mbar.hide{transform:translateY(140%)}
+  .mbar-open{flex:1;display:flex;align-items:center;gap:12px;text-align:left;min-width:0;padding:4px 0}
+  .mbar-open .cnt{position:relative;width:38px;height:38px;border-radius:50%;background:var(--ivory);color:var(--sky);display:grid;place-items:center;font-weight:600;flex:none}
+  .mbar-open .cnt.has::after{content:"";position:absolute;top:0;right:0;width:9px;height:9px;border-radius:50%;background:var(--gold);border:2px solid var(--red)}
+  .mbar-open .txt{display:flex;flex-direction:column;min-width:0}
+  .mbar-open .txt b{font:500 18px/1.15 var(--serif);font-variant-numeric:tabular-nums}
+  .mbar-open .txt span{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mbar-review{height:46px;padding:0 18px;border-radius:14px;background:var(--ivory);color:var(--sky);font-weight:600;font-size:14px;white-space:nowrap}
+  .mbar-review:disabled{opacity:.55}
+  .co-grid{grid-template-columns:1fr;gap:8px}
+  .co-sum{position:static}
+  .success .wrap{grid-template-columns:1fr;gap:32px;padding-top:44px}
+  .og-body{grid-template-columns:1fr;gap:22px}
+  .toasts{bottom:96px}
+  .sv{grid-template-columns:100px 1fr;gap:16px}
+  .sv-act{grid-column:1/-1;justify-content:flex-end}
+}
+@media (max-width:640px){
+  body{font-size:14.5px}
+  .wrap{padding:0 16px}
+  .ribbon{font-size:11px}
+  .brand-sub{display:none}
+  .top-btn .lbl-txt{display:none}
+  .top-btn{padding:9px}
+  .hero h1{font-size:40px}
+  .hero-art{width:250px;height:250px;right:-120px;top:-110px}
+  .hero .eyebrow{font-size:10px;letter-spacing:.14em;max-width:calc(100% - 40px)}
+  .hero .lead{font-size:15.5px}
+  .modes{gap:4px;padding:4px;border-radius:16px}
+  .mode{min-width:0;padding:10px 10px;border-radius:12px}
+  .mode .m-t{font-size:14.5px}
+  .mode .m-s{font-size:11px;line-height:1.3}
+  .trust ul{justify-content:flex-start;gap:10px 18px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
+  .trust ul::-webkit-scrollbar{display:none}
+  .trust li{white-space:nowrap}
+  .tb-link.expand{display:none}
+  .cat-head{grid-template-columns:34px 1fr 28px;gap:12px;padding:18px 0}
+  .cat-meta{grid-column:2;grid-row:2;align-items:flex-start;text-align:left;flex-direction:row;flex-wrap:wrap;gap:6px 10px}
+  .chev{grid-column:3;grid-row:1}
+  .cat-num{font-size:22px}
+  .row{grid-template-columns:64px minmax(0,1fr);padding:14px 0;gap:8px 14px}
+  .thumb{width:64px;height:64px;border-radius:12px}
+  .buy{grid-column:1/-1;flex-direction:column;align-items:stretch}
+  .pname{font-size:17px}
+  .two{grid-template-columns:1fr}
+  .og-hero{grid-template-columns:84px 1fr;padding:24px 20px 20px;gap:16px}
+  .og-hero .thumb{width:84px;height:84px}
+  .og-hero h2{font-size:24px}
+  .og-body{padding:20px}
+  .og-foot{padding:0 20px 22px}
+  .m-body{padding:24px 20px}
+  .modal{padding:0;align-items:flex-end}
+  .modal-panel{border-radius:24px 24px 0 0;max-height:92vh}
+  .sv{grid-template-columns:1fr}
+  .sugg{padding:16px 0 16px 16px}
+  .sugg-head{padding-right:16px}
+  .sugg-list{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-right:16px;scrollbar-width:none}
+  .sugg-list::-webkit-scrollbar{display:none}
+  .sg{flex:0 0 78%;scroll-snap-align:start}
+  .sum-foot{padding:14px 20px 16px}
+  .sv-stack{height:76px}
+  .s-card{padding:20px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .journey li{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="ribbon" role="note"><b>Interactive prototype</b> · All products, producers, batches and prices are demonstration data · No real orders or payments</div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#" data-act="home" aria-label="FarmToHome — back to Weekly Market">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="24" cy="15" r="11" fill="#FF4B33"/><circle cx="15" cy="23" r="10" fill="#DDAA72"/><circle cx="26" cy="25" r="12" fill="none" stroke="#0F766E" stroke-width="1.4"/></svg>
+      <span><span class="brand-name">FarmToHome</span><span class="brand-sub">Luxury digital grocery concierge</span></span>
+    </a>
+    <nav class="top-nav" aria-label="Utility">
+      <button class="top-btn" data-act="concierge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/><path d="M19 20a4 4 0 0 1-4 3h-2"/></svg><span class="lbl-txt">Concierge</span></button>
+      <button class="top-btn" data-act="mode" data-mode="saved"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg><span class="lbl-txt">Saved</span></button>
+      <button class="top-btn top-basket" data-act="scroll-summary" aria-label="Go to my market summary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h18l-2 11H5z"/><path d="M8 9l4-6 4 6"/></svg><span class="lbl-txt">My Market</span><span class="count-pill" id="topCount">0</span></button>
+    </nav>
+  </div>
+</header>
+
+<div id="app"></div>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>FarmToHome · Thoughtfully Sourced. Honestly Delivered.</span>
+    <span>Prototype for design review · Demonstration data only · Photography to be replaced by real product imagery</span>
+  </div>
+</footer>
+
+<div class="mbar" id="mbar" hidden>
+  <button class="mbar-open" data-act="open-sheet" aria-haspopup="dialog" aria-controls="sheet">
+    <span class="cnt" id="mbCount">0</span>
+    <span class="txt"><b id="mbTotal">৳ 0</b><span id="mbSub">Your market is empty</span></span>
+  </button>
+  <button class="mbar-review" data-act="review" id="mbReview">Review My Market</button>
+</div>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="My market summary">
+  <div class="sheet-bg" data-act="close-sheet"></div>
+  <div class="sheet-panel">
+    <div class="grab" aria-hidden="true"></div>
+    <button class="sheet-close" data-act="close-sheet" aria-label="Close summary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div id="sheetBody" class="sum" style="min-height:0"></div>
+  </div>
+</div>
+
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-bg" data-act="close-modal"></div>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle" id="modalPanel"></div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+<script>
+/* ==========================================================================
+   FarmToHome — Weekly Market Builder (prototype)
+   Plain JavaScript, local demo data, client-side state only.
+   No network calls, no submission, no payment.
+   ========================================================================== */
+(function(){
+'use strict';
+
+/* ---------- UI strings (single place, ready for a Bangla translation) ---------- */
+const STR = {
+  currency:'৳',
+  weekly:{title:'Weekly Market', sub:'Fresh & essentials', h1a:'Build My', h1b:'Weekly Market',
+    lead:'What does your household need this week? Add everything from one page — choose sizes, set quantities and see your total as you go.',
+    sumTitle:'Your Weekly Market', per:'week'},
+  monthly:{title:'Monthly Stock', sub:'Bulk household staples', h1a:'Build My', h1b:'Monthly Stock',
+    lead:'Stock the pantry once a month. Larger packs of rice, oils, dal and spices are pre-selected — adjust anything.',
+    sumTitle:'Your Monthly Stock', per:'month'},
+  saved:{title:'Saved Markets', sub:'Repeat in one tap'},
+  review:'Review My Market',
+  emptyTitle:'Your market is waiting',
+  emptyBody:'Start with the weekly essentials — rice, fish and dal — then add what your household loves.'
+};
+
+/* ---------- Brand colours (used inside illustrations only) ---------- */
+const R='#FF4B33', I='#F4F1EA', T='#0F766E', G='#DDAA72';
+
+/* ---------- Categories ---------- */
+const CATS = [
+  {id:'rice',   n:'Rice & Grains',  short:'Rice & Grains', story:'Single-district rice, milled to order and hand-sorted.'},
+  {id:'fish',   n:'Fish & Seafood', short:'Fish', story:'Collected at dawn, iced at the pond or ghat, cleaned to order.'},
+  {id:'dried',  n:'Dried Fish',     short:'Dried Fish', story:'Sun-dried on raised coastal racks. No chemical preservatives.'},
+  {id:'spices', n:'Spices & Herbs', short:'Spices', story:'Whole spices dried in the sun and stone-ground in small lots.'},
+  {id:'pulses', n:'Pulses & Lentils', short:'Pulses', story:'Unpolished deshi lentils, cleaned and sorted by hand.'},
+  {id:'oils',   n:'Oils, Honey & Ghee', short:'Oils & Ghee', story:'Ghani-pressed oil, wild honey and slow-cooked ghee.'},
+  {id:'season', n:'Regional & Seasonal Specialties', short:'Seasonal', story:'Winter arrivals and signature foods of their regions.'}
+];
+
+/* ---------- Products (DEMO DATA — names of producers are fictional) ----------
+   s: [label, price BDT, quantity, unit]   a: illustration [type, variant]
+   hd: days since harvest/collection   cls: origin class (definitions pending)  h: show household hint */
+const P = [
+  // Rice & Grains
+  {id:'miniket',c:'rice',n:'Miniket Rice',o:'Kushtia',p:'Abdul Karim',v:'Bheramara, Kushtia',d:'Everyday fine grain · lightly polished',s:[['5 kg',420,5,'kg'],['10 kg',820,10,'kg'],['25 kg',1990,25,'kg']],a:['rice',0],cls:'O1',g:'Grade A',hd:26,m:'Sun-dried paddy, milled to order and hand-sorted',quote:'We dry every harvest in the sun before milling. That is why it cooks soft and separate.',h:'rice'},
+  {id:'chinigura',c:'rice',n:'Premium Chinigura',o:'Dinajpur',p:'Rafiqul Islam',v:'Chirirbandar, Dinajpur',d:'Aromatic small grain for polao & payesh',s:[['1 kg',165,1,'kg'],['2 kg',320,2,'kg'],['5 kg',780,5,'kg']],a:['rice',1],cls:'O1',g:'Grade A+',hd:40,m:'Aged six months for aroma, hand-sorted',quote:'Chinigura needs patience. We age it until the fragrance fills the store room.'},
+  {id:'nazirshail',c:'rice',n:'Nazirshail Rice',o:'Naogaon',p:'Shahida Begum',v:'Niamatpur, Naogaon',d:'Long, slender grain · aged for aroma',s:[['5 kg',480,5,'kg'],['10 kg',940,10,'kg'],['25 kg',2290,25,'kg']],a:['rice',2],cls:'O1',g:'Grade A',hd:33,m:'Parboiled lightly, milled in small batches',quote:'My family has grown Nazirshail on the same land for three generations.',h:'rice'},
+  {id:'chira',c:'rice',n:'New Aman Chira',o:'Sherpur',p:'Monjur Ali',v:'Nalitabari, Sherpur',d:'Flattened rice from this season’s aman harvest',s:[['500 g',95,.5,'kg'],['1 kg',180,1,'kg']],a:['grain',1],cls:'O2',g:'Grade A',hd:9,m:'Roasted and hand-pounded',quote:'New chira is the first taste of winter in our village.',tag:'fresh'},
+  {id:'atta',c:'rice',n:'Whole Wheat Lal Atta',o:'Thakurgaon',p:'Mosharraf Hossain',v:'Pirganj, Thakurgaon',d:'Stone-ground, unrefined whole wheat',s:[['2 kg',150,2,'kg'],['5 kg',360,5,'kg']],a:['grain',0],cls:'O2',g:'Grade A',hd:48,m:'Stone-ground weekly, nothing removed',quote:'Stone grinding keeps the bran and the taste of the wheat.'},
+  // Fish & Seafood
+  {id:'rui',c:'fish',n:'Rui (Rohu)',o:'Mymensingh',p:'Jamal Uddin',v:'Trishal, Mymensingh',d:'Pond-raised, formalin-free · cleaned & curry cut',s:[['1 kg',420,1,'kg'],['2 kg',820,2,'kg']],a:['fish',0],cls:'O1',g:'Fresh · Grade A',hd:0,m:'Iced at harvest, cleaned and cut on delivery morning',quote:'We harvest only after your order is placed, never before.',tag:'fresh',perish:1,h:'fish'},
+  {id:'katla',c:'fish',n:'Katla',o:'Rajshahi',p:'Nurul Amin',v:'Bagmara, Rajshahi',d:'Large carp, rich flavour · curry cut',s:[['1 kg',460,1,'kg'],['2 kg',900,2,'kg']],a:['fish',1],cls:'O1',g:'Fresh · Grade A',hd:0,m:'Iced at harvest, cleaned and cut to order',quote:'Clean water and slow growth — that is the whole secret.',perish:1,h:'fish'},
+  {id:'tilapia',c:'fish',n:'Tilapia',o:'Gazipur',p:'Selina Parvin',v:'Kapasia, Gazipur',d:'Mild & tender · whole, cleaned',s:[['1 kg',280,1,'kg'],['2 kg',540,2,'kg']],a:['fish',2],cls:'O2',g:'Fresh · Grade A',hd:0,m:'Iced at harvest, scaled and cleaned',quote:'Our ponds are fed with natural feed only.',perish:1,h:'fish'},
+  {id:'pabda',c:'fish',n:'Haor Pabda',o:'Sunamganj',p:'Abul Kashem',v:'Tahirpur, Sunamganj',d:'Delicate butter catfish from the haor',s:[['500 g',380,.5,'kg'],['1 kg',740,1,'kg']],a:['fish',3],cls:'O1',g:'Fresh · Grade A+',hd:0,m:'Netted at dawn, iced on the boat',quote:'Haor fish taste of the open water.',perish:1,h:'fish'},
+  {id:'prawn',c:'fish',n:'Fresh Golda Prawns',o:'Bagerhat',p:'Sabina Khatun',v:'Fakirhat, Bagerhat',d:'Freshwater giant prawn · 12–15 per kg',s:[['500 g',650,.5,'kg'],['1 kg',1250,1,'kg']],a:['prawn',0],cls:'O1',g:'Fresh · Grade A',hd:1,m:'Chilled in ice slurry, shell-on',quote:'We grow golda with rice in the same fields, the old way.',perish:1},
+  // Dried Fish
+  {id:'loitta',c:'dried',n:'Premium Loitta Shutki',o:'Cox’s Bazar',p:'Nasima Akter',v:'Nazirartek, Cox’s Bazar',d:'Sun-dried on raised racks · no chemicals',s:[['250 g',380,.25,'kg'],['500 g',740,.5,'kg']],a:['shutki',0],cls:'O1',g:'Grade A+',hd:18,m:'Washed in sea water, dried 4 days on raised racks',quote:'Real shutki needs only salt wind and sun. Nothing else.'},
+  {id:'churi',c:'dried',n:'Churi Shutki',o:'Kutubdia',p:'Mohammad Yunus',v:'Kutubdia, Cox’s Bazar',d:'Ribbonfish, lightly salted & sun-dried',s:[['250 g',420,.25,'kg'],['500 g',820,.5,'kg']],a:['shutki',1],cls:'O1',g:'Grade A',hd:21,m:'Lightly salted, sun-dried, net-covered from insects',quote:'We cover every rack with net. No spray, ever.'},
+  {id:'chingri',c:'dried',n:'Chingri Shutki',o:'Teknaf',p:'Rahima Begum',v:'Shah Porir Dwip, Teknaf',d:'Small prawns, shelled & sun-dried',s:[['100 g',260,.1,'kg'],['250 g',620,.25,'kg']],a:['shutki',2],cls:'O2',g:'Grade A',hd:15,m:'Boiled briefly, shelled by hand, sun-dried',quote:'Each prawn is shelled by hand by women in our cooperative.'},
+  // Spices & Herbs
+  {id:'turmeric',c:'spices',n:'Hill Turmeric Powder',o:'Rangamati',p:'Ushaching Marma',v:'Kaptai, Rangamati',d:'Hill-grown, high curcumin · stone-ground',s:[['200 g',95,.2,'kg'],['500 g',220,.5,'kg']],a:['spice',0],cls:'O1',g:'Grade A',hd:60,m:'Boiled, sun-dried and stone-ground in small lots',quote:'Hill turmeric is darker and stronger. A little goes a long way.'},
+  {id:'chili',c:'spices',n:'Red Chili Powder',o:'Bogura',p:'Sirajul Haque',v:'Sariakandi, Bogura',d:'Char-land chilies, sun-dried & ground',s:[['200 g',115,.2,'kg'],['500 g',270,.5,'kg']],a:['spice',1],cls:'O1',g:'Grade A',hd:55,m:'Sun-dried on the char, ground without colour added',quote:'No colour, no brick dust. Just chilies from the river char.'},
+  {id:'coriander',c:'spices',n:'Coriander Powder',o:'Faridpur',p:'Kamrul Hasan',v:'Boalmari, Faridpur',d:'Lightly roasted before grinding',s:[['200 g',85,.2,'kg'],['500 g',195,.5,'kg']],a:['spice',2],cls:'O2',g:'Grade A',hd:50,m:'Cleaned, lightly roasted, stone-ground',quote:'Roasting wakes up the seed before we grind it.'},
+  {id:'cumin',c:'spices',n:'Whole Cumin',o:'Imported lot',p:'FarmToHome Quality Team',v:'Cleaned in our Dhaka facility',d:'Selected import lot · cleaned & tested in-house',s:[['100 g',120,.1,'kg'],['250 g',285,.25,'kg']],a:['seed',0],cls:'O3',g:'Grade A',hd:70,m:'Imported whole, triple-cleaned and lab-tested by us',quote:'Cumin is not grown at scale here, so we tell you exactly where it comes from and test every lot.'},
+  // Pulses & Lentils
+  {id:'masoor',c:'pulses',n:'Deshi Masoor Dal',o:'Pabna',p:'Ataur Rahman',v:'Ishwardi, Pabna',d:'Small red lentil, unpolished',s:[['1 kg',155,1,'kg'],['2 kg',300,2,'kg'],['5 kg',730,5,'kg']],a:['dal',0],cls:'O1',g:'Grade A',hd:35,m:'Split and cleaned, never polished or coloured',quote:'Deshi masoor is small but it cooks thick and tastes of home.',h:'pulses'},
+  {id:'mug',c:'pulses',n:'Roasted Mug Dal',o:'Patuakhali',p:'Hasina Akter',v:'Galachipa, Patuakhali',d:'Golden moong, dry-roasted for aroma',s:[['1 kg',175,1,'kg'],['2 kg',340,2,'kg']],a:['dal',1],cls:'O1',g:'Grade A',hd:42,m:'Dry-roasted, split and hand-sorted',quote:'We roast in small iron pans so every grain turns golden.',h:'pulses'},
+  {id:'chola',c:'pulses',n:'Chola (Chickpeas)',o:'Chuadanga',p:'Golam Mostafa',v:'Alamdanga, Chuadanga',d:'Desi brown chickpeas, hand-sorted',s:[['1 kg',135,1,'kg'],['2 kg',260,2,'kg']],a:['chola',0],cls:'O2',g:'Grade A',hd:45,m:'Sun-dried and sorted by hand',quote:'Good chola softens overnight and holds its shape.',h:'pulses'},
+  // Oils, Honey & Ghee
+  {id:'mustard',c:'oils',n:'Cold-Pressed Mustard Oil',o:'Sirajganj',p:'Belal Hossain',v:'Ullapara, Sirajganj',d:'Wooden ghani-pressed, unfiltered',s:[['1 L',360,1,'L'],['2 L',700,2,'L'],['5 L',1700,5,'L']],a:['oil',0],cls:'O1',g:'Grade A',hd:12,m:'Pressed slowly in a wooden ghani, settled for 7 days',quote:'The ghani turns slowly so the oil never gets hot. That keeps the bite.',h:'oils'},
+  {id:'honey',c:'oils',n:'Sundarbans Khalisha Honey',o:'Satkhira',p:'Gopal Mondal',v:'Shyamnagar, Satkhira',d:'Wild mangrove honey · raw, unheated',s:[['500 g',650,.5,'kg'],['1 kg',1250,1,'kg']],a:['honey',0],cls:'O1',g:'Grade A+',hd:150,m:'Wild-harvested by licensed mowals, strained, never heated',quote:'We go into the forest in April for the khalisha bloom.'},
+  {id:'ghee',c:'oils',n:'Pure Cow Ghee',o:'Sirajganj',p:'Rokeya Sultana',v:'Shahjadpur, Sirajganj',d:'Slow-cooked from cultured butter',s:[['400 g',720,.4,'kg'],['900 g',1550,.9,'kg']],a:['ghee',0],cls:'O1',g:'Grade A+',hd:10,m:'Cultured butter slow-cooked over wood fire',quote:'We culture the cream first. That gives ghee its grain and smell.'},
+  // Regional & Seasonal
+  {id:'patali',c:'season',n:'Khejur Patali Gur',o:'Jashore',p:'Ismail Gachhi',v:'Keshabpur, Jashore',d:'Date-palm jaggery · first winter tapping',s:[['500 g',380,.5,'kg'],['1 kg',740,1,'kg']],a:['gur',0],cls:'O1',g:'Grade A+',hd:4,m:'Fresh sap boiled the same morning, set in moulds',quote:'Only the coldest nights give the sweetest sap.',tag:'seasonal'},
+  {id:'doi',c:'season',n:'Bogura Mishti Doi',o:'Bogura',p:'Haripada Ghosh',v:'Sherpur, Bogura',d:'Sweet yogurt set in clay pots',s:[['500 g pot',220,.5,'kg'],['1 kg pot',420,1,'kg']],a:['doi',0],cls:'O1',g:'Fresh · Grade A',hd:1,m:'Set overnight in clay pots, delivered chilled',quote:'The clay pot breathes. That is what thickens the doi.',perish:1},
+  {id:'shatkora',c:'season',n:'Sylhet Shatkora',o:'Sylhet',p:'Anwar Chowdhury',v:'Jaintiapur, Sylhet',d:'Aromatic wild citrus for meat & fish curries',s:[['2 pcs',120,2,'pc'],['4 pcs',230,4,'pc']],a:['citrus',0],cls:'O2',g:'Grade A',hd:3,m:'Hand-picked from hill gardens, wrapped individually',quote:'One shatkora perfumes a whole pot of curry.',tag:'seasonal'}
+];
+const PM = Object.fromEntries(P.map(p=>[p.id,p]));
+
+/* Typical weekly use per person (demo assumptions for the household helper) */
+const NEED = {rice:{per:1.5,u:'kg'}, fish:{per:.35,u:'kg'}, pulses:{per:.2,u:'kg'}, oils:{per:.15,u:'L'}};
+
+/* Suggestions: never added automatically */
+const ESSENTIALS = [
+  {c:'rice',pid:'miniket',why:n=>`Households of ${n} usually plan ${need('rice',n)} of rice`},
+  {c:'fish',pid:'rui',why:n=>`About ${need('fish',n)} of fish covers a week for ${n}`},
+  {c:'pulses',pid:'masoor',why:n=>`Dal for ${n}: roughly ${need('pulses',n)}`},
+  {c:'oils',pid:'mustard',why:n=>`Cooking oil for ${n}: about ${need('oils',n)}`},
+  {c:'spices',pid:'turmeric',why:()=>`The everyday spice most markets include`},
+  {c:'season',pid:'patali',why:()=>`In season now — the first winter tapping`}
+];
+
+/* Seed saved markets (demo) */
+const SEED_SAVED = [
+  {id:'sv1',name:'Our Usual Week',mode:'weekly',at:Date.now()-6*864e5,items:{miniket:{s:0,q:1},rui:{s:0,q:1},tilapia:{s:0,q:1},masoor:{s:0,q:1},mustard:{s:0,q:1},turmeric:{s:0,q:1},chili:{s:0,q:1}}},
+  {id:'sv2',name:'Guests This Weekend',mode:'weekly',at:Date.now()-20*864e5,items:{chinigura:{s:1,q:1},prawn:{s:1,q:1},pabda:{s:1,q:1},ghee:{s:0,q:1},doi:{s:1,q:1},shatkora:{s:0,q:1}}},
+  {id:'sv3',name:'Monthly Pantry',mode:'monthly',at:Date.now()-28*864e5,items:{miniket:{s:2,q:1},mustard:{s:2,q:1},masoor:{s:2,q:1},mug:{s:1,q:1},turmeric:{s:1,q:1},chili:{s:1,q:1},coriander:{s:1,q:1},atta:{s:1,q:1}}}
+];
+
+/* ---------- State ---------- */
+const KEY='fth-weekly-market-demo-v1';
+const S = {
+  mode:'weekly', bmode:'weekly', view:'builder',
+  baskets:{weekly:{},monthly:{}}, sel:{}, hh:4,
+  saved:JSON.parse(JSON.stringify(SEED_SAVED)),
+  open:['rice','fish'], q:'', cat:'all', dismissed:[],
+  co:{addr:'',phone:'',name:'',note:'',date:0,slot:1,pay:'cod',mfs:'bKash'},
+  lastOrder:null
+};
+try{
+  const raw=localStorage.getItem(KEY);
+  if(raw){const d=JSON.parse(raw);
+    ['mode','bmode','baskets','sel','hh','saved','open','dismissed'].forEach(k=>{if(d[k]!==undefined)S[k]=d[k]});
+    if(d.co) Object.assign(S.co,{addr:d.co.addr||'',phone:d.co.phone||'',name:d.co.name||''});
+  }
+}catch(e){}
+// Drop anything in a stored basket that no longer exists in demo data
+['weekly','monthly'].forEach(m=>{const b=S.baskets[m]||(S.baskets[m]={});Object.keys(b).forEach(id=>{if(!PM[id]||!PM[id].s[b[id].s])delete b[id]})});
+function persist(){
+  try{localStorage.setItem(KEY,JSON.stringify({mode:S.mode,bmode:S.bmode,baskets:S.baskets,sel:S.sel,hh:S.hh,saved:S.saved,open:S.open,dismissed:S.dismissed,co:{addr:S.co.addr,phone:S.co.phone,name:S.co.name}}))}catch(e){}
+}
+
+/* ---------- Helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>STR.currency+' '+Math.round(n).toLocaleString('en-IN');
+const reduced=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isMobile=()=>window.matchMedia('(max-width: 900px)').matches;
+const basket=()=>S.baskets[S.bmode];
+const fmtQty=(q,u)=>{if(u==='pc')return q+' pcs'; if(q<1&&u==='kg')return Math.round(q*1000)+' g'; return (Math.round(q*10)/10)+' '+u};
+function need(cat,n){const d=NEED[cat]; const m=S.bmode==='monthly'?4.3:1; return fmtQty(d.per*n*m,d.u)+(S.bmode==='monthly'?' a month':' a week')}
+function defaultSize(p){return S.bmode==='monthly'?p.s.length-1:0}
+function sizeOf(p){const b=basket()[p.id]; if(b) return b.s; const k=S.bmode+':'+p.id; return S.sel[k]!==undefined?S.sel[k]:defaultSize(p)}
+function unitPrice(sz){const [,price,q,u]=sz; if(u==='pc')return money(price/q)+' / pc'; return money(price/q)+' / '+u}
+function totals(b=basket(),mode=S.bmode){
+  let sub=0,items=0,products=0;
+  Object.entries(b).forEach(([id,e])=>{const p=PM[id]; if(!p)return; sub+=p.s[e.s][1]*e.q; items+=e.q; products++});
+  const threshold=mode==='monthly'?5000:2500, fee=products===0?0:(sub>=threshold?0:60);
+  return {sub,items,products,fee,total:sub+fee,threshold};
+}
+function daysAgo(n){const d=new Date(); d.setDate(d.getDate()-n); return d}
+function fmtDate(d,opt){return d.toLocaleDateString('en-GB',opt||{day:'numeric',month:'short',year:'numeric'})}
+function batchNo(p){const d=daysAgo(Math.max(p.hd-1,0)); const y=String(d.getFullYear()).slice(2),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0'); let h=0; for(const ch of p.id)h=(h*31+ch.charCodeAt(0))%9000; return `FTH-${p.c.slice(0,3).toUpperCase()}-${y}${m}${dd}-${String(1000+h)}`}
+function deliveryDays(){const out=[]; for(let i=1;i<=6;i++){const d=new Date(); d.setDate(d.getDate()+i); out.push(d)} return out}
+const SLOTS=['8–10 AM','10 AM–12 PM','4–6 PM','6–8 PM'];
+function nextDeliveryText(){const d=deliveryDays()[S.co.date]||deliveryDays()[0]; return fmtDate(d,{weekday:'short',day:'numeric',month:'short'})+' · '+SLOTS[S.co.slot]}
+
+/* ---------- Icons ---------- */
+const ic={
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+  minus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>',
+  arrow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>',
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>',
+  pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+  truck:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6h11v10H2zM13 9h4l4 4v3h-8"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>',
+  bookmark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg>',
+  trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>',
+  repeat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></svg>',
+  shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5L16 9.5"/></svg>',
+  info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>',
+  leaf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 15-14-1 10-6 15-14 15"/><path d="M5 19l7-7"/></svg>',
+  qr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M17 21h4v-4M14 21v-3"/></svg>',
+  box:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg>',
+  tag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12V3h9l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'
+};
+
+/* ---------- Product illustrations (palette-only SVG placeholders for photography) ---------- */
+function art(a){
+  const [t,v]=a; const bgc=[G,R,T][v%3];
+  const bg=`<rect width="120" height="120" fill="${I}"/><circle cx="84" cy="34" r="30" fill="${bgc}" opacity=".18"/><circle cx="34" cy="92" r="22" fill="${G}" opacity=".22"/>`;
+  let s='';
+  const grains=(cx,cy,n,col,rx=3.2,ry=1.4,spread=26)=>{let o='';for(let i=0;i<n;i++){const ang=(i*137.5)%360,r=Math.sqrt(i/n)*spread;const x=cx+Math.cos(ang*Math.PI/180)*r,y=cy+Math.sin(ang*Math.PI/180)*r*.45;o+=`<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="${rx}" ry="${ry}" transform="rotate(${(i*47)%180} ${x.toFixed(1)} ${y.toFixed(1)})" fill="${col}"/>`}return o};
+  switch(t){
+    case 'rice': s=`<ellipse cx="60" cy="58" rx="36" ry="16" fill="${I}" stroke="${T}" stroke-width="1.2"/>${grains(60,56,46,[G,T,G][v],3,1.3,30)}<path d="M24 60c0 20 16 32 36 32s36-12 36-32" fill="${T}"/><path d="M30 72c8 10 18 14 30 14" stroke="${G}" stroke-width="1.5" fill="none" opacity=".8"/>`;break;
+    case 'grain': s=v? `<path d="M22 64c10-14 66-14 76 0l-6 20c-14 8-50 8-64 0z" fill="${T}"/>${grains(60,58,40,G,4.5,2.2,30)}`
+      : `<path d="M38 30h44l6 58c-14 8-42 8-56 0z" fill="${G}" opacity=".9"/><path d="M38 30h44l2 14H36z" fill="${T}"/><circle cx="60" cy="66" r="10" fill="none" stroke="${T}" stroke-width="1.4"/><path d="M60 58v16M55 62l5 4 5-4" stroke="${T}" stroke-width="1.4" fill="none"/>`;break;
+    case 'fish': {const body=[G,G,T,G][v], fin=[R,T,G,T][v]; const scale=v===3?.9:1;
+      s=`<g transform="translate(60 62) scale(${scale}) translate(-60 -62)"><path d="M18 62c14-20 52-24 74 0-22 24-60 20-74 0z" fill="${body}"/><path d="M92 62l18-14v28z" fill="${fin}"/><path d="M50 46c6-6 16-8 22-4" stroke="${fin}" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="32" cy="58" r="3.2" fill="${T}"/><circle cx="32" cy="58" r="1.2" fill="${I}"/><path d="M42 52c-3 6-3 14 0 20" stroke="${T}" stroke-width="1.3" fill="none" opacity=".7"/>${[0,1,2,3].map(i=>`<path d="M${52+i*9} 56c3 3 3 9 0 12" stroke="${I}" stroke-width="1.2" fill="none" opacity=".7"/>`).join('')}</g><path d="M14 92h92" stroke="${T}" stroke-width="1" opacity=".3"/>`;break}
+    case 'prawn': s=`<path d="M40 40c30-12 52 8 46 32-4 16-22 22-36 14" fill="none" stroke="${R}" stroke-width="18" stroke-linecap="round"/>${[0,1,2,3,4].map(i=>{const a=(-60+i*36)*Math.PI/180;const x=62+Math.cos(a)*24,y=60+Math.sin(a)*24;return `<path d="M${(x-6).toFixed(1)} ${(y-3).toFixed(1)}l12 6" stroke="${I}" stroke-width="1.6" opacity=".8"/>`}).join('')}<path d="M42 38l-14-14M44 36l-6-18" stroke="${T}" stroke-width="1.4" stroke-linecap="round"/><circle cx="42" cy="44" r="2.4" fill="${T}"/><path d="M50 86l-10 8 4-12" fill="${G}"/>`;break;
+    case 'shutki': s=`<path d="M10 26h100" stroke="${T}" stroke-width="2"/>${[0,1,2].map(i=>{const x=30+i*30, h=[54,62,48][(i+v)%3], col=v===2?R:G; return `<path d="M${x} 26v6" stroke="${T}" stroke-width="1.4"/><path d="M${x} 32c8 6 8 ${h-14} 0 ${h}c-8-6-8-${h-14} 0-${h}z" fill="${col}" opacity="${v===2?.85:1}"/><path d="M${x} ${32+h}l-6 10h12z" fill="${T}" opacity=".9"/><path d="M${x} 38v${h-12}" stroke="${T}" stroke-width=".9" opacity=".6"/>`}).join('')}`;break;
+    case 'spice': {const col=[G,R,G][v]; const dark=v===2;
+      s=`<ellipse cx="60" cy="80" rx="42" ry="10" fill="${T}"/><path d="M26 78c4-26 20-38 34-38s30 12 34 38z" fill="${col}"/>${dark?`<path d="M26 78c4-26 20-38 34-38s30 12 34 38z" fill="${T}" opacity=".25"/>`:''}${grains(60,66,22,I,1.4,1,24)}<path d="M84 30c6 4 8 12 4 16" stroke="${T}" stroke-width="1.5" fill="none"/><ellipse cx="80" cy="34" rx="7" ry="4" transform="rotate(-30 80 34)" fill="${T}" opacity=".8"/>`;break}
+    case 'seed': s=`<ellipse cx="60" cy="80" rx="42" ry="10" fill="${T}"/>${grains(60,64,70,G,4,1.3,34)}${grains(60,64,30,T,4,1.3,30)}`;break;
+    case 'dal': {const col=v?G:R; s=`<path d="M22 58c0 22 16 32 38 32s38-10 38-32z" fill="${T}"/><ellipse cx="60" cy="58" rx="38" ry="12" fill="${col}"/>${grains(60,57,60,v?T:I,1.8,1.6,32)}<ellipse cx="60" cy="58" rx="38" ry="12" fill="none" stroke="${T}" stroke-width="1.2"/>`;break}
+    case 'chola': s=`<path d="M22 60c0 22 16 30 38 30s38-8 38-30z" fill="${T}"/><ellipse cx="60" cy="60" rx="38" ry="12" fill="${G}"/>${[...Array(18)].map((_,i)=>{const a=i*2.4,r=Math.sqrt(i/18)*30;const x=60+Math.cos(a)*r,y=58+Math.sin(a)*r*.36;return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" fill="${G}" stroke="${T}" stroke-width=".8"/>`}).join('')}`;break;
+    case 'oil': s=`<path d="M52 18h16v12l8 10v52a8 8 0 0 1-8 8H52a8 8 0 0 1-8-8V40l8-10z" fill="${G}"/><path d="M44 54h32v26H44z" fill="${T}"/><text x="60" y="70" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="${I}" font-style="italic">ghani</text><rect x="51" y="12" width="18" height="8" rx="2" fill="${T}"/><path d="M50 44c3-4 6-6 10-6" stroke="${I}" stroke-width="2" fill="none" opacity=".6" stroke-linecap="round"/>`;break;
+    case 'honey': s=`<rect x="34" y="40" width="52" height="56" rx="12" fill="${G}"/><rect x="32" y="28" width="56" height="14" rx="4" fill="${T}"/><path d="M60 42v10c0 4 4 4 4 8" stroke="${R}" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M44 64l8-5 8 5v9l-8 5-8-5z M60 64l8-5 8 5v9l-8 5-8-5z" fill="none" stroke="${T}" stroke-width="1.3" opacity=".7"/><path d="M40 50v30" stroke="${I}" stroke-width="3" opacity=".5" stroke-linecap="round"/>`;break;
+    case 'ghee': s=`<path d="M36 46h48l-4 44a6 6 0 0 1-6 6H46a6 6 0 0 1-6-6z" fill="${I}" stroke="${T}" stroke-width="1.6"/><path d="M38 60h44l-3 30a6 6 0 0 1-6 6H47a6 6 0 0 1-6-6z" fill="${G}"/><rect x="33" y="34" width="54" height="14" rx="4" fill="${T}"/>${grains(60,76,24,I,1.6,1.2,16)}`;break;
+    case 'gur': s=`${[[60,82],[42,70],[78,70],[60,56]].map(([x,y],i)=>`<ellipse cx="${x}" cy="${y+8}" rx="18" ry="6" fill="${T}" opacity=".9"/><ellipse cx="${x}" cy="${y}" rx="18" ry="6" fill="${G}"/><path d="M${x-18} ${y}v8c0 3 8 6 18 6s18-3 18-6v-8" fill="${G}" opacity=".85"/><ellipse cx="${x}" cy="${y}" rx="11" ry="3.4" fill="none" stroke="${T}" stroke-width="1" opacity=".5"/>`).join('')}<path d="M88 24c-6 10-6 18 0 26" stroke="${T}" stroke-width="1.5" fill="none"/><path d="M88 24c8 4 12 2 16-4M88 34c8 2 12-2 14-8" stroke="${T}" stroke-width="1.3" fill="none"/>`;break;
+    case 'doi': s=`<path d="M30 52h60l-6 34c-2 8-12 12-24 12s-22-4-24-12z" fill="${R}"/><ellipse cx="60" cy="52" rx="30" ry="9" fill="${I}" stroke="${R}" stroke-width="3"/><ellipse cx="60" cy="52" rx="22" ry="5" fill="${G}" opacity=".5"/><path d="M36 66h48" stroke="${I}" stroke-width="1.2" opacity=".6"/><path d="M38 74h44" stroke="${I}" stroke-width="1.2" opacity=".4"/>`;break;
+    case 'citrus': s=`<circle cx="54" cy="66" r="28" fill="${G}"/><circle cx="54" cy="66" r="28" fill="none" stroke="${T}" stroke-width="1.2" opacity=".5"/>${[...Array(12)].map((_,i)=>{const a=i*30*Math.PI/180;return `<circle cx="${(54+Math.cos(a)*16).toFixed(1)}" cy="${(66+Math.sin(a)*16).toFixed(1)}" r="1.4" fill="${T}" opacity=".45"/>`}).join('')}<path d="M70 40c10-14 24-14 30-10-6 10-18 16-30 10z" fill="${T}"/><path d="M68 42l-6-6" stroke="${T}" stroke-width="2" stroke-linecap="round"/><circle cx="86" cy="86" r="12" fill="${G}" opacity=".85"/>`;break;
+  }
+  return `<svg viewBox="0 0 120 120" role="img" aria-hidden="true">${bg}${s}</svg>`;
+}
+const MOTIF = (size=120)=>`<svg viewBox="0 0 120 120" width="${size}" height="${size}" aria-hidden="true"><circle cx="72" cy="46" r="30" fill="${R}" opacity=".9"/><circle cx="46" cy="70" r="26" fill="${G}"/><circle cx="72" cy="74" r="34" fill="none" stroke="${T}" stroke-width="1.2"/></svg>`;
+
+/* ==========================================================================
+   Rendering
+   ========================================================================== */
+const app=$('#app');
+
+function render(){
+  const v=S.view;
+  if(v==='checkout') app.innerHTML=checkoutHTML();
+  else if(v==='success') app.innerHTML=successHTML();
+  else app.innerHTML=heroHTML()+trustHTML()+`<main class="wrap layout" id="layout"><section class="main-col" id="mainCol" aria-label="${S.mode==='saved'?'Saved markets':'Market builder'}">${S.mode==='saved'?savedHTML():builderHTML()}</section><aside class="summary" id="summary" aria-label="Market summary"></aside></main>`;
+  renderSummary();
+  syncChrome();
+  if(v==='checkout') bindCheckout();
+  if(v==='builder') bindBuilder();
+}
+
+function heroHTML(){
+  const m=S.mode==='saved'?STR.saved:STR[S.mode];
+  const isB=S.mode!=='saved';
+  const days=deliveryDays();
+  return `<section class="hero on-red">
+    <svg class="hero-art" viewBox="0 0 520 520" aria-hidden="true"><g class="c1"><circle cx="330" cy="190" r="150" fill="${G}"/></g><g class="c2"><circle cx="200" cy="300" r="110" fill="${I}" opacity=".16"/></g><circle cx="320" cy="320" r="150" fill="none" stroke="${I}" stroke-width="1.2" opacity=".75"/></svg>
+    <div class="wrap">
+      <div>
+        <p class="eyebrow"><span class="rule"></span>${isB?(S.mode==='weekly'?'This week · ':'This month · ')+'Delivering from '+fmtDate(days[0],{weekday:'short',day:'numeric',month:'short'}):'Your household lists'}</p>
+        <h1>${isB?`${m.h1a} <em>${m.h1b}</em>`:`Your <em>Saved Markets</em>`}</h1>
+        <p class="lead">${isB?m.lead:'Markets you have saved before. Repeat one in a single tap, then adjust anything before you review.'}</p>
+      </div>
+      <div class="hero-side">
+        ${isB?`<div class="hh" role="group" aria-labelledby="hhLbl">
+          <div class="hh-label"><span id="hhLbl" class="eyebrow">Household size · optional</span><span>${S.hh===8?'8+':S.hh} people</span></div>
+          <div class="hh-opts">${[2,4,6,8].map(n=>`<button class="hh-opt" data-act="hh" data-n="${n}" aria-pressed="${S.hh===n}">${n===8?'8+':n}</button>`).join('')}</div>
+          <p class="hh-note">Used only for quantity hints and suggestions. Nothing is added for you.</p>
+        </div>`:''}
+        <p class="deliv">${ic.truck}<span>Scheduled delivery · ${S.mode==='monthly'?'free over '+money(5000):'free over '+money(2500)}</span></p>
+      </div>
+    </div>
+  </section>
+  <div class="wrap modebar">
+        <div class="modes" role="group" aria-label="Shopping mode">
+          ${['weekly','monthly','saved'].map(k=>`<button class="mode" data-act="mode" data-mode="${k}" aria-pressed="${S.mode===k}">
+            <span class="m-t">${k==='weekly'?'<span class="primary-dot" aria-hidden="true"></span>':''}${STR[k].title}${k==='saved'?` <span class="badge">${S.saved.length}</span>`:''}</span>
+            <span class="m-s">${STR[k].sub}</span></button>`).join('')}
+        </div>
+  </div>`;
+}
+
+function trustHTML(){
+  const items=[[ic.leaf,'Direct from producers'],[ic.pin,'Origin on every product'],[ic.shield,'Quality-checked in-house'],[ic.qr,'Batch traceable by QR'],[ic.box,'Premium protective packing'],[ic.tag,'Honest, all-inclusive pricing']];
+  return `<div class="trust"><div class="wrap"><ul aria-label="The FarmToHome promise">${items.map(([i,t])=>`<li>${i}${t}</li>`).join('')}</ul></div></div>`;
+}
+
+/* ---------- Builder ---------- */
+function builderHTML(){
+  const counts=catCounts();
+  return `<div class="toolbar" id="toolbar">
+      <div class="tb-row">
+        <label class="search"><span class="sr">Search products, origins or producers</span>${ic.search}
+          <input id="q" type="search" autocomplete="off" placeholder="Search rice, pabda, Bogura, honey…" value="${esc(S.q)}">
+          <button class="clear-q" data-act="clear-q" aria-label="Clear search" ${S.q?'':'hidden'}>${ic.x}</button></label>
+        <button class="tb-link expand" data-act="expand-all">Expand all</button>
+        <button class="tb-link expand" data-act="collapse-all">Collapse all</button>
+      </div>
+      <div class="chips" role="group" aria-label="Filter by category">
+        <button class="chip" data-act="filter" data-cat="all" aria-pressed="${S.cat==='all'}">All categories</button>
+        ${CATS.map(c=>`<button class="chip" data-act="filter" data-cat="${c.id}" aria-pressed="${S.cat===c.id}">${c.short}${counts[c.id]?`<span class="n">${counts[c.id]}</span>`:''}</button>`).join('')}
+      </div>
+    </div>
+    <div id="sugg"></div>
+    <div class="cats" id="cats">${catsHTML()}</div>`;
+}
+function matches(p){
+  if(!S.q) return true;
+  const q=S.q.toLowerCase().trim();
+  return [p.n,p.o,p.p,p.v,p.d,CATS.find(c=>c.id===p.c).n].join(' ').toLowerCase().includes(q);
+}
+function catCounts(){const o={}; Object.keys(basket()).forEach(id=>{const c=PM[id].c;o[c]=(o[c]||0)+1}); return o}
+function catsHTML(){
+  const list=CATS.filter(c=>S.cat==='all'||S.cat===c.id);
+  let html='', any=false;
+  list.forEach((c,ci)=>{
+    const prods=P.filter(p=>p.c===c.id&&matches(p));
+    if(!prods.length) return;
+    any=true;
+    const open=S.q?true:S.open.includes(c.id);
+    const idx=CATS.indexOf(c)+1;
+    html+=`<section class="cat${open?' open':''}" id="cat-${c.id}" data-cat="${c.id}">
+      <button class="cat-head" data-act="toggle" data-cat="${c.id}" aria-expanded="${open}" aria-controls="catb-${c.id}">
+        <span class="cat-num" aria-hidden="true">${String(idx).padStart(2,'0')}</span>
+        <span><span class="cat-name">${c.n}</span><span class="cat-story">${c.story}</span></span>
+        <span class="cat-meta"><span>${prods.length} product${prods.length>1?'s':''}${S.q?' found':''}</span><span class="cat-in" id="catin-${c.id}"></span></span>
+        <span class="chev" aria-hidden="true">${ic.chev}</span>
+      </button>
+      <div class="cat-body" id="catb-${c.id}" role="region" aria-label="${c.n}" ${open?'':'inert'}><div class="cat-inner"><div class="cat-list">${prods.map(rowHTML).join('')}</div></div></div>
+    </section>`;
+  });
+  if(!any) html=`<div class="empty-search">${MOTIF(96)}<h3>Nothing matches “${esc(S.q)}”</h3><p>Try a district like <button class="linkish" data-act="set-q" data-q="Bogura">Bogura</button>, a producer, or <button class="linkish" data-act="set-q" data-q="">clear the search</button>.</p></div>`;
+  return html;
+}
+function rowHTML(p){
+  const b=basket()[p.id], si=sizeOf(p), sz=p.s[si];
+  const tags=[];
+  if(p.tag==='fresh') tags.push(`<span class="tag"><span class="dot" aria-hidden="true"></span>Fresh this week</span>`);
+  if(p.tag==='seasonal') tags.push(`<span class="tag"><span class="dot gold" aria-hidden="true"></span>In season</span>`);
+  if(p.perish) tags.push(`<span class="tag"><span class="dot sky" aria-hidden="true"></span>Packed on ice</span>`);
+  const hint=(p.h&&NEED[p.h])?`<p class="hint"><span class="dot gold" aria-hidden="true"></span>≈ ${need(p.h,S.hh)} for ${S.hh===8?'8+':S.hh}</p>`:'';
+  return `<article class="row${b?' in':''}" data-id="${p.id}">
+    <div class="thumb">${art(p.a)}</div>
+    <div class="info">
+      <p class="eyebrow">${p.o.toUpperCase()} <span class="seal" title="Origin class ${p.cls} (demo)">${p.cls}</span> ${p.g}</p>
+      <h3 class="pname">${p.n}</h3>
+      <p class="pdesc">${p.d}</p>
+      <div class="tags">${tags.join('')}<button class="origin-link" data-act="origin" data-id="${p.id}">${ic.pin}Know your origin</button></div>
+    </div>
+    <div class="buy">
+      <div class="sizes" role="radiogroup" aria-label="${esc(p.n)} pack size">${p.s.map((s,i)=>`<button class="size" role="radio" data-act="size" data-id="${p.id}" data-i="${i}" aria-checked="${i===si}">${s[0]}</button>`).join('')}</div>
+      ${hint}
+      <div class="buy-line">
+        <p class="price">${money(sz[1])}<small>${unitPrice(sz)}</small></p>
+        ${b?stepperHTML(p,b.q):`<button class="add" data-act="add" data-id="${p.id}" aria-label="Add ${esc(p.n)}, ${sz[0]}, to market">${ic.plus}Add</button>`}
+      </div>
+    </div>
+  </article>`;
+}
+function stepperHTML(p,q,dir){
+  return `<div class="stepper" role="group" aria-label="${esc(p.n)} quantity">
+    <button data-act="dec" data-id="${p.id}" aria-label="${q===1?'Remove':'Decrease'} ${esc(p.n)}">${q===1?ic.trash:ic.minus}</button>
+    <span class="q${dir?' '+dir:''}" aria-live="polite"><span>${q}</span></span>
+    <button data-act="inc" data-id="${p.id}" aria-label="Increase ${esc(p.n)}">${ic.plus}</button></div>`;
+}
+function updateRow(id,dir){
+  const el=$(`.row[data-id="${id}"]`); if(!el) return;
+  const focus=document.activeElement, fAct=focus&&focus.dataset?focus.dataset.act:null, fId=focus&&focus.dataset?focus.dataset.id:null, fI=focus&&focus.dataset?focus.dataset.i:null;
+  const tmp=document.createElement('div'); tmp.innerHTML=rowHTML(PM[id]).trim();
+  const nw=tmp.firstChild;
+  if(dir){const q=nw.querySelector('.q'); if(q) q.classList.add(dir)}
+  el.replaceWith(nw);
+  if(fId===id){
+    let t=null;
+    if(fAct==='size') t=nw.querySelector(`[data-act="size"][data-i="${fI}"]`);
+    else if(fAct==='add') t=nw.querySelector('[data-act="inc"]');
+    else if(fAct==='inc'||fAct==='dec') t=nw.querySelector(`[data-act="${fAct}"]`)||nw.querySelector('[data-act="add"]');
+    if(t) t.focus({preventScroll:true});
+  }
+}
+function renderCatBadges(){
+  const b=basket();
+  CATS.forEach(c=>{
+    const el=$('#catin-'+c.id); if(!el) return;
+    let n=0,sum=0; Object.entries(b).forEach(([id,e])=>{if(PM[id].c===c.id){n++;sum+=PM[id].s[e.s][1]*e.q}});
+    el.classList.toggle('on',n>0);
+    el.innerHTML=n?`<span class="dot" aria-hidden="true"></span>${n} in market · ${money(sum)}`:'';
+  });
+  const counts=catCounts();
+  $$('.chip[data-cat]').forEach(ch=>{const c=ch.dataset.cat; if(c==='all')return; const cat=CATS.find(x=>x.id===c); ch.innerHTML=cat.short+(counts[c]?`<span class="n">${counts[c]}</span>`:'')});
+}
+function renderSuggestions(){
+  const el=$('#sugg'); if(!el) return;
+  if(S.q){el.innerHTML='';return}
+  const b=basket(); const inCat=new Set(Object.keys(b).map(id=>PM[id].c));
+  const list=ESSENTIALS.filter(e=>!inCat.has(e.c)&&!S.dismissed.includes(e.pid)&&!b[e.pid]).slice(0,3);
+  if(!list.length){el.innerHTML='';return}
+  el.innerHTML=`<section class="sugg" aria-labelledby="suggT">
+    <div class="sugg-head"><h2 id="suggT">Often in a ${S.bmode==='monthly'?'monthly stock':'weekly market'} for ${S.hh===8?'8+':S.hh}</h2><p>Suggestions only · never added automatically</p></div>
+    <div class="sugg-list">${list.map(e=>{const p=PM[e.pid]; const pick=suggestPick(p); return `<div class="sg">
+      <div class="t">${art(p.a)}</div>
+      <div><h3>${p.n}</h3><p>${e.why(S.hh)}</p></div>
+      <div class="sg-act"><button class="btn-xs" data-act="sugg-dismiss" data-id="${p.id}">Not now</button><button class="btn-xs fill" data-act="sugg-add" data-id="${p.id}" data-i="${pick.i}" data-q="${pick.q}">Add ${pick.q>1?pick.q+' × ':''}${p.s[pick.i][0]}</button></div>
+    </div>`}).join('')}</div></section>`;
+}
+function suggestPick(p){
+  const d=NEED[p.c==='oils'?'oils':p.c];
+  if(!d) return {i:defaultSize(p),q:1};
+  const target=d.per*S.hh*(S.bmode==='monthly'?4.3:1);
+  let best={i:0,q:1,diff:Infinity};
+  p.s.forEach((s,i)=>{const q=Math.max(1,Math.round(target/s[2])); const diff=Math.abs(q*s[2]-target)+q*0.01; if(diff<best.diff)best={i,q,diff}});
+  return best;
+}
+
+/* ---------- Summary ---------- */
+function summaryHTML(where){
+  const b=basket(), t=totals(), m=STR[S.bmode];
+  const ids=Object.keys(b);
+  let list='';
+  if(!ids.length){
+    list=`<div class="sum-empty">${MOTIF(110)}<h3>${STR.emptyTitle}</h3><p>${STR.emptyBody}</p></div>`;
+  } else {
+    CATS.forEach(c=>{
+      const inC=ids.filter(id=>PM[id].c===c.id); if(!inC.length) return;
+      list+=`<div class="sum-group"><h3 class="eyebrow">${c.n}</h3>${inC.map(id=>{const p=PM[id],e=b[id],sz=p.s[e.s];
+        return `<div class="li"><span class="li-name">${p.n}</span><span class="li-total">${money(sz[1]*e.q)}</span>
+          <span class="li-meta">${sz[0]} × ${e.q} · ${money(sz[1])} each</span>
+          <span class="li-ctrl"><button class="mini" data-act="dec" data-id="${id}" aria-label="Decrease ${esc(p.n)}">${ic.minus}</button><span class="mini-q">${e.q}</span><button class="mini" data-act="inc" data-id="${id}" aria-label="Increase ${esc(p.n)}">${ic.plus}</button><button class="mini" data-act="rm" data-id="${id}" aria-label="Remove ${esc(p.n)}">${ic.x}</button></span></div>`}).join('')}</div>`;
+    });
+  }
+  const pct=Math.min(100,t.sub/t.threshold*100);
+  return `<div class="sum-head">
+      <p class="eyebrow"><span class="dot" aria-hidden="true"></span>My Market · ${S.bmode==='monthly'?'Monthly':'Weekly'}</p>
+      <h2>${m.sumTitle}<span class="sum-count" id="${where}Count">${t.products} product${t.products===1?'':'s'}</span></h2>
+      <p class="sum-deliv">${ic.truck}<span>${nextDeliveryText()}</span></p>
+    </div>
+    <div class="sum-list">${list}</div>
+    <div class="sum-foot">
+      <div class="tot"><span>Subtotal · ${t.items} item${t.items===1?'':'s'}</span><span>${money(t.sub)}</span></div>
+      <div class="tot"><span>Delivery</span><span>${t.products===0?'—':t.fee===0?'Free':money(t.fee)}</span></div>
+      ${t.products&&t.fee?`<div class="free-meter" aria-hidden="true"><i style="width:${pct}%"></i></div><p class="free-note">Add ${money(t.threshold-t.sub)} more for free delivery</p>`:''}
+      <div class="tot big"><span>Total</span><span>${money(t.total)}</span></div>
+      <p class="honest">${ic.tag}<span>Honest pricing · no hidden charges · demo prices</span></p>
+      <button class="cta" data-act="review" ${t.products?'':'disabled'}>${STR.review}${ic.arrow}</button>
+      <div class="sum-actions">
+        <button class="ghost" data-act="save" ${t.products?'':'disabled'}>${ic.bookmark}Save market</button>
+        <button class="ghost" data-act="clear" ${t.products?'':'disabled'}>${ic.trash}Clear</button>
+      </div>
+    </div>`;
+}
+function renderSummary(){
+  const aside=$('#summary');
+  if(aside) aside.innerHTML=`<div class="sum">${summaryHTML('aside')}</div>`;
+  const sh=$('#sheetBody'); if(sh) sh.innerHTML=summaryHTML('sheet');
+  const t=totals();
+  $('#topCount').textContent=t.products; $('#topCount').classList.toggle('has',t.products>0);
+  $('#mbCount').textContent=t.products; $('#mbCount').classList.toggle('has',t.products>0);
+  $('#mbTotal').textContent=money(t.total);
+  $('#mbSub').textContent=t.products?`${t.products} product${t.products===1?'':'s'} · View my market`:'Add your first item';
+  $('#mbReview').disabled=!t.products;
+}
+function syncChrome(){
+  const showBar=S.view==='builder';
+  $('#mbar').hidden=!showBar;
+  $('.top-basket').hidden=!showBar;
+}
+function refreshAfterChange(id,dir){
+  if(id) updateRow(id,dir);
+  renderSummary(); renderCatBadges(); renderSuggestions(); persist();
+}
+
+/* ---------- Saved markets ---------- */
+function savedHTML(){
+  if(!S.saved.length) return `<div class="view-head"><p class="eyebrow"><span class="dot"></span>Saved Markets</p><h2>No saved markets yet</h2><p>Build a weekly market and choose <b>Save market</b> to reuse it in one tap.</p><div style="margin-top:18px"><button class="btn fill" data-act="mode" data-mode="weekly">Build my Weekly Market ${ic.arrow}</button></div></div>`;
+  return `<div class="view-head"><p class="eyebrow"><span class="dot" aria-hidden="true"></span>${S.saved.length} saved</p><h2>Repeat a market you trust</h2><p>Repeating loads the list into your market at today’s prices. Nothing is ordered until you review and place it.</p></div>
+  <div class="saved-list">${S.saved.map((sv,i)=>{
+    const ids=Object.keys(sv.items).filter(id=>PM[id]);
+    const t=totals(Object.fromEntries(ids.map(id=>[id,sv.items[id]])),sv.mode);
+    return `<article class="sv" style="animation-delay:${i*60}ms">
+      <div class="sv-stack" aria-hidden="true">${ids.slice(0,3).map(id=>`<div class="t">${art(PM[id].a)}</div>`).join('')}</div>
+      <div><h3>${esc(sv.name)}</h3>
+        <p class="sv-meta"><span>${sv.mode==='monthly'?'Monthly Stock':'Weekly Market'}</span><span>${ids.length} products</span><span>≈ ${money(t.sub)} today</span><span>Saved ${fmtDate(new Date(sv.at),{day:'numeric',month:'short'})}</span></p>
+        <p class="sv-items">${ids.slice(0,5).map(id=>PM[id].n).join(' · ')}${ids.length>5?` · +${ids.length-5} more`:''}</p></div>
+      <div class="sv-act"><button class="icon-btn" data-act="del-saved" data-sid="${sv.id}" aria-label="Delete ${esc(sv.name)}">${ic.trash}</button><button class="btn fill" data-act="repeat" data-sid="${sv.id}">${ic.repeat}Repeat this market</button></div>
+    </article>`}).join('')}</div>`;
+}
+
+/* ---------- Checkout ---------- */
+function checkoutHTML(){
+  const days=deliveryDays(), co=S.co, m=STR[S.bmode];
+  return `<section class="wrap co-head">
+      <button class="back" data-act="back">${ic.back}Back to my market</button>
+      <p class="eyebrow" style="margin-top:22px">Review & schedule · ${S.bmode==='monthly'?'Monthly Stock':'Weekly Market'}</p>
+      <h1>Your market, delivered.</h1>
+      <p>Three short steps. Your concierge confirms everything before packing.</p>
+      <div class="steps" aria-hidden="true"><span class="step done"><i>1</i>Market built</span><span class="step"><i>2</i>Delivery</span><span class="step"><i>3</i>Payment</span></div>
+    </section>
+    <div class="wrap co-grid">
+      <form id="coForm" novalidate>
+        <fieldset class="fs"><legend><span class="num">01 —</span>Delivery details</legend>
+          <div class="two">
+            <div class="field" id="f-name"><label for="coName">Recipient name <span class="helper">(optional)</span></label><input id="coName" autocomplete="name" value="${esc(co.name)}" placeholder="e.g. Rahman family"></div>
+            <div class="field" id="f-phone"><label for="coPhone">Phone number</label><input id="coPhone" type="tel" inputmode="tel" autocomplete="tel" value="${esc(co.phone)}" placeholder="01XXXXXXXXX" aria-describedby="e-phone"><span class="err-msg" id="e-phone">Enter an 11-digit Bangladesh mobile number, e.g. 01712345678.</span></div>
+          </div>
+          <div class="field" id="f-addr"><label for="coAddr">Delivery address</label><textarea id="coAddr" autocomplete="street-address" placeholder="House, road, area, city" aria-describedby="e-addr">${esc(co.addr)}</textarea><span class="err-msg" id="e-addr">Please add a full address (house, road and area).</span></div>
+          <button type="button" class="linkish" data-act="demo-fill">Use a demo address</button>
+          <div class="field" style="margin-top:16px"><label for="coNote">Note for your concierge <span class="helper">(optional)</span></label><input id="coNote" value="${esc(co.note)}" placeholder="e.g. Hand over to our house manager, Rina"></div>
+        </fieldset>
+        <fieldset class="fs"><legend><span class="num">02 —</span>Delivery date & time</legend>
+          <p class="lbl" id="dateLbl" style="margin-bottom:10px">Preferred date</p>
+          <div class="opt-grid" role="radiogroup" aria-labelledby="dateLbl">${days.map((d,i)=>`<button type="button" class="opt" role="radio" data-act="date" data-i="${i}" aria-checked="${co.date===i}"><span class="d1">${fmtDate(d,{weekday:'short'})}</span><span class="d2">${d.getDate()}</span><span class="d3">${fmtDate(d,{month:'short'})}</span></button>`).join('')}</div>
+          <p class="lbl" id="slotLbl" style="margin:20px 0 10px">Time slot</p>
+          <div class="opt-grid slots" role="radiogroup" aria-labelledby="slotLbl" id="slots">${slotsHTML()}</div>
+          ${hasPerishable()?`<p class="sim-note">${ic.info}<span>Fish and fresh items are cleaned and packed on ice the morning of delivery.</span></p>`:''}
+        </fieldset>
+        <fieldset class="fs"><legend><span class="num">03 —</span>Payment</legend>
+          <div class="pay" role="radiogroup" aria-label="Payment method">
+            <button type="button" class="pay-opt" role="radio" data-act="pay" data-v="cod" aria-checked="${co.pay==='cod'}"><span class="radio"></span><span><b>Cash on Delivery</b><span>Pay your rider when the market arrives.</span></span></button>
+            <button type="button" class="pay-opt" role="radio" data-act="pay" data-v="mfs" aria-checked="${co.pay==='mfs'}"><span class="radio"></span><span><b>Mobile Financial Services</b><span>bKash, Nagad or Rocket. A payment request is sent after your concierge confirms the order (simulated).</span>
+              <span class="mfs" ${co.pay==='mfs'?'':'hidden'} id="mfsRow">${['bKash','Nagad','Rocket'].map(n=>`<span class="size" role="radio" tabindex="0" data-act="mfs" data-v="${n}" aria-checked="${co.mfs===n}">${n}</span>`).join('')}</span></span></button>
+          </div>
+        </fieldset>
+      </form>
+      <aside class="co-sum" aria-label="Order summary">
+        <div class="sum-head"><p class="eyebrow"><span class="dot" aria-hidden="true"></span>Order summary</p><h2>${m.sumTitle}<button class="ghost" data-act="back" style="font-size:12px">Edit</button></h2><p class="sum-deliv" id="coDeliv">${ic.truck}<span>${nextDeliveryText()}</span></p></div>
+        <div class="sum-list">${coListHTML()}</div>
+        <div class="sum-foot">${coTotalsHTML()}
+          <button class="cta place" data-act="place" id="placeBtn">Place Order${ic.arrow}</button>
+          <p class="sim-note">${ic.info}<span>Simulated checkout. No payment is taken and nothing is sent anywhere.</span></p>
+        </div>
+      </aside>
+    </div>`;
+}
+function slotsHTML(){return SLOTS.map((s,i)=>{const full=(S.co.date===0&&i===3); return `<button type="button" class="opt" role="radio" data-act="slot" data-i="${i}" aria-checked="${S.co.slot===i&&!full}" ${full?'disabled aria-label="'+s+', fully booked"':''}>${s}${full?'<span class="d3">Fully booked</span>':''}</button>`}).join('')}
+function hasPerishable(){return Object.keys(basket()).some(id=>PM[id].perish)}
+function coListHTML(){
+  const b=basket();
+  return Object.keys(b).map(id=>{const p=PM[id],e=b[id],sz=p.s[e.s]; return `<div class="li"><span class="li-name">${p.n}</span><span class="li-total">${money(sz[1]*e.q)}</span><span class="li-meta">${sz[0]} × ${e.q} · ${p.o}</span></div>`}).join('');
+}
+function coTotalsHTML(){const t=totals(); return `<div class="tot"><span>Subtotal · ${t.items} items</span><span>${money(t.sub)}</span></div><div class="tot"><span>Delivery</span><span>${t.fee?money(t.fee):'Free'}</span></div><div class="tot big"><span>Total</span><span>${money(t.total)}</span></div><p class="honest">${ic.tag}<span>Prices include packing and quality testing · demo data</span></p>`}
+function bindCheckout(){
+  const map={coName:'name',coPhone:'phone',coAddr:'addr',coNote:'note'};
+  Object.entries(map).forEach(([id,k])=>{const el=$('#'+id); el.addEventListener('input',()=>{S.co[k]=el.value; el.closest('.field').classList.remove('err'); persist()})});
+  $('#coForm').addEventListener('submit',e=>{e.preventDefault(); placeOrder()});
+}
+function validPhone(v){return /^(?:\+?88)?01[3-9]\d{8}$/.test(v.replace(/[\s-]/g,''))}
+function placeOrder(){
+  let ok=true, first=null;
+  const ph=$('#f-phone'), ad=$('#f-addr');
+  if(!validPhone(S.co.phone)){ph.classList.add('err'); ok=false; first=first||$('#coPhone')}
+  if(S.co.addr.trim().length<10){ad.classList.add('err'); ok=false; first=first||$('#coAddr')}
+  if(!ok){first.focus(); first.scrollIntoView({behavior:reduced()?'auto':'smooth',block:'center'}); toast('Please check the highlighted details'); return}
+  const btn=$('#placeBtn'); btn.classList.add('loading'); btn.innerHTML='<span class="spinner" aria-hidden="true"><i></i><i></i></span>Confirming your market…';
+  setTimeout(()=>{
+    const d=deliveryDays()[S.co.date], t=totals();
+    const id='FTH-'+String(d.getFullYear()).slice(2)+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'-'+Math.floor(1000+Math.random()*9000);
+    S.lastOrder={id,date:d.getTime(),slot:SLOTS[S.co.slot],addr:S.co.addr.trim(),phone:S.co.phone,name:S.co.name,pay:S.co.pay==='cod'?'Cash on Delivery':'Mobile Financial Services · '+S.co.mfs,items:JSON.parse(JSON.stringify(basket())),t,mode:S.bmode,saved:false};
+    S.baskets[S.bmode]={};
+    persist();
+    go('success');
+  }, reduced()?200:1100);
+}
+
+/* ---------- Success ---------- */
+function successHTML(){
+  const o=S.lastOrder; if(!o) return '';
+  const d=new Date(o.date);
+  return `<section class="success on-red">
+    <svg class="bloom" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle class="b1" cx="980" cy="160" r="240" fill="${G}"/><circle class="b2" cx="800" cy="360" r="170" fill="${I}" opacity=".16"/><circle class="b3" cx="960" cy="400" r="260" fill="none" stroke="${I}" stroke-width="1.4" opacity=".5"/></svg>
+    <div class="wrap">
+      <div>
+        <div class="check">${ic.check}</div>
+        <h1>Your ${o.mode==='monthly'?'monthly stock':'weekly market'} is confirmed.</h1>
+        <p class="lead">Thank you${o.name?', '+esc(o.name):''}. Your concierge will call to confirm before packing. Every pack carries a QR code — scan it to meet the people who grew your food.</p>
+        <p class="oid"><span>Order</span><b>${o.id}</b></p>
+        <div class="s-actions">
+          <button class="btn inv fill" data-act="save-order" ${o.saved?'disabled':''}>${ic.bookmark}${o.saved?'Saved to Saved Markets':'Save as a Saved Market'}</button>
+          <button class="btn inv" data-act="new-market">Start a new market</button>
+        </div>
+      </div>
+      <div class="s-card">
+        <h2>Delivery summary</h2>
+        <dl class="dl">
+          <dt>Date</dt><dd>${fmtDate(d,{weekday:'short',day:'numeric',month:'short',year:'numeric'})}</dd>
+          <dt>Time</dt><dd>${o.slot}</dd>
+          <dt>Address</dt><dd>${esc(o.addr)}</dd>
+          <dt>Phone</dt><dd>${esc(o.phone)}</dd>
+          <dt>Payment</dt><dd>${o.pay}</dd>
+          <dt>Products</dt><dd>${o.t.products} products · ${o.t.items} items</dd>
+          <dt>Delivery</dt><dd>${o.t.fee?money(o.t.fee):'Free'}</dd>
+          <dt>Total</dt><dd><b class="serif" style="font-size:20px;font-weight:500">${money(o.t.total)}</b></dd>
+        </dl>
+        <h2 style="margin-top:24px">What happens next</h2>
+        <ul class="next">
+          <li><i>1</i><span><b>Confirmed by your concierge</b>A short call to ${esc(o.phone)} before we pack.</span></li>
+          <li><i>2</i><span><b>Packed fresh, sealed with batch QR</b>Fish is cleaned and iced the morning of delivery.</span></li>
+          <li><i>3</i><span><b>Delivered on your schedule</b>${fmtDate(d,{weekday:'long',day:'numeric',month:'long'})}, ${o.slot}.</span></li>
+        </ul>
+        <div class="sum-list" style="padding:12px 0 0;max-height:220px;border-top:1px solid var(--line);margin-top:16px">${Object.keys(o.items).map(id=>{const p=PM[id],e=o.items[id],sz=p.s[e.s];return `<div class="li"><span class="li-name">${p.n}</span><span class="li-total">${money(sz[1]*e.q)}</span><span class="li-meta">${sz[0]} × ${e.q}</span></div>`}).join('')}</div>
+        <p class="sim-note">${ic.info}<span>Simulated order for this prototype. No payment was taken and nothing was submitted.</span></p>
+      </div>
+    </div>
+  </section>`;
+}
+
+/* ---------- Know Your Origin ---------- */
+function originHTML(p){
+  const hd=daysAgo(p.hd), qd=daysAgo(Math.max(p.hd-1,0)), pk=daysAgo(Math.max(p.hd-2,0));
+  const sz=p.s[sizeOf(p)], inB=basket()[p.id];
+  const harvestLbl=p.c==='fish'?'Collected':p.c==='oils'&&p.id==='honey'?'Harvested':'Harvest / collection';
+  return `<button class="modal-x on-red-x" data-act="close-modal" aria-label="Close">${ic.x}</button>
+  <div class="og-hero on-red"><span class="og-ring" aria-hidden="true"></span>
+    <div class="thumb" id="ogThumb">${art(p.a)}</div>
+    <div><p class="eyebrow"><span class="dot" aria-hidden="true"></span>Know your origin</p><h2 id="modalTitle">${p.n}</h2></div>
+  </div>
+  <div class="og-body">
+    <div>
+      <p class="eyebrow" style="margin-bottom:16px">${p.v} · Origin class ${p.cls} · ${p.g}</p>
+      <div class="producer"><div class="avatar" aria-hidden="true">${p.p.split(' ').map(w=>w[0]).slice(0,2).join('')}</div><div><b>${p.p}</b><span>${p.c==='spices'&&p.cls==='O3'?'In-house quality team':'Producer partner'} · ${p.v}</span></div></div>
+      <blockquote>“${p.quote}”</blockquote>
+      <dl class="cert">
+        <dt>Origin</dt><dd>${p.v}</dd>
+        <dt>Producer</dt><dd>${p.p}</dd>
+        <dt>Origin class</dt><dd>${p.cls} <span class="helper">(definition pending)</span></dd>
+        <dt>Quality</dt><dd>${p.g}</dd>
+        <dt>${harvestLbl}</dt><dd>${fmtDate(hd)}</dd>
+        <dt>Packed</dt><dd>${fmtDate(pk)}</dd>
+        <dt>Batch</dt><dd class="mono">${batchNo(p)}</dd>
+        <dt>Net weight</dt><dd>${sz[0]} per pack</dd>
+      </dl>
+    </div>
+    <div>
+      <p class="eyebrow" style="margin-bottom:14px">Farm to home · 5 steps</p>
+      <ol class="journey" id="journey"><span class="line" aria-hidden="true"></span>
+        <li style="transition-delay:.05s"><i>1</i><div><b>Farmer / Producer</b><span>${p.p}, ${p.v}</span></div></li>
+        <li style="transition-delay:.2s"><i>2</i><div><b>Collection & harvest</b><span>${fmtDate(hd)}${p.perish?' · iced at source':''}</span></div></li>
+        <li style="transition-delay:.35s"><i>3</i><div><b>Quality test</b><span>${fmtDate(qd)} · passed · ${p.g}</span></div></li>
+        <li style="transition-delay:.5s"><i>4</i><div><b>Processing & packaging</b><span>${p.m}</span></div></li>
+        <li style="transition-delay:.65s"><i>5</i><div><b>QR scan & delivery</b><span>Packed for your household — scan the QR on the pack to see this page.</span></div></li>
+      </ol>
+      <div class="report">
+        <button class="report-toggle" data-act="report" aria-expanded="false" aria-controls="rep">Quality test summary (demo)${ic.chev}</button>
+        <div class="report-body" id="rep"><div><table class="rt"><tbody>
+          <tr><td>Adulteration screen</td><td>Not detected</td></tr>
+          ${p.c==='fish'||p.c==='dried'?'<tr><td>Formalin</td><td>Not detected</td></tr>':''}
+          ${p.c==='spices'?'<tr><td>Added colour / starch</td><td>Not detected</td></tr>':''}
+          ${p.c==='oils'?'<tr><td>Purity / blending</td><td>Pure, unblended</td></tr>':''}
+          ${p.c==='rice'||p.c==='pulses'?'<tr><td>Moisture</td><td>Within limit</td></tr><tr><td>Polish / colouring</td><td>None</td></tr>':''}
+          <tr><td>Foreign matter</td><td>Within limit</td></tr>
+          <tr><td>Tested on</td><td>${fmtDate(qd)}</td></tr>
+        </tbody></table><p class="helper" style="margin-top:8px">Full lab reports will be downloadable as PDF in the live product.</p></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="og-foot"><p class="price">${money(sz[1])}<small>${sz[0]} · ${unitPrice(sz)}</small></p>
+    ${inB?`<button class="btn" data-act="close-modal">In your market × ${inB.q} · Done</button>`:`<button class="btn fill" data-act="add" data-id="${p.id}" data-close="1">${ic.plus}Add ${sz[0]} to market</button>`}
+  </div>`;
+}
+
+/* ==========================================================================
+   Actions
+   ========================================================================== */
+function add(id,si,q,fromEl){
+  const p=PM[id]; const b=basket();
+  if(si===undefined) si=sizeOf(p);
+  if(b[id]){b[id].q+=q||1; b[id].s=si}
+  else b[id]={s:si,q:q||1};
+  refreshAfterChange(id,'up');
+  fly(fromEl);
+  announce(`${p.n} added`);
+}
+function inc(id){const b=basket(); if(!b[id])return; if(b[id].q>=20){toast('For larger quantities, your concierge can help');return} b[id].q++; refreshAfterChange(id,'up')}
+function dec(id){const b=basket(); if(!b[id])return; b[id].q--; if(b[id].q<=0){const p=PM[id],snap=b[id]; delete b[id]; S.sel[S.bmode+':'+id]=snap.s; refreshAfterChange(id); toast(`${p.n} removed`,'Undo',()=>{basket()[id]={s:snap.s,q:1}; refreshAfterChange(id)}); return} refreshAfterChange(id,'down')}
+function rm(id){const b=basket(); const snap=b[id]; if(!snap)return; delete b[id]; S.sel[S.bmode+':'+id]=snap.s; refreshAfterChange(id); toast(`${PM[id].n} removed`,'Undo',()=>{basket()[id]=snap; refreshAfterChange(id)})}
+function setSize(id,i){const b=basket(); if(b[id]) b[id].s=i; else S.sel[S.bmode+':'+id]=i; refreshAfterChange(id)}
+function clearMarket(){
+  const snap=JSON.parse(JSON.stringify(basket())); if(!Object.keys(snap).length) return;
+  S.baskets[S.bmode]={}; closeSheet();
+  if(S.view==='builder'){$('#cats').innerHTML=catsHTML()}
+  refreshAfterChange();
+  toast('Market cleared','Undo',()=>{S.baskets[S.bmode]=snap; if($('#cats'))$('#cats').innerHTML=catsHTML(); refreshAfterChange()});
+}
+function setMode(m){
+  if(S.view!=='builder') S.view='builder';
+  S.mode=m; if(m!=='saved') S.bmode=m;
+  S.q=''; S.cat='all';
+  persist(); render(); window.scrollTo({top:0,behavior:reduced()?'auto':'smooth'});
+}
+function go(view){
+  S.view=view; closeSheet(); render();
+  window.scrollTo({top:0,behavior:'auto'});
+  const h=$('h1'); if(h){h.setAttribute('tabindex','-1'); h.focus({preventScroll:true})}
+}
+function repeatSaved(sid){
+  const sv=S.saved.find(x=>x.id===sid); if(!sv) return;
+  const target=S.baskets[sv.mode];
+  const load=(merge)=>{
+    if(!merge) S.baskets[sv.mode]={};
+    const b=S.baskets[sv.mode];
+    Object.entries(sv.items).forEach(([id,e])=>{if(!PM[id])return; if(merge&&b[id]&&b[id].s===e.s) b[id].q+=e.q; else b[id]={s:e.s,q:e.q}});
+    closeModal(); S.open=[...new Set(Object.keys(sv.items).filter(id=>PM[id]).map(id=>PM[id].c))];
+    setMode(sv.mode);
+    toast(`“${sv.name}” loaded — adjust anything, then review`);
+  };
+  if(Object.keys(target).length){
+    openModal(`<button class="modal-x" data-act="close-modal" aria-label="Close">${ic.x}</button><div class="m-body"><p class="eyebrow">Repeat market</p><h2 id="modalTitle" style="margin-top:8px">Your ${sv.mode==='monthly'?'monthly stock':'weekly market'} already has items</h2><p>Replace them with “${esc(sv.name)}”, or add its products to what you have?</p>
+      <div class="m-actions"><button class="btn" data-act="close-modal">Cancel</button><button class="btn" id="rpMerge">Add to current</button><button class="btn fill" id="rpReplace">Replace</button></div></div>`);
+    $('#rpMerge').onclick=()=>load(true); $('#rpReplace').onclick=()=>load(false);
+  } else load(false);
+}
+function saveDialog(fromOrder){
+  const def=(S.bmode==='monthly'?'Monthly Stock · ':'Week of ')+fmtDate(new Date(),{day:'numeric',month:'short'});
+  openModal(`<button class="modal-x" data-act="close-modal" aria-label="Close">${ic.x}</button><form class="m-body" id="saveForm"><p class="eyebrow">Save market</p><h2 id="modalTitle" style="margin-top:8px">Name this market</h2><p>Saved markets can be repeated in one tap from <b>Saved Markets</b>.</p>
+    <div class="field" style="margin-top:18px"><label for="svName">Market name</label><input id="svName" maxlength="40" value="${esc(def)}" required></div>
+    <div class="opt-grid" style="grid-template-columns:repeat(auto-fill,minmax(120px,1fr))">${['Our Usual Week','Guests This Weekend','Eid Preparation','Ma’s Kitchen'].map(n=>`<button type="button" class="size" data-fill="${esc(n)}">${n}</button>`).join('')}</div>
+    <div class="m-actions"><button type="button" class="btn" data-act="close-modal">Cancel</button><button class="btn fill" type="submit">${ic.bookmark}Save market</button></div></form>`);
+  const inp=$('#svName'); inp.select();
+  $$('[data-fill]').forEach(b=>b.onclick=()=>{inp.value=b.dataset.fill; inp.focus()});
+  $('#saveForm').onsubmit=e=>{e.preventDefault(); const name=inp.value.trim()||def;
+    const items=fromOrder?S.lastOrder.items:basket(); const mode=fromOrder?S.lastOrder.mode:S.bmode;
+    S.saved.unshift({id:'sv'+Date.now(),name,mode,at:Date.now(),items:JSON.parse(JSON.stringify(items))});
+    if(fromOrder){S.lastOrder.saved=true}
+    persist(); closeModal();
+    if(fromOrder) render(); else { const b=$('.mode[data-mode="saved"] .badge'); if(b) b.textContent=S.saved.length; }
+    toast(`Saved as “${name}”`, fromOrder?null:'View', fromOrder?null:()=>setMode('saved'));
+  };
+}
+
+/* ---------- Event delegation ---------- */
+document.addEventListener('click',e=>{
+  const fillBtn=e.target.closest('[data-fill]'); if(fillBtn) return;
+  const el=e.target.closest('[data-act]'); if(!el) return;
+  const act=el.dataset.act, id=el.dataset.id;
+  switch(act){
+    case 'home': e.preventDefault(); setMode('weekly'); break;
+    case 'add': add(id,undefined,1,el); if(el.dataset.close){closeModal()} break;
+    case 'inc': inc(id); break;
+    case 'dec': dec(id); break;
+    case 'rm': rm(id); break;
+    case 'size': setSize(id,+el.dataset.i); break;
+    case 'toggle': toggleCat(el.dataset.cat); break;
+    case 'expand-all': S.open=CATS.map(c=>c.id); $('#cats').innerHTML=catsHTML(); renderCatBadges(); persist(); break;
+    case 'collapse-all': S.open=[]; $('#cats').innerHTML=catsHTML(); renderCatBadges(); persist(); break;
+    case 'filter': setFilter(el.dataset.cat); break;
+    case 'clear-q': case 'set-q': setQuery(el.dataset.q||''); $('#q')&&$('#q').focus(); break;
+    case 'mode': setMode(el.dataset.mode); break;
+    case 'hh': S.hh=+el.dataset.n; persist(); $$('.hh-opt').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.n===S.hh)); $('.hh-label span:last-child').textContent=(S.hh===8?'8+':S.hh)+' people'; $('#cats').innerHTML=catsHTML(); renderCatBadges(); renderSuggestions(); break;
+    case 'sugg-add': add(id,+el.dataset.i,+el.dataset.q,el); break;
+    case 'sugg-dismiss': S.dismissed.push(id); persist(); renderSuggestions(); break;
+    case 'origin': openOrigin(id,el); break;
+    case 'report': {const r=$('#rep'); const o=el.getAttribute('aria-expanded')!=='true'; el.setAttribute('aria-expanded',o); r.classList.toggle('open',o); break}
+    case 'clear': clearMarket(); break;
+    case 'save': closeSheet(); saveDialog(false); break;
+    case 'save-order': saveDialog(true); break;
+    case 'review': if(totals().products){go('checkout')} break;
+    case 'open-sheet': openSheet(); break;
+    case 'close-sheet': closeSheet(); break;
+    case 'close-modal': closeModal(); break;
+    case 'scroll-summary': {const s=$('#summary'); if(s){s.scrollIntoView({behavior:reduced()?'auto':'smooth',block:'start'}); const c=$('#asideCount'); c&&c.classList.remove('pulse'); void (c&&c.offsetWidth); c&&c.classList.add('pulse')} break}
+    case 'repeat': repeatSaved(el.dataset.sid); break;
+    case 'del-saved': {const i=S.saved.findIndex(x=>x.id===el.dataset.sid); if(i<0)break; const [gone]=S.saved.splice(i,1); persist(); render(); toast(`“${gone.name}” deleted`,'Undo',()=>{S.saved.splice(i,0,gone); persist(); render()}); break}
+    case 'back': go('builder'); break;
+    case 'date': S.co.date=+el.dataset.i; if(S.co.date===0&&S.co.slot===3)S.co.slot=1; $$('[data-act="date"]').forEach(b=>b.setAttribute('aria-checked',+b.dataset.i===S.co.date)); $('#slots').innerHTML=slotsHTML(); $('#coDeliv span').textContent=nextDeliveryText(); break;
+    case 'slot': S.co.slot=+el.dataset.i; $$('[data-act="slot"]').forEach(b=>b.setAttribute('aria-checked',+b.dataset.i===S.co.slot)); $('#coDeliv span').textContent=nextDeliveryText(); break;
+    case 'pay': if(e.target.closest('[data-act="mfs"]'))break; S.co.pay=el.dataset.v; $$('.pay-opt').forEach(b=>b.setAttribute('aria-checked',b.dataset.v===S.co.pay)); $('#mfsRow').hidden=S.co.pay!=='mfs'; break;
+    case 'mfs': e.stopPropagation(); S.co.mfs=el.dataset.v; S.co.pay='mfs'; $$('[data-act="mfs"]').forEach(b=>b.setAttribute('aria-checked',b.dataset.v===S.co.mfs)); break;
+    case 'demo-fill': S.co.addr='House 12, Road 7, Block C, Banani, Dhaka 1213'; S.co.phone=S.co.phone||'01712345678'; S.co.name=S.co.name||'Rahman family'; $('#coAddr').value=S.co.addr; $('#coPhone').value=S.co.phone; $('#coName').value=S.co.name; $$('.field.err').forEach(f=>f.classList.remove('err')); persist(); break;
+    case 'place': e.preventDefault(); placeOrder(); break;
+    case 'new-market': S.mode=S.lastOrder?S.lastOrder.mode:'weekly'; S.bmode=S.mode; go('builder'); break;
+    case 'concierge': openModal(`<button class="modal-x" data-act="close-modal" aria-label="Close">${ic.x}</button><div class="m-body"><p class="eyebrow">Concierge</p><h2 id="modalTitle" style="margin-top:8px">Your concierge is here to help</h2><p>Ask for a product we don’t list, a special cut of fish, a larger quantity or a change to your delivery. In the live service this connects to chat, call-back or phone.</p><dl class="cert" style="margin-top:18px"><dt>Hours</dt><dd>8 AM – 10 PM, every day (demo)</dd><dt>Response</dt><dd>Usually within 5 minutes (demo)</dd></dl><div class="m-actions"><button class="btn fill" data-act="close-modal">Got it</button></div></div>`); break;
+  }
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ if($('#modal').classList.contains('open')) closeModal(); else if($('#sheet').classList.contains('open')) closeSheet(); }
+  if((e.key==='Enter'||e.key===' ')&&e.target.dataset&&e.target.dataset.act==='mfs'){e.preventDefault(); e.target.click()}
+  if(e.key==='Tab'&&$('#modal').classList.contains('open')) trapFocus(e,$('#modalPanel'));
+  if(e.key==='Tab'&&$('#sheet').classList.contains('open')) trapFocus(e,$('#sheet .sheet-panel'));
+});
+function trapFocus(e,root){const f=$$('button:not([disabled]),input,textarea,[tabindex="0"]',root).filter(x=>x.offsetParent!==null); if(!f.length)return; const a=f[0],z=f[f.length-1]; if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()} else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}
+
+function toggleCat(c){
+  const sec=$('#cat-'+c); if(!sec) return;
+  const open=!sec.classList.contains('open');
+  sec.classList.toggle('open',open);
+  const head=sec.querySelector('.cat-head'), body=sec.querySelector('.cat-body');
+  head.setAttribute('aria-expanded',open);
+  if(open) body.removeAttribute('inert'); else body.setAttribute('inert','');
+  if(!S.q){ S.open=open?[...new Set([...S.open,c])]:S.open.filter(x=>x!==c); persist(); }
+}
+function setFilter(c){
+  S.cat=c; if(c!=='all'&&!S.open.includes(c)) S.open.push(c);
+  $$('.chip[data-cat]').forEach(ch=>ch.setAttribute('aria-pressed',ch.dataset.cat===c));
+  $('#cats').innerHTML=catsHTML(); renderCatBadges(); persist();
+  const tb=$('#toolbar'); if(tb&&tb.getBoundingClientRect().top>parseInt(getComputedStyle(document.documentElement).getPropertyValue('--hdr'))+4){} else if(tb){ const y=$('#cats').getBoundingClientRect().top+window.scrollY-tb.offsetHeight-70; window.scrollTo({top:y,behavior:reduced()?'auto':'smooth'}) }
+}
+let qTimer;
+function setQuery(v){
+  S.q=v; const inp=$('#q'); if(inp&&inp.value!==v) inp.value=v;
+  const cq=$('.clear-q'); if(cq) cq.hidden=!v;
+  $('#cats').innerHTML=catsHTML(); renderCatBadges(); renderSuggestions();
+}
+function bindBuilder(){
+  renderCatBadges(); renderSuggestions();
+  const q=$('#q'); if(q) q.addEventListener('input',()=>{clearTimeout(qTimer); qTimer=setTimeout(()=>setQuery(q.value),120)});
+}
+
+/* ---------- Sheet / modal / toast / fly ---------- */
+let lastFocus=null;
+function openSheet(){lastFocus=document.activeElement; renderSummary(); const s=$('#sheet'); s.classList.remove('closing'); s.classList.add('open'); document.body.style.overflow='hidden'; setTimeout(()=>$('#sheet .sheet-close').focus(),50)}
+function closeSheet(){const s=$('#sheet'); if(!s.classList.contains('open'))return; s.classList.add('closing'); document.body.style.overflow=''; setTimeout(()=>{s.classList.remove('open','closing')},reduced()?0:280); if(lastFocus&&document.contains(lastFocus))lastFocus.focus({preventScroll:true})}
+function openModal(html,wide){
+  lastFocus=document.activeElement;
+  const m=$('#modal'), p=$('#modalPanel');
+  p.className='modal-panel'+(wide?' wide':''); p.innerHTML=html;
+  m.classList.remove('closing'); m.classList.add('open'); m.setAttribute('aria-hidden','false');
+  document.body.style.overflow='hidden';
+  setTimeout(()=>{const f=p.querySelector('input,.btn.fill,.modal-x'); f&&f.focus()},60);
+}
+function closeModal(){
+  const m=$('#modal'); if(!m.classList.contains('open'))return;
+  m.classList.add('closing'); m.setAttribute('aria-hidden','true');
+  setTimeout(()=>{m.classList.remove('open','closing'); $('#modalPanel').innerHTML=''},reduced()?0:240);
+  if(!$('#sheet').classList.contains('open')) document.body.style.overflow='';
+  if(lastFocus&&document.contains(lastFocus)) lastFocus.focus({preventScroll:true});
+}
+function openOrigin(id,el){
+  const p=PM[id]; openModal(originHTML(p),true);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{const j=$('#journey'); if(!j)return; j.classList.add('go'); const l=j.querySelector('.line'); l.style.height=(j.offsetHeight-54)+'px'}));
+  // Subtle 3D tilt on the pack (pointer only, disabled with reduced motion)
+  const th=$('#ogThumb'), hero=$('.og-hero');
+  if(th&&hero&&!reduced()&&window.matchMedia('(pointer:fine)').matches){
+    hero.addEventListener('pointermove',ev=>{const r=hero.getBoundingClientRect(); const x=(ev.clientX-r.left)/r.width-.5, y=(ev.clientY-r.top)/r.height-.5; th.style.transform=`perspective(500px) rotateY(${x*12}deg) rotateX(${-y*12}deg) translateZ(6px)`});
+    hero.addEventListener('pointerleave',()=>{th.style.transform=''});
+  }
+}
+function toast(msg,actLabel,actFn){
+  const box=$('#toasts'); const t=document.createElement('div'); t.className='toast'; t.setAttribute('role','status');
+  t.innerHTML=`<span class="dot" aria-hidden="true"></span><span>${esc(msg)}</span>${actLabel?`<button>${actLabel}</button>`:''}`;
+  box.appendChild(t);
+  while(box.children.length>2) box.firstChild.remove();
+  let done=false; const kill=()=>{if(done)return; done=true; t.classList.add('out'); setTimeout(()=>t.remove(),300)};
+  if(actLabel){t.querySelector('button').onclick=()=>{actFn&&actFn(); kill()}}
+  setTimeout(kill,actLabel?5200:2600);
+}
+let liveEl; function announce(msg){if(!liveEl){liveEl=document.createElement('div');liveEl.className='sr';liveEl.setAttribute('aria-live','polite');document.body.appendChild(liveEl)} liveEl.textContent=''; setTimeout(()=>liveEl.textContent=msg,30)}
+function fly(fromEl){
+  const target=isMobile()?$('#mbCount'):$('#asideCount');
+  const pulseT=()=>{const c=isMobile()?$('#mbCount'):$('#asideCount'); if(!c)return; c.classList.remove('pulse'); void c.offsetWidth; c.classList.add('pulse'); c.style.animation='pulse .6s var(--ease)'; setTimeout(()=>c.style.animation='',650)};
+  if(reduced()||!fromEl||!target||!document.contains(fromEl)){pulseT();return}
+  const a=fromEl.getBoundingClientRect(), b=target.getBoundingClientRect();
+  if(b.bottom<0||b.top>innerHeight){pulseT();return}
+  const x0=a.left+a.width/2, y0=a.top+a.height/2, dx=b.left+b.width/2-x0, dy=b.top+b.height/2-y0;
+  const d=document.createElement('div'); d.className='fly'; d.style.left=x0+'px'; d.style.top=y0+'px'; document.body.appendChild(d);
+  const anim=d.animate([{transform:'translate(0,0) scale(.6)',opacity:1},{transform:`translate(${dx*.45}px,${dy*.45-90}px) scale(1.15)`,opacity:1,offset:.45},{transform:`translate(${dx}px,${dy}px) scale(.35)`,opacity:.7}],{duration:720,easing:'cubic-bezier(.22,1,.36,1)'});
+  anim.onfinish=()=>{d.remove(); pulseT()};
+}
+
+/* Toolbar hairline when stuck */
+window.addEventListener('scroll',()=>{const tb=$('#toolbar'); if(tb) tb.classList.toggle('stuck',tb.getBoundingClientRect().top<=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--hdr'))+1)},{passive:true});
+window.addEventListener('resize',()=>{if(!isMobile())closeSheet()});
+
+/* Boot */
+if(S.mode!=='saved') S.bmode=S.mode;
+render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+.header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+.back { font-size: 13px; font-weight: 500; display: inline-block; margin-bottom: 8px; }
+.back:hover { text-decoration: underline; }
+.title { font: 400 clamp(26px, 3vw, 36px)/1.1 var(--font-serif); }
+.subtitle { margin-top: 6px; font-size: 14px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.card { border: 1px solid var(--line); border-radius: var(--r-lg); padding: 20px; background: var(--ivory); margin-bottom: 20px; }
+.cardHead { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+.cardHead h2 { font: 500 19px/1.2 var(--font-serif); }
+.stat { padding: 18px; border-radius: var(--r); border: 1px solid var(--line); background: var(--sky-03); }
+.statRed { background: var(--red); color: var(--ivory); border-color: var(--red); }
+.statLabel { font: 600 10.5px/1.4 var(--font-sans); letter-spacing: 0.14em; text-transform: uppercase; }
+.statValue { font: 500 30px/1.15 var(--font-serif); margin-top: 6px; font-variant-numeric: tabular-nums; }
+.statHint { font-size: 12.5px; margin-top: 4px; }
+.grid2, .grid3, .grid4 { display: grid; gap: 16px; margin-bottom: 20px; }
+.grid2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.formGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; align-items: start; }
+.formGrid :global(.field + .field) { margin-top: 0; }
+.wide { grid-column: 1 / -1; }
+.empty { padding: 28px; text-align: center; border: 1px dashed var(--line-strong); border-radius: var(--r); }
+.pager { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; font-size: 14px; }
+@media (max-width: 1100px) { .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .grid3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 700px) { .grid2, .grid3, .grid4, .formGrid { grid-template-columns: 1fr; } }

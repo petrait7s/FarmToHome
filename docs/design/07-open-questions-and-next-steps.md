@@ -8,7 +8,7 @@ Status: **design exploration only. No UI implementation has started.** We are wa
 |---|---|---|
 | 1 | Are near-black text or pure white surfaces allowed? The proposal PDF uses them, but the colour spec lists only four colours. | The current recommendation runs entirely on the four palette colours, with Sky Blue as the text colour (see [02 §2](02-visual-language.md#2-colour-system--strictly-the-proposals-palette)). |
 | 2 | `#0F766E` is named "Sky Blue" but renders as a deep blue-green. Confirm the **hex** is correct. | We follow the hex. A lighter "sky blue" would change every contrast decision. |
-| 3 | Red Orange is the *Primary* colour, but it does not reach the WCAG contrast needed for text or button labels on Ivory. Is it acceptable that Red Orange is the brand signature while Sky Blue drives CTAs? | Accessibility and legal compliance. |
+| 3 | ~~Should Red Orange or Sky Blue lead?~~ **Decided: Red Orange is the main brand colour.** Remaining risk: Ivory on Red Orange is 2.95:1, so labels on orange stay large and bold. Validate with users. | Accessibility and legal compliance. |
 | 4 | Definitions of Origin Class **O1 / O2 / O3** and of the quality grade scale per product. | Needed for seals, filters and explainers. |
 | 5 | Brand name and logo (the proposal uses "Authentic Grocery Marketplace" as a working title). | Header, app icon and packaging continuity. |
 | 6 | Pilot city, delivery areas, slot structure and cut-off times. | Area check, scheduling UI. |

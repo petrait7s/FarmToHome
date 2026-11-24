@@ -1,0 +1,12 @@
+.list { list-style: none; position: relative; }
+.list::before { content: ""; position: absolute; left: 11px; top: 12px; bottom: 12px; width: 2px; background: var(--sky-12); }
+.step { position: relative; display: grid; grid-template-columns: 24px 1fr; gap: 14px; padding-bottom: 18px; }
+.step:last-child { padding-bottom: 0; }
+.dot { position: relative; z-index: 1; width: 24px; height: 24px; border-radius: 50%; background: var(--ivory); border: 2px solid var(--sky-20); }
+.step b { display: block; font-weight: 600; font-size: 14.5px; padding-top: 1px; }
+.step span { font-size: 12.5px; display: block; }
+.done .dot { background: var(--red); border-color: var(--red); }
+.done .dot::after { content: ""; position: absolute; left: 7px; top: 3px; width: 5px; height: 10px; border: solid var(--ivory); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.current .dot { border-color: var(--red); box-shadow: 0 0 0 5px var(--red-14); }
+.current .dot::after { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: var(--red); }
+.todo b { font-weight: 500; opacity: 0.75; }

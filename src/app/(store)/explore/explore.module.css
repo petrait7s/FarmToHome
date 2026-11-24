@@ -1,0 +1,31 @@
+.header { padding: clamp(36px, 5vw, 64px) 0 24px; border-bottom: 1px solid var(--line); }
+.searchForm { position: relative; display: flex; gap: 10px; align-items: center; max-width: 720px; margin-top: 26px; }
+.searchIcon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+.searchInput { flex: 1; height: 50px; border-radius: var(--r-pill); border: 1px solid var(--line-strong); background: var(--sky-03); padding: 0 18px 0 44px; font-size: 15px; }
+.searchInput:focus { outline: none; border-color: var(--sky); background: var(--ivory); box-shadow: 0 0 0 4px var(--sky-08); }
+.searchInput::placeholder { color: var(--sky); opacity: 0.7; }
+.catChips { display: flex; gap: 6px; overflow-x: auto; margin-top: 20px; padding-bottom: 4px; scrollbar-width: none; }
+.catChips::-webkit-scrollbar { display: none; }
+.layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 40px; padding-top: 32px; padding-bottom: 72px; align-items: start; }
+.filters { position: sticky; top: calc(var(--header-h) + 20px); }
+.filterForm { display: flex; flex-direction: column; gap: 18px; }
+.filterForm :global(.field + .field) { margin-top: 0; }
+.checks { border: 0; display: grid; gap: 10px; }
+.checks legend { margin-bottom: 8px; }
+.count { font-size: 13px; font-weight: 600; margin-bottom: 18px; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 28px; }
+.empty { padding: 56px 0; text-align: center; }
+.pager { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; font-size: 14px; }
+@media (max-width: 1060px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .filters { position: static; }
+  .filterForm { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: end; }
+  .checks { grid-column: 1 / -1; grid-auto-flow: column; justify-content: start; gap: 18px; }
+}
+@media (max-width: 640px) {
+  .grid { grid-template-columns: 1fr 1fr; gap: 28px 16px; }
+  .filterForm { grid-template-columns: 1fr; }
+  .checks { grid-auto-flow: row; }
+  .searchForm :global(.btn) { display: none; }
+}

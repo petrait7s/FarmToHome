@@ -35,33 +35,42 @@ Measured contrast between the palette pairs:
 | Sky Blue `#0F766E` on Warm Ivory `#F4F1EA` | **4.85 : 1** | Body text, UI text, icons, buttons (passes AA) |
 | Warm Ivory on Sky Blue | **4.85 : 1** | Text on dark sections, primary button labels (passes AA) |
 | Red Orange `#FF4B33` on Warm Ivory | 2.95 : 1 | **Not for text.** Decorative shapes, dots, rules and illustration only |
-| Warm Ivory on Red Orange | 2.95 : 1 | **Not for text labels**, including on buttons (just below the 3:1 large-text threshold) |
+| Warm Ivory on Red Orange | 2.95 : 1 | Large, bold labels only: CTAs, headlines, selected states (just below the 3:1 large-text threshold, see 2.1a) |
 | Harvest Gold `#DDAA72` on Warm Ivory | 1.85 : 1 | Decorative only (hairlines, numerals as ornament, washes) |
 | Sky Blue on Harvest Gold | 2.62 : 1 | Decorative only |
 | Red Orange on Sky Blue / Harvest Gold | ~1.6 : 1 | Never pair for meaning |
 
-**Key insight:** with only these four colours, **Sky Blue and Warm Ivory carry all readable content.** Red Orange is the brand's *signature* (energy, the sun or harvest disc from the cover), not the text or button colour.
+### 2.1a Brand direction (revised): Red Orange is the main brand colour
+
+The team decided that **Red Orange is FarmToHome's main brand theme**. It is used confidently for hero sections, primary CTAs and active or selected states. Sky Blue is a supporting colour, not the dominant background.
+
+To stay as accessible as this palette allows:
+
+- Text on Red Orange is always **Warm Ivory**, set **large and bold** (CTA labels 16–17px semibold or bigger, headlines in display serif).
+- **Small text never sits directly on Red Orange.** Inside orange sections, eyebrows, notes and controls go on Warm Ivory pills or cards, in Sky Blue text (4.85:1).
+- Small inline choices, such as pack-size chips, show selection with a Red Orange border and tint, keeping Sky Blue text, so a list never fills with orange buttons.
+- Ivory on Red Orange (2.95:1) is just below WCAG's 3:1 large-text minimum. This is a known trade-off of the approved palette. Test it with users and keep labels large.
 
 ### 2.2 Colour roles
 
 | Role | Colour |
 |---|---|
-| Page background | Warm Ivory |
-| Primary text, headings, icons | Sky Blue |
-| Immersive and dark sections (hero, story, the vision, footer) | Sky Blue background with Ivory text, as on the proposal cover |
-| Primary CTA ("Add to Market", "Confirm Delivery") | Sky Blue fill with Ivory label |
-| Secondary CTA | Ivory with a 1px Sky Blue outline and Sky Blue label |
-| Brand signature | Red Orange: hero discs, the "fresh / new arrival" dot, active-tab indicator bar, cart-count dot (the number sits beside it in Sky Blue), small illustration accents |
-| Highlight | Harvest Gold: section numerals, hairline rules, origin-class seals, premium and seasonal markers, selected-state washes, the italic accent word in headlines (on Sky Blue grounds only, as on the cover's "Marketplace") |
-| Status: error / attention | Red Orange **icon plus Sky Blue text message**. Never colour alone. |
-| Status: success | Sky Blue check icon plus text |
-| Focus ring | 2px Sky Blue with a 2px Ivory offset (meets 3:1 non-text contrast) |
+| Main brand theme: hero, success and origin headers, brand wordmark | Red Orange background, Warm Ivory display text |
+| Page background, cards, content surfaces | Warm Ivory |
+| Primary CTA ("Review My Market", "Place Order", "Repeat this market") | Red Orange fill with a large, bold Warm Ivory label |
+| Active and selected states: mode tabs, category chips, household size, dates, slots, open category, in-basket stepper | Red Orange fill with Warm Ivory label |
+| Small inline selections (pack sizes, payment options) | Red Orange border and tint, Sky Blue text |
+| Readable body text, labels, prices, data | Sky Blue on Warm Ivory |
+| Secondary buttons and UI details, toasts, focus rings | Sky Blue |
+| Premium highlights: seals, hairlines, quote rules, hint dots, hero discs | Harvest Gold |
+| Status: error / attention | Red Orange dot or border plus a Sky Blue text message. Never colour alone. |
+| Focus ring | 2px Sky Blue (Warm Ivory on Red Orange surfaces) |
 
-> **Open decision for the team:** the proposal's own PDF uses white cards and a near-black body text, but neither is in the specified palette. The recommendation above avoids both and runs fully on the four colours. If you want a darker ink for long-form reading, or pure white surfaces, please approve it explicitly first.
+> **Still open:** the proposal's own PDF uses white cards and a near-black body text, but neither is in the specified palette. The recommendation above runs fully on the four colours. Approve a darker ink or pure white surfaces explicitly if you want them.
 
 ### 2.3 Composition ratio (guideline)
 
-Roughly **70% Warm Ivory · 20% Sky Blue · 6% Harvest Gold · 4% Red Orange.** Red Orange is powerful at a small dose and loud at a large one. Its one large-scale use is the editorial hero shape, echoing the proposal cover's overlapping circles.
+Roughly **60% Warm Ivory · 25% Red Orange · 10% Sky Blue · 5% Harvest Gold.** Orange owns the first impression (hero, primary actions, selection). Ivory gives the editorial calm, so orange reads as confident rather than loud. Sky Blue carries the reading.
 
 ## 3. Typography
 
