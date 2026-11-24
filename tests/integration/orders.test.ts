@@ -95,7 +95,7 @@ describe("order placement", () => {
     const user = await makeUser("01900000008");
     const cart = await makeCart(user.id, [{ variantId: rice.id, quantity: 2 }]);
     expect(await placeOrder(await checkoutInput({ area: "Mirpur" }), { cartId: cart.id, userId: user.id })).toMatchObject({ ok: false, error: "zone_invalid" });
-    const otherZoneSlot = await db.deliverySlot.findFirstOrThrow({ where: { zone: { areas: { has: "Uttara" } } } });
+    const otherZoneSlot = await db.deliverySlot.findFirstOrThrow({ where: { zone: { areas: { has: "Akhalia" } } } });
     expect(await placeOrder(await checkoutInput({ slotId: otherZoneSlot.id }), { cartId: cart.id, userId: user.id })).toMatchObject({ ok: false, error: "slot_invalid" });
   });
 

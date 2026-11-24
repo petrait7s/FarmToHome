@@ -7,7 +7,8 @@ import "dotenv/config";
 import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client.ts";
-import { categories, origins, producers, products, zones, slotTimes } from "./seed-data.ts";
+import { categories, origins, producers, products, slotTimes } from "./seed-data.ts";
+import { contact, deliveryFaq, heroSection, pageTitlesBn, pilotSection, sylhetZones as zones } from "./sylhet-launch.ts";
 
 if (process.env.NODE_ENV === "production") {
   console.error("Refusing to seed demo data in production.");
@@ -57,8 +58,8 @@ async function main() {
   // ── Settings ──
   const settingsData = {
       demoMode: true, minOrderMinor: minor(500), orderCutoffHour: 20, bookingWindowDays: 7,
-      contactPhone: "+880 1700-000000 (demo)", contactEmail: "concierge@farmtohome.example", contactAddress: "Dhaka (pilot)",
-      conciergeHours: "8 AM – 10 PM daily (demo)",
+      contactPhone: contact.phone, contactEmail: null, contactAddress: contact.address,
+      conciergeHours: contact.hours,
       originClassDefinitions: { O1: "", O2: "", O3: "" },
   };
   await db.siteSettings.upsert({ where: { id: 1 }, create: { id: 1, ...settingsData }, update: settingsData });
@@ -70,7 +71,7 @@ async function main() {
     data: {
       name: "Rahman Family", phone: "01712345678", email: "customer@farmtohome.test", passwordHash: await bcrypt.hash("Customer#2026", 12),
       profile: { create: { householdSize: 4 } },
-      addresses: { create: { label: "Home", recipient: "Rahman Family", phone: "01712345678", division: "Dhaka", district: "Dhaka", area: "Banani", line1: "House 12, Road 7, Block C", landmark: "Near Banani lake", instructions: "Hand over to house manager", isDefault: true } },
+      addresses: { create: { label: "Home", recipient: "Rahman Family", phone: "01712345678", division: "Sylhet", district: "Sylhet", area: "Amberkhana", line1: "House 12, Road 3, Amberkhana Residential Area", landmark: "Near Amberkhana point", instructions: "Hand over to house manager", isDefault: true } },
     },
   });
 
@@ -199,25 +200,22 @@ async function main() {
   await db.promotion.create({ data: { code: "OLD50", description: "Expired demo code.", type: "FIXED", value: minor(50), endsAt: daysAgo(10), active: true } });
 
   // ── Content ──
-  const sections = [
-    { key: "home.hero", eyebrow: "Luxury digital grocery concierge", eyebrowBn: "বিলাসবহুল ডিজিটাল গ্রোসারি কনসিয়ার্জ", title: "Every product has a story.", titleBn: "প্রতিটি পণ্যের একটি গল্প আছে।", body: "Plan your household’s weekly market or monthly stock in minutes. Directly sourced, quality-checked, traceable to the batch, delivered on your schedule.", bodyBn: "কয়েক মিনিটেই আপনার পরিবারের সাপ্তাহিক বাজার বা মাসিক মজুদ পরিকল্পনা করুন। সরাসরি সংগৃহীত, মান যাচাইকৃত, ব্যাচ পর্যন্ত ট্রেসযোগ্য, আপনার সময়মতো ডেলিভারি।", ctaLabel: "Build Your Market", ctaLabelBn: "আপনার বাজার সাজান", ctaHref: "/market/weekly" },
-    { key: "home.pilot", title: "Now welcoming founding households in Dhaka", titleBn: "ঢাকায় প্রথম পরিবারগুলোকে স্বাগত জানাচ্ছি", body: "We are starting with a limited number of households in Gulshan, Banani, Baridhara, Dhanmondi and Uttara, so we can get sourcing, quality and delivery right before we grow.", bodyBn: "আমরা গুলশান, বনানী, বারিধারা, ধানমন্ডি ও উত্তরায় সীমিত সংখ্যক পরিবার নিয়ে শুরু করছি, যাতে বড় হওয়ার আগে সংগ্রহ, মান ও ডেলিভারি ঠিক করতে পারি।", ctaLabel: "Ask the concierge", ctaLabelBn: "কনসিয়ার্জকে জিজ্ঞেস করুন", ctaHref: "/concierge" },
-  ];
+  const sections = [heroSection, pilotSection];
   for (const s of sections) await db.contentSection.create({ data: s });
   const faqs = [
     ["How is FarmToHome different from a grocery delivery app?", "We are built for planned household shopping — a weekly market or monthly stock — delivered on a scheduled slot. Planning lets us source directly, inspect properly and pack with care."],
-    ["Where do you deliver?", "During the pilot we deliver to selected areas of Dhaka. Enter your area at checkout to see available slots."],
     ["What does “sourced after you order” mean?", "Fresh fish is collected after your order is placed and cleaned on the morning of delivery, so it reaches you as fresh as possible."],
     ["Are your quality reports real?", "This development build uses clearly labelled demonstration summaries. In production, reports are attached only when a real test has been carried out, and we say so when none exists."],
     ["Is online payment available?", "Cash on Delivery is available. Mobile and online payments are shown as simulated in this development build; no money moves and no card details are collected."],
     ["Can I change or cancel an order?", "You can cancel from your account until the order is confirmed. After that, contact the concierge and we will help."],
   ];
-  for (const [i, [q, a]] of faqs.entries()) await db.faqItem.create({ data: { question: q, answer: a, position: i } });
+  for (const [i, [q, a]] of faqs.entries()) await db.faqItem.create({ data: { question: q, answer: a, position: i < 1 ? i : i + 1 } });
+  await db.faqItem.create({ data: { ...deliveryFaq, position: 1 } });
   const draft = "DRAFT FOR DEVELOPMENT — this policy text is a placeholder and has not been reviewed. Replace it with approved legal text before launch.";
-  await db.page.create({ data: { slug: "delivery-policy", title: "Delivery policy", body: `${draft}\n\nOrders are delivered in the slot you choose at checkout. Fresh items are packed on ice the morning of delivery. If we cannot deliver in your slot, your concierge will call you to reschedule.` } });
-  await db.page.create({ data: { slug: "refund-policy", title: "Refunds & replacements", body: `${draft}\n\nIf any item arrives below standard, tell your concierge within 24 hours with a photo. We will replace it or credit you.` } });
-  await db.page.create({ data: { slug: "privacy", title: "Privacy", body: `${draft}\n\nWe use your contact and address details only to fulfil and support your orders. We do not sell personal data.` } });
-  await db.page.create({ data: { slug: "terms", title: "Terms of service", body: `${draft}\n\nPrices shown are final at checkout and include packing and quality handling. Promotions are subject to their stated conditions.` } });
+  await db.page.create({ data: { slug: "delivery-policy", titleBn: pageTitlesBn["delivery-policy"], title: "Delivery policy", body: `${draft}\n\nOrders are delivered in the slot you choose at checkout. Fresh items are packed on ice the morning of delivery. If we cannot deliver in your slot, your concierge will call you to reschedule.` } });
+  await db.page.create({ data: { slug: "refund-policy", titleBn: pageTitlesBn["refund-policy"], title: "Refunds & replacements", body: `${draft}\n\nIf any item arrives below standard, tell your concierge within 24 hours with a photo. We will replace it or credit you.` } });
+  await db.page.create({ data: { slug: "privacy", titleBn: pageTitlesBn["privacy"], title: "Privacy", body: `${draft}\n\nWe use your contact and address details only to fulfil and support your orders. We do not sell personal data.` } });
+  await db.page.create({ data: { slug: "terms", titleBn: pageTitlesBn["terms"], title: "Terms of service", body: `${draft}\n\nPrices shown are final at checkout and include packing and quality handling. Promotions are subject to their stated conditions.` } });
 
   // ── A saved market for the demo customer ──
   const v = (slug: string, i = 0) => variantIds.get(slug)![i];

@@ -21,7 +21,7 @@ export async function makeCart(userId: string | null, items: { variantId: string
 }
 
 export async function pilotZone() {
-  return db.deliveryZone.findFirstOrThrow({ where: { areas: { has: "Gulshan" } } });
+  return db.deliveryZone.findFirstOrThrow({ where: { areas: { has: "Amberkhana" } } });
 }
 
 export async function openSlot(minRemaining = 1) {
@@ -40,10 +40,10 @@ export async function checkoutInput(overrides: Partial<CheckoutInput> = {}): Pro
     phone: "01811111111",
     email: undefined,
     addressId: undefined,
-    division: "Dhaka",
-    district: "Dhaka",
-    area: "Gulshan",
-    line1: "House 9, Road 3, Gulshan 1",
+    division: "Sylhet",
+    district: "Sylhet",
+    area: "Amberkhana",
+    line1: "House 9, Road 3, Amberkhana",
     landmark: undefined,
     instructions: undefined,
     slotId: slot.id,

@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { ProductCard } from "@/components/store/ProductCard";
 import { ProductVisual } from "@/components/ui/ProductVisual";
 import { JourneySteps } from "@/components/store/JourneySteps";
+import { HeroStage } from "@/components/store/HeroStage";
 import { Icon } from "@/components/ui/Icon";
 import { formatNumber } from "@/lib/money";
 import styles from "./home.module.css";
@@ -27,6 +28,12 @@ export default async function HomePage() {
     orderBy: [{ categoryId: "asc" }, { isFeatured: "desc" }, { isEssential: "desc" }],
     select: { categoryId: true, artKey: true },
   });
+  const [productCount, producerCount, zones] = await Promise.all([
+    db.product.count({ where: { status: "ACTIVE" } }),
+    db.producer.count(),
+    db.deliveryZone.findMany({ where: { active: true }, select: { areas: true } }),
+  ]);
+  const areaCount = new Set(zones.flatMap((z) => z.areas)).size;
   const artFor = (id: string) => categoryArt.find((c) => c.categoryId === id)?.artKey ?? "grain:0";
   const L = <T extends Record<string, unknown>>(row: T | null, field: keyof T & string, fallback: string) => (row ? localized(row, field, locale) || fallback : fallback);
 
@@ -52,14 +59,18 @@ export default async function HomePage() {
               </Link>
               <Link href="/explore" className="btn btn-outline-ivory btn-lg">{t("home.ctaExplore")}</Link>
             </div>
+            <dl className={styles.stats}>
+              <div><dt>{formatNumber(productCount, locale)}</dt><dd>{t("home.stats.products")}</dd></div>
+              <div><dt>{formatNumber(producerCount, locale)}</dt><dd>{t("home.stats.producers")}</dd></div>
+              {areaCount ? <div><dt>{formatNumber(areaCount, locale)}</dt><dd>{t("home.stats.areas")}</dd></div> : null}
+            </dl>
           </div>
-          <div className={styles.heroStage} aria-hidden="true">
-            {heroProducts.map((p, i) => (
-              <div key={p.id} className={`${styles.float} ${styles[`f${i}`]}`}>
-                <ProductVisual artKey={p.artKey} imageUrl={p.imageUrl} alt="" size="fill" />
-              </div>
-            ))}
-          </div>
+          <HeroStage
+            items={heroProducts.map((p) => ({ id: p.id, artKey: p.artKey, imageUrl: p.imageUrl, name: localized(p, "name", locale), origin: p.originDistrict }))}
+            city={t("home.stageCity")}
+            cityNote={t("home.stageCityNote")}
+            trace={t("home.stageTrace")}
+          />
         </div>
       </section>
 
@@ -259,9 +270,14 @@ export default async function HomePage() {
           </form>
           {pilot ? (
             <div className={styles.pilot}>
-              <p className="eyebrow"><span className="dot" aria-hidden="true" />Pilot</p>
+              <p className="eyebrow"><span className="dot" aria-hidden="true" />{localized(pilot, "eyebrow", locale) || "Pilot"}</p>
               <h2 className="h2">{localized(pilot, "title", locale)}</h2>
               <p>{localized(pilot, "body", locale)}</p>
+              {zones.length ? (
+                <ul className={styles.areas}>
+                  {[...new Set(zones.flatMap((z) => z.areas))].map((a) => <li key={a}><Icon name="pin" />{a}</li>)}
+                </ul>
+              ) : null}
               {pilot.ctaHref ? <Link href={pilot.ctaHref} className="link" style={{ display: "inline-block", marginTop: 12 }}>{localized(pilot, "ctaLabel", locale)}</Link> : null}
             </div>
           ) : null}

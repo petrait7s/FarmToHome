@@ -52,6 +52,10 @@ This also creates site settings with **demo mode off**. Then sign in at `/accoun
 5. **Content:** homepage sections (`home.hero`, `home.pilot`), collections, FAQ and **legally reviewed** policy pages.
 6. **Team:** add staff accounts.
 
+### Sylhet launch data
+
+`npm run launch:sylhet` applies the launch content to an existing database without deleting anything: contact phone, address and hours; homepage hero and pilot copy; the delivery FAQ; Bangla policy titles; the three Sylhet delivery zones with slots for the booking window. Zones outside Sylhet are deactivated, not removed. The placeholder demo e-mail is cleared; set `CONTACT_EMAIL` to publish a real address. Values live in `prisma/sylhet-launch.ts` and can be edited later in the admin panel. Re-running is safe.
+
 ## 5. Storage
 
 Uploads (product photos, producer photos, report PDFs) are written to `public/uploads` by the local driver. With more than one instance or an immutable filesystem, implement an S3-compatible driver in `src/server/storage.ts` (same `storeUpload` interface) and serve files from object storage/CDN. Back up the bucket.
