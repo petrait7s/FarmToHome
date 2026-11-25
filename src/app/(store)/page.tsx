@@ -44,6 +44,8 @@ export default async function HomePage() {
     <>
       {/* ── 1 · Hero ── */}
       <section className={styles.hero}>
+        <Image src={photos.thali.src} alt={a("thali")} fill priority sizes="100vw" className={styles.heroBg} />
+        <span className={styles.heroShade} aria-hidden="true" />
         <div className={`container ${styles.heroGrid}`}>
           <div className={styles.heroCopy}>
             <p className={styles.where}><Icon name="pin" /> {L(hero, "eyebrow", t("home.eyebrow"))}</p>
@@ -52,10 +54,10 @@ export default async function HomePage() {
             </h1>
             <p className={styles.heroLead}>{L(hero, "body", t("home.lead"))}</p>
             <div className={styles.heroCtas}>
-              <Link href={hero?.ctaHref ?? "/market/weekly"} className="btn btn-primary btn-lg">
+              <Link href={hero?.ctaHref ?? "/market/weekly"} className="btn btn-ivory btn-lg">
                 {L(hero, "ctaLabel", t("home.ctaBuild"))} <Icon name="arrowRight" />
               </Link>
-              <Link href="/producers" className="btn btn-lg">{t("home.ctaProducers")}</Link>
+              <Link href="/producers" className="btn btn-outline-ivory btn-lg">{t("home.ctaProducers")}</Link>
             </div>
             <dl className={styles.stats}>
               <div><dt>{formatNumber(productCount, locale)}</dt><dd>{t("home.stats.products")}</dd></div>
@@ -63,17 +65,9 @@ export default async function HomePage() {
               {areaCount ? <div><dt>{formatNumber(areaCount, locale)}</dt><dd>{t("home.stats.areas")}</dd></div> : null}
             </dl>
           </div>
-          <div className={styles.heroArt}>
-            <div className={styles.arch}>
-              <Image src={photos.riceCurries.src} alt={a("riceCurries")} fill priority sizes="(max-width: 900px) 90vw, 44vw" />
-            </div>
-            <div className={styles.inset}>
-              <Image src={photos.vegBaskets.src} alt={a("vegBaskets")} fill sizes="(max-width: 900px) 40vw, 16vw" />
-            </div>
-            <div className={styles.heroChip}>
-              <span className={styles.chipPin}><Icon name="truck" /></span>
-              <span><b>{t("home.stageCity")}</b><small>{t("home.stageCityNote")}</small></span>
-            </div>
+          <div className={styles.heroChip}>
+            <span className={styles.chipPin}><Icon name="truck" /></span>
+            <span><b>{t("home.stageCity")}</b><small>{t("home.stageCityNote")}</small></span>
           </div>
         </div>
       </section>

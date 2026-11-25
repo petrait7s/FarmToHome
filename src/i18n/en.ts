@@ -132,7 +132,7 @@ export const en = {
     stageCity: "Sylhet",
     stageCityNote: "Scheduled home delivery",
     eyebrow: "Luxury digital grocery concierge",
-    titleA: "The taste of Bengal’s fields, rivers and towns —",
+    titleA: "The taste of Bengal’s fields, rivers and towns\u00a0—",
     titleB: "brought home to your family.",
     lead: "Choose selected foods from regions across the country to suit your family’s tastes and needs. Build your weekly or monthly market from produce sourced from local farmers and producers.",
     ctaBuild: "Build your market",
