@@ -21,7 +21,7 @@ export default async function FaqPage() {
       <div className="surface" style={{ marginTop: 40, padding: 28, borderRadius: "var(--r-lg)", display: "flex", gap: 20, alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", background: "var(--white)", border: "1px solid var(--line)" }}>
         <div>
           <h2 className="h3">{t("faq.stillTitle")}</h2>
-          <p style={{ color: "var(--muted)", marginTop: 6 }}>{t("faq.stillBody")}</p>
+          <p style={{ color: "var(--text-muted)", marginTop: 6 }}>{t("faq.stillBody")}</p>
         </div>
         <Link href="/concierge" className="btn btn-primary"><Icon name="headset" /> {t("pilotCta")}</Link>
       </div>

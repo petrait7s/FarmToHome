@@ -18,6 +18,14 @@ export async function MarketPage({ mode }: { mode: Mode }) {
   const cats = categories.filter((c) => usedCategoryIds.has(c.id)).map((c) => ({
     id: c.id, slug: c.slug, name: c.name, nameBn: c.nameBn, story: c.story, storyBn: c.storyBn, description: c.description, descriptionBn: c.descriptionBn,
   }));
+  // Monthly Stock offers ready-made pantry bundles from featured collections (optional, added only on tap).
+  const productIds = new Set(products.map((p) => p.id));
+  const bundles = mode === "MONTHLY"
+    ? (await db.collection.findMany({
+        where: { active: true, slug: { in: ["pantry-foundations"] } },
+        select: { slug: true, title: true, titleBn: true, description: true, descriptionBn: true, products: { orderBy: { position: "asc" }, select: { productId: true } } },
+      })).map((c) => ({ ...c, productIds: c.products.map((x) => x.productId).filter((id) => productIds.has(id)) })).filter((c) => c.productIds.length > 1)
+    : [];
   const [traces, profile, saved, history] = await Promise.all([
     latestBatchByProduct(products.map((p) => p.id)),
     user ? db.customerProfile.findUnique({ where: { userId: user.id }, select: { householdSize: true } }) : null,
@@ -35,6 +43,7 @@ export async function MarketPage({ mode }: { mode: Mode }) {
       savedMarkets={saved.map((s) => ({ id: s.id, name: s.name, mode: s.mode, itemCount: s._count.items }))}
       history={history}
       zone={zone}
+      bundles={bundles.map(({ products: _p, ...b }) => b)}
     />
   );
 }

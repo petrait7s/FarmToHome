@@ -12,7 +12,7 @@ export async function generateMetadata() {
   return { title: t("producers.title"), description: t("producers.lead") };
 }
 
-export default async function ProducersPage({ searchParams }: { searchParams: Promise<{ district?: string; category?: string }> }) {
+export default async function ProducersPage({ searchParams }: { searchParams: Promise<{ district?: string; category?: string; q?: string; status?: string }> }) {
   const sp = await searchParams;
   const { t, locale } = await getT();
   const [all, categories] = await Promise.all([
@@ -24,7 +24,12 @@ export default async function ProducersPage({ searchParams }: { searchParams: Pr
     listCategories(),
   ]);
   const districts = [...new Map(all.map((p) => [p.origin.slug, p.origin.district])).entries()].sort((a, b) => a[1].localeCompare(b[1]));
-  const producers = all.filter((p) => (!sp.district || p.origin.slug === sp.district) && (!sp.category || p.products.some((x) => x.category.slug === sp.category)));
+  const term = (sp.q ?? "").trim().toLowerCase();
+  const producers = all.filter((p) =>
+    (!sp.district || p.origin.slug === sp.district) &&
+    (!sp.category || p.products.some((x) => x.category.slug === sp.category)) &&
+    (!sp.status || p.verificationStatus === sp.status) &&
+    (!term || [p.name, p.nameBn ?? "", p.craft ?? "", p.craftBn ?? "", p.village ?? "", p.origin.district].join(" ").toLowerCase().includes(term)));
   return (
     <div className="page-pad">
       <section className={styles.banner}>
@@ -37,7 +42,11 @@ export default async function ProducersPage({ searchParams }: { searchParams: Pr
       </section>
 
       <div className="container">
-        <form className={styles.filters} action="/producers" method="get">
+        <form className={styles.filters} action="/producers" method="get" role="search">
+          <label className={`${styles.field} ${styles.grow}`}>
+            <span>{t("common.search")}</span>
+            <input type="search" name="q" defaultValue={sp.q ?? ""} className="input" placeholder={t("producers.searchPlaceholder")} />
+          </label>
           <label className={styles.field}>
             <span>{t("explore.origin")}</span>
             <select name="district" defaultValue={sp.district ?? ""} className="input">
@@ -52,8 +61,15 @@ export default async function ProducersPage({ searchParams }: { searchParams: Pr
               {categories.map((c) => <option key={c.slug} value={c.slug}>{localized(c, "name", locale)}</option>)}
             </select>
           </label>
+          <label className={styles.field}>
+            <span>{t("producers.statusLabel")}</span>
+            <select name="status" defaultValue={sp.status ?? ""} className="input">
+              <option value="">{t("producers.allStatuses")}</option>
+              {(["VERIFIED", "PENDING", "UNVERIFIED"] as const).map((v) => <option key={v} value={v}>{t(`producers.verification.${v}`)}</option>)}
+            </select>
+          </label>
           <button className="btn btn-primary">{t("explore.show")}</button>
-          {sp.district || sp.category ? <Link href="/producers" className="link">{t("explore.clearFilters")}</Link> : null}
+          {sp.district || sp.category || sp.q || sp.status ? <Link href="/producers" className="link">{t("explore.clearFilters")}</Link> : null}
           <span className={styles.count}>{t("producers.count", { n: producers.length })}</span>
         </form>
         <p className={styles.note}>{t("home.peopleNote")}</p>

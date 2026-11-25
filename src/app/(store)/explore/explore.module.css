@@ -12,7 +12,7 @@
 .filterForm :global(.field + .field) { margin-top: 0; }
 .checks { border: 0; display: grid; gap: 10px; }
 .checks legend { margin-bottom: 8px; }
-.count { font-size: 13px; font-weight: 600; margin-bottom: 18px; }
+.count { font: 600 13px/1.4 var(--font-sans); letter-spacing: 0; margin-bottom: 18px; }
 .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 28px; }
 .empty { padding: 56px 0; text-align: center; }
 .pager { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; font-size: 14px; }
@@ -52,3 +52,7 @@
 @keyframes sheet { from { transform: translateY(100%); } to { transform: none; } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .backdrop { display: none; }
+
+/* Larger hit area for filter checkboxes (WCAG 2.2 target size). */
+.checks label { min-height: 32px; display: flex; align-items: center; gap: 10px; }
+.checks input[type="checkbox"] { width: 20px; height: 20px; flex: none; }

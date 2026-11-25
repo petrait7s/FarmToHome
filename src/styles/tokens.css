@@ -21,6 +21,8 @@
   --white: #ffffff;
   --border-soft: #e5e0d7;
   --muted: #77736c;
+  /* Muted text that passes WCAG AA on Ivory and tinted sections (Charcoal at 72%, ≈7:1). Use for secondary copy. */
+  --text-muted: rgb(37 37 37 / 0.72);
   --charcoal-70: rgb(37 37 37 / 0.7);
 
   --red-06: rgb(22 74 131 / 0.06);

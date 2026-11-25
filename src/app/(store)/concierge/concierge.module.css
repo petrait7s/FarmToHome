@@ -1,12 +1,12 @@
 .split { display: grid; grid-template-columns: 0.95fr 1.05fr; gap: clamp(28px, 5vw, 72px); padding-top: 48px; padding-bottom: 80px; align-items: start; }
 .intro { display: flex; flex-direction: column; gap: 16px; }
 .intro :global(.eyebrow) svg { color: var(--red); }
-.intro :global(.lead) { color: var(--muted); }
+.intro :global(.lead) { color: var(--text-muted); }
 .photo { position: relative; aspect-ratio: 16 / 10; border-radius: var(--r-lg); overflow: hidden; margin-top: 8px; }
 .photo img { object-fit: cover; }
 .contact { list-style: none; display: grid; gap: 12px; margin-top: 8px; }
 .contact li { display: grid; grid-template-columns: 22px 1fr; gap: 12px; align-items: start; }
 .contact svg { color: var(--sky); margin-top: 3px; }
-.contact small { display: block; font-size: 13px; color: var(--muted); }
+.contact small { display: block; font-size: 13px; color: var(--text-muted); }
 .formPanel { background: var(--white); border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(22px, 3vw, 36px); position: sticky; top: calc(var(--header-h) + 20px); }
 @media (max-width: 900px) { .split { grid-template-columns: 1fr; padding-top: 28px; } .formPanel { position: static; } }

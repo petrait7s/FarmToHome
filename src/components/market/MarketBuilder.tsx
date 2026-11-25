@@ -19,7 +19,10 @@ import { formatMoney, formatNumber, toBanglaDigits } from "@/lib/money";
 import { repeatMarket, saveCartAsMarket, saveHouseholdSize } from "@/app/actions/markets";
 import styles from "./MarketBuilder.module.css";
 
+export type Bundle = { slug: string; title: string; titleBn: string | null; description: string | null; descriptionBn: string | null; productIds: string[] };
+
 type Props = {
+  bundles?: Bundle[];
   mode: Mode;
   products: ProductDTO[];
   categories: MarketCategory[];
@@ -45,7 +48,7 @@ function writeLocal(key: string, value: unknown) {
   try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* storage unavailable */ }
 }
 
-export function MarketBuilder({ mode, products, categories, traces, householdSize, signedIn, savedMarkets, history, zone }: Props) {
+export function MarketBuilder({ mode, products, categories, traces, householdSize, signedIn, savedMarkets, history, zone, bundles = [] }: Props) {
   const { t, locale } = useI18n();
   const cart = useCart();
   const toast = useToast();
@@ -54,6 +57,7 @@ export function MarketBuilder({ mode, products, categories, traces, householdSiz
   const defaultOpen = useMemo(() => (mode === "CUSTOM" ? categories.slice(0, 1) : categories.slice(0, 2)).map((c) => c.id), [mode, categories]);
   const [open, setOpen] = useState<string[]>(defaultOpen);
   const [household, setHousehold] = useState<number>(householdSize ?? 4);
+  const [bundleBusy, setBundleBusy] = useState(false);
   const [dismissed, setDismissed] = useState<string[]>([]);
   const [sel, setSel] = useState<Record<string, string>>({});
   const [originFor, setOriginFor] = useState<ProductDTO | null>(null);
@@ -201,12 +205,18 @@ export function MarketBuilder({ mode, products, categories, traces, householdSiz
             <div className={styles.hh} role="group" aria-labelledby="hh-label">
               <div className={styles.hhLabel}>
                 <span id="hh-label" className="eyebrow">{t("market.household")} · {t("market.householdOptional")}</span>
-                <span className={styles.hhValue}>{t("market.people", { n: household === 8 ? `${num(8)}+` : household })}</span>
+                <span className={styles.hhValue}>{t("market.people", { n: num(household) })}</span>
               </div>
               <div className={styles.hhOpts}>
                 {HOUSEHOLDS.map((n) => (
                   <button key={n} type="button" className={styles.hhOpt} aria-pressed={household === n} onClick={() => chooseHousehold(n)}>{n === 8 ? `${num(8)}+` : num(n)}</button>
                 ))}
+              </div>
+              <div className={styles.hhCustom}>
+                <span>{t("market.householdCustom")}</span>
+                <button type="button" aria-label={t("common.decrease", { name: t("market.household") })} disabled={household <= 1} onClick={() => chooseHousehold(Math.max(1, household - 1))}>−</button>
+                <output aria-live="polite">{num(household)}</output>
+                <button type="button" aria-label={t("common.increase", { name: t("market.household") })} disabled={household >= 15} onClick={() => chooseHousehold(Math.min(15, household + 1))}>+</button>
               </div>
               <p className={styles.hhNote}>{t("market.householdNote")}</p>
             </div>
@@ -231,7 +241,7 @@ export function MarketBuilder({ mode, products, categories, traces, householdSiz
         ))}
       </ol>
 
-      <div className={`container ${styles.layout}`}>
+      <div className={`container ${styles.layout} ${mode === "MONTHLY" ? styles.monthly : ""}`}>
         <section className={styles.main} aria-label={modeText}>
           <div className={styles.toolbar}>
             <div className={styles.tbRow}>
@@ -275,6 +285,48 @@ export function MarketBuilder({ mode, products, categories, traces, householdSiz
           </div>
 
           {mode === "MONTHLY" ? <p className={styles.note}><Icon name="info" size={16} />{t("market.monthlyFocus")}</p> : null}
+
+          {mode === "MONTHLY" && bundles.length ? (
+            <section className={styles.bundles} aria-labelledby="bundle-title">
+              <div className={styles.suggHead}>
+                <h2 id="bundle-title">{t("market.bundlesTitle")}</h2>
+                <p>{t("market.bundlesNote", { n: num(household) })}</p>
+              </div>
+              {bundles.map((b) => {
+                const items = b.productIds.map((id) => products.find((p) => p.id === id)).filter((p): p is (typeof products)[number] => !!p);
+                const picks = items.map((p) => ({ p, ...suggestPick(p, household, mode) }));
+                const total = picks.reduce((sum, x) => sum + x.variant.priceMinor * x.quantity, 0);
+                const allIn = picks.every((x) => cart.qtyOf(x.variant.id) >= x.quantity);
+                return (
+                  <div key={b.slug} className={styles.bundle}>
+                    <div className={styles.bundleText}>
+                      <h3>{localized(b, "title", locale)}</h3>
+                      <p>{localized(b, "description", locale)}</p>
+                      <ul>
+                        {picks.map((x) => (
+                          <li key={x.p.id}>
+                            <ProductVisual artKey={x.p.artKey} imageUrl={x.p.imageUrl} alt="" size="sm" />
+                            <span><b>{localized(x.p, "name", locale)}</b>{x.quantity > 1 ? `${num(x.quantity)} × ` : ""}{locale === "bn" && x.variant.labelBn ? x.variant.labelBn : x.variant.label}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className={styles.bundleAct}>
+                      <span className={styles.bundleTotal}>{formatMoney(total, locale)}</span>
+                      <button type="button" className="btn btn-primary" disabled={allIn || bundleBusy} onClick={async () => {
+                        setBundleBusy(true);
+                        for (const x of picks) if (cart.qtyOf(x.variant.id) < x.quantity) await cart.setQuantity(x.variant.id, x.quantity);
+                        setBundleBusy(false);
+                        toast.show(t("market.bundleAdded", { name: localized(b, "title", locale) }));
+                      }}>
+                        {allIn ? <><Icon name="check" /> {t("market.bundleInMarket")}</> : <><Icon name="plus" /> {t("market.bundleAdd")}</>}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </section>
+          ) : null}
 
           {suggestions.length ? (
             <section className={styles.sugg} aria-labelledby="sugg-title">

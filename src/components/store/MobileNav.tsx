@@ -118,7 +118,7 @@ export function MobileNav({ signedIn }: { signedIn: boolean }) {
           <Link key={it.href} href={it.href} className={`${styles.item} ${it.icon === "basket" ? styles.basket : ""} ${active ? styles.active : ""}`} aria-current={active ? "page" : undefined}>
             <span className={styles.icon}>
               <Icon name={it.icon} size={22} />
-              {it.icon === "basket" && cart.productCount > 0 ? <span className={styles.badge}>{formatNumber(cart.productCount, locale)}</span> : null}
+              {it.icon === "basket" && cart.productCount > 0 ? <span key={cart.productCount} className={`${styles.badge} ${styles.bump}`}>{formatNumber(cart.productCount, locale)}</span> : null}
             </span>
             <span className={styles.label}>{it.label}</span>
           </Link>

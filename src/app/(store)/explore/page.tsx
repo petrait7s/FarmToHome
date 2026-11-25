@@ -120,7 +120,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
         </aside>
 
         <section aria-live="polite">
-          <p className={styles.count}>{t("explore.results", { n: result.total })}</p>
+          <h2 className={styles.count}>{t("explore.results", { n: result.total })}</h2>
           {result.items.length === 0 ? (
             <div className={styles.empty}>
               <p className="h3">{t("explore.noResults")}</p>

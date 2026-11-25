@@ -6,8 +6,8 @@
 .bannerLead { font-size: 18px; max-width: 56ch; margin-top: 14px; opacity: 0.92; }
 .filters { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; padding: 28px 0 8px; }
 .field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; min-width: 200px; }
-.count { margin-left: auto; font-size: 13px; color: var(--muted); font-weight: 600; }
-.note { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+.count { margin-left: auto; font-size: 13px; color: var(--text-muted); font-weight: 600; }
+.note { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
 .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding-bottom: 72px; }
 .card { display: flex; flex-direction: column; background: var(--white); border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; transition: box-shadow 0.4s var(--ease), transform 0.4s var(--ease); }
 .art { position: relative; aspect-ratio: 4 / 3; overflow: hidden; }
@@ -17,8 +17,8 @@
 .meta { font-size: 12.5px; font-weight: 600; color: var(--sky); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .name { font: 600 20px/1.25 var(--font-serif); }
 .craft { font-size: 14px; }
-.products { font-size: 13px; color: var(--muted); }
-.empty { padding: 48px 0 96px; color: var(--muted); }
+.products { font-size: 13px; color: var(--text-muted); }
+.empty { padding: 48px 0 96px; color: var(--text-muted); }
 @media (hover: hover) { .card:hover { box-shadow: 0 24px 48px -30px rgb(37 37 37 / 0.35); transform: translateY(-3px); } .card:hover .art img { transform: scale(1.05); } }
 @media (max-width: 1100px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) {
@@ -27,3 +27,4 @@
   .field { min-width: 0; flex: 1 1 140px; }
   .count { margin-left: 0; width: 100%; }
 }
+.grow { flex: 1 1 220px; }

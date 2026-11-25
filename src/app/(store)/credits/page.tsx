@@ -13,7 +13,7 @@ export default async function CreditsPage() {
   return (
     <div className="container page-pad" style={{ paddingTop: 48, paddingBottom: 88 }}>
       <h1 className="h1">{t("credits.title")}</h1>
-      <p className="lead" style={{ color: "var(--muted)", marginTop: 12, maxWidth: "70ch" }}>{t("credits.body")}</p>
+      <p className="lead" style={{ color: "var(--text-muted)", marginTop: 12, maxWidth: "70ch" }}>{t("credits.body")}</p>
       <ul style={{ listStyle: "none", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 18, marginTop: 32 }}>
         {Object.values(photos).map((p) => (
           <li key={p.src} style={{ background: "var(--white)", border: "1px solid var(--line)", borderRadius: "var(--r-lg)", overflow: "hidden" }}>

@@ -33,7 +33,7 @@ export default async function JourneyPage() {
 
       <section className="container section">
         <h2 className="h1" style={{ marginBottom: 12 }}>{t("journey.stepsTitle")}</h2>
-        <p className="lead" style={{ color: "var(--muted)", marginBottom: 48 }}>{t("home.journeyLead")}</p>
+        <p className="lead" style={{ color: "var(--text-muted)", marginBottom: 48 }}>{t("home.journeyLead")}</p>
         <ol className={styles.chapters}>
           {JOURNEY_KEYS.map((k, i) => {
             const ph = photos[stagePhoto[k]];

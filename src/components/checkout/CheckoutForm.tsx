@@ -184,7 +184,7 @@ export function CheckoutForm({ idempotencyKey, user, addresses, zones, initialQu
 
         <fieldset id="sec-schedule" className={styles.fs} aria-busy={loadingSlots}>
           <legend><span>03 —</span>{t("checkout.steps.schedule")}</legend>
-          {!zone ? <p className="muted-note">{t("checkout.zoneNotServed")}</p> : (
+          {!zone ? <p className="muted-note">{addr.area ? t("checkout.zoneNotServed") : t("checkout.chooseAreaFirst")}</p> : (
             <>
               <p className="label" id="date-label">{t("checkout.date")}</p>
               <div className={styles.opts} role="radiogroup" aria-labelledby="date-label">

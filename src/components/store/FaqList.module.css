@@ -9,7 +9,7 @@
 .item summary::-webkit-details-marker { display: none; }
 .item summary svg { flex: none; color: var(--red); transition: transform 0.3s var(--ease); }
 .item[open] summary svg { transform: rotate(45deg); }
-.item p { padding: 0 0 20px; color: var(--muted); font-size: 15.5px; animation: open 0.3s var(--ease); }
+.item p { padding: 0 0 20px; color: var(--text-muted); font-size: 15.5px; animation: open 0.3s var(--ease); }
 html[lang="bn"] .item p { color: var(--charcoal); }
-.empty { padding: 24px 0; color: var(--muted); }
+.empty { padding: 24px 0; color: var(--text-muted); }
 @keyframes open { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }

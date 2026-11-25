@@ -13,12 +13,12 @@ export async function Header() {
   const { t, locale } = await getT();
   const user = await getCurrentUser();
   const links = [
-    { href: "/", label: t("nav.home"), exact: true },
+    // The logo links home; Concierge lives in the footer, FAQ and account area.
     { href: "/explore", label: t("nav.explore") },
     { href: "/market/weekly", label: t("nav.weekly") },
     { href: "/market/monthly", label: t("nav.monthly") },
     { href: "/journey", label: t("nav.journey") },
-    { href: "/concierge", label: t("nav.concierge") },
+    { href: "/producers", label: t("nav.producers") },
   ];
   const initial = user ? (Array.from(user.name.trim())[0] ?? "?").toUpperCase() : "";
   return (
@@ -29,7 +29,7 @@ export async function Header() {
           <BrandLogo />
           <nav aria-label={t("nav.primary")} className={styles.nav}>
             {links.map((l) => (
-              <NavLink key={l.href} href={l.href} exact={l.exact} className={styles.link} activeClassName={styles.active}>
+              <NavLink key={l.href} href={l.href} className={styles.link} activeClassName={styles.active}>
                 {l.label}
               </NavLink>
             ))}

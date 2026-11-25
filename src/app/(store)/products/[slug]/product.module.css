@@ -42,7 +42,7 @@
 .producerCard { background: var(--white); }
 .producerImg { position: relative; width: 64px; height: 64px; border-radius: var(--r); overflow: hidden; flex: none; }
 .producerImg img { object-fit: cover; }
-.info :global(.lead) { color: var(--muted); }
+.info :global(.lead) { color: var(--text-muted); }
 @media (max-width: 900px) { .gallery { position: static; } }
 
 /* Room for the sticky add-to-basket bar so it never hides the last content. */

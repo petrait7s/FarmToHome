@@ -18,7 +18,7 @@ export default async function HomePage() {
   const [hero, pilot, seasonal, categories, producers, collections, user] = await Promise.all([
     getContent("home.hero"),
     getContent("home.pilot"),
-    featuredProducts("seasonal", 8),
+    featuredProducts("seasonal", 4),
     listCategories(),
     featuredProducers(3),
     featuredCollections(),
@@ -57,7 +57,7 @@ export default async function HomePage() {
               <Link href={hero?.ctaHref ?? "/market/weekly"} className="btn btn-ivory btn-lg">
                 {L(hero, "ctaLabel", t("home.ctaBuild"))} <Icon name="arrowRight" />
               </Link>
-              <Link href="/producers" className="btn btn-outline-ivory btn-lg">{t("home.ctaProducers")}</Link>
+              <Link href="/explore" className="btn btn-outline-ivory btn-lg">{t("home.ctaExploreFood")}</Link>
             </div>
             <dl className={styles.stats}>
               <div><dt>{formatNumber(productCount, locale)}</dt><dd>{t("home.stats.products")}</dd></div>
@@ -318,6 +318,37 @@ export default async function HomePage() {
                 <ul>{z.areas.map((ar) => <li key={ar}>{ar}</li>)}</ul>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Reassurance: what to expect, with links to the actual policies ── */}
+      <section className="section">
+        <div className="container">
+          <h2 className="h2">{t("home.reassureTitle")}</h2>
+          <ul className={styles.reassure}>
+            {([["tag", "pricing", "/faq"], ["truck", "delivery", "/pages/delivery-policy"], ["headset", "support", "/concierge"], ["repeat", "refunds", "/pages/refund-policy"]] as const).map(([icon, k, href]) => (
+              <li key={k}>
+                <Icon name={icon} size={22} />
+                <h3>{t(`home.reassure.${k}.title`)}</h3>
+                <p>{t(`home.reassure.${k}.body`)}</p>
+                <Link href={href} className="link">{t(`home.reassure.${k}.cta`)}</Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ── Closing call to action ── */}
+      <section className={styles.finalCta}>
+        <Image src={photos.vegBaskets.src} alt="" fill sizes="100vw" className={styles.heroBg} />
+        <span className={styles.finalShade} aria-hidden="true" />
+        <div className={`container ${styles.finalInner}`}>
+          <h2 className="h1">{t("home.finalTitle")}</h2>
+          <p>{t("home.finalBody")}</p>
+          <div className={styles.heroCtas}>
+            <Link href="/market/weekly" className="btn btn-ivory btn-lg">{t("home.weeklyPhotoCta")} <Icon name="arrowRight" /></Link>
+            <Link href="/market/monthly" className="btn btn-outline-ivory btn-lg">{t("home.monthlyPhotoCta")}</Link>
           </div>
         </div>
       </section>

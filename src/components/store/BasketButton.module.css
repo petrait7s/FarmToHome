@@ -3,3 +3,6 @@
 .count { min-width: 26px; height: 26px; padding: 0 7px; border-radius: var(--r-pill); background: var(--ivory); color: var(--sky); font-size: 12.5px; display: inline-grid; place-items: center; position: relative; font-variant-numeric: tabular-nums; }
 .has::after { content: ""; position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); border: 2px solid var(--red); }
 @media (max-width: 1240px) { .text { display: none; } .btn { padding: 0 8px 0 12px; } }
+.bump { animation: bump 0.45s var(--ease); }
+@keyframes bump { 0% { transform: scale(1); } 35% { transform: scale(1.35); background: var(--gold); color: var(--charcoal); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .bump { animation: none; } }

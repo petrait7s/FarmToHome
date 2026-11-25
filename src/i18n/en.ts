@@ -107,6 +107,16 @@ export const en = {
     demo: "This is a preview. Demonstration data is labelled throughout.",
   },
   home: {
+    ctaExploreFood: "Explore our food",
+    reassureTitle: "Good to know before you order",
+    reassure: {
+      pricing: { title: "Clear prices", body: "Each pack has one price. The delivery fee for your area is shown before you place the order.", cta: "How prices are set" },
+      delivery: { title: "Scheduled delivery", body: "Choose a date and time slot at checkout. We deliver to selected areas of Sylhet city for now.", cta: "Delivery policy" },
+      support: { title: "A person to ask", body: "Questions about a product, an origin or an order go to our concierge team.", cta: "Contact the concierge" },
+      refunds: { title: "If something is not right", body: "Tell us within 24 hours with a photo and we will replace the item or credit you.", cta: "Refunds & replacements" },
+    },
+    finalTitle: "Plan your first market",
+    finalBody: "Choose for the week or stock up for the month. Nothing is ordered until you confirm.",
     trust: { direct: "Direct from producers", inspected: "Inspected before packing", traceable: "Batch traceability", pricing: "Transparent pricing", scheduled: "Scheduled home delivery" },
     ctaProducers: "Discover our producers",
     weeklyPhotoCta: "Plan weekly market",
@@ -175,6 +185,12 @@ export const en = {
     traceBody: "Enter the batch number printed under the QR code to see its origin and journey.",
   },
   market: {
+    householdCustom: "Exact size",
+    bundlesTitle: "Pantry bundles",
+    bundlesNote: "Ready-made monthly staples sized for {n} people. Added only if you choose; change anything afterwards.",
+    bundleAdd: "Add bundle",
+    bundleInMarket: "In your market",
+    bundleAdded: "{name} added to your market",
     progressLabel: "Order steps",
     progress: { choose: "Choose products", review: "Review market", slot: "Delivery slot", confirm: "Confirm order" },
     modes: {
@@ -297,6 +313,14 @@ export const en = {
     unfavorite: "Remove from favourites",
   },
   trace: {
+    formatHint: "Format: FTH-XXX-YYMMDD-NNNN. Lower case and missing dashes are fine.",
+    howTitle: "How to trace a pack",
+    how: {
+      find: { title: "Find the label", body: "The batch number and QR code are printed on every FarmToHome pack." },
+      scan: { title: "Scan with your camera", body: "Point your phone camera at the QR code and open the link. No app needed." },
+      type: { title: "Or type the number", body: "Enter the batch number above to see the same page." },
+    },
+    tryOne: "Try a batch",
     title: "Know Your Origin",
     lead: "Every pack carries a batch number. Enter it to see which region and producer the food came from, and each step it took before reaching your home.",
     batchLabel: "Batch number",
@@ -345,6 +369,7 @@ export const en = {
     unavailableItems: "Some items are currently unavailable and are not included in the total.",
   },
   checkout: {
+    chooseAreaFirst: "Choose your area above to see delivery dates and times.",
     title: "Checkout",
     lead: "A few short steps. Our team confirms your order before packing.",
     steps: { contact: "Contact", address: "Address", schedule: "Delivery", review: "Review", payment: "Payment" },
@@ -517,6 +542,7 @@ export const en = {
     },
   },
   concierge: {
+    orderRefHint: "Printed on your order confirmation, e.g. FTH-…",
     title: "Your concierge",
     lead: "Ask us about building a market, a product we don’t list, a special cut of fish, where something comes from, delivery changes or an existing order. Our team reviews every request and replies.",
     topic: "What do you need help with?",
@@ -561,6 +587,9 @@ export const en = {
     },
   },
   producers: {
+    searchPlaceholder: "Name, village or craft…",
+    statusLabel: "Verification",
+    allStatuses: "Any status",
     count: "{n} producers",
     title: "Our producers",
     lead: "The farmers, fishers and producers across Bangladesh we buy from directly.",

@@ -23,7 +23,7 @@
   border: 1px solid var(--line); box-shadow: 0 24px 50px -24px rgb(37 37 37 / 0.45); }
 .barText { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .barText b { font: 600 15.5px/1.25 var(--font-serif); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.barText span { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.barText span { font-size: 13px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
 .barBtn { flex: none; }
 @media (max-width: 900px) {
   /* Sits just above the floating bottom tab bar. */
