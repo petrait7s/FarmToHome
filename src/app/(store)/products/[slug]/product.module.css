@@ -44,3 +44,7 @@
 .producerImg img { object-fit: cover; }
 .info :global(.lead) { color: var(--muted); }
 @media (max-width: 900px) { .gallery { position: static; } }
+
+/* Room for the sticky add-to-basket bar so it never hides the last content. */
+.page { padding-bottom: 96px; }
+@media (max-width: 900px) { .page { padding-bottom: calc(var(--bottom-nav-h) + 90px); } }

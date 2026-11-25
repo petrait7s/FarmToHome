@@ -42,7 +42,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const inspection = batch?.inspections[0];
 
   return (
-    <div className="page-pad">
+    <div className={`page-pad ${styles.page}`}>
       <nav className={`container ${styles.crumbs}`} aria-label="Breadcrumb">
         <Link href="/explore">{t("nav.explore")}</Link>
         <Icon name="chevronRight" size={14} />
