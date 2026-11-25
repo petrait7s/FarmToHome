@@ -1,4 +1,5 @@
 import { Header } from "@/components/store/Header";
+import { DeliveryStrip } from "@/components/store/DeliveryStrip";
 import { Footer } from "@/components/store/Footer";
 import { MobileNav } from "@/components/store/MobileNav";
 import { CartProvider } from "@/components/store/CartProvider";
@@ -23,6 +24,7 @@ export default async function StoreLayout({ children }: { children: React.ReactN
             </div>
           ) : null}
           <Header />
+          <DeliveryStrip />
           <main id="main" tabIndex={-1} className={styles.main}>
             {children}
           </main>

@@ -73,11 +73,19 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </p>
           <h1 className="h1">{name}</h1>
           <p className="lead">{localized(product, "summary", locale)}</p>
-          {product.producer ? (
-            <p className={styles.byline}>
-              <Link href={`/producers/${product.producer.slug}`} className="link">{localized(product.producer, "name", locale)}</Link> · {product.producer.village}, {product.producer.origin.district}
-            </p>
-          ) : null}
+          <section className={styles.glance} aria-labelledby="glance-title">
+            <h2 id="glance-title" className={styles.glanceTitle}>{t("product.glanceTitle")}</h2>
+            <dl className={styles.glanceList}>
+              <div><dt><Icon name="pin" size={15} />{t("product.origin")}</dt><dd>{product.producer?.village ? `${product.producer.village}, ` : ""}{product.origin?.district ?? "—"}</dd></div>
+              {product.producer ? (
+                <div><dt><Icon name="user" size={15} />{t("product.producer")}</dt><dd><Link href={`/producers/${product.producer.slug}`} className="link">{localized(product.producer, "name", locale)}</Link> <span className={styles.glanceNote}>{t(`producers.verification.${product.producer.verificationStatus}`)}</span></dd></div>
+              ) : null}
+              <div><dt><Icon name="calendar" size={15} />{t("product.harvested")}</dt><dd>{fmtDate(batch?.collectedAt ?? null, locale) ?? <span className={styles.glanceNote}>{allSourced && !batch ? t("product.glanceToOrder") : t("product.glancePending")}</span>}</dd></div>
+              <div><dt><Icon name="shield" size={15} />{t("trace.inspection")}</dt><dd>{inspection ? <>{t(`trace.result.${inspection.result}`)}{inspection.grade ? ` · ${inspection.grade}` : ""} <span className={styles.glanceNote}>{fmtDate(inspection.inspectedAt, locale)}</span></> : <span className={styles.glanceNote}>{allSourced && !batch ? t("product.glanceToOrder") : t("product.glancePending")}</span>}</dd></div>
+              {product.storageInfo ? <div><dt><Icon name="box" size={15} />{t("product.storage")}</dt><dd>{localized(product, "storageInfo", locale)}</dd></div> : null}
+            </dl>
+            {batch ? <Link href={`/trace/${batch.batchNumber}`} className={`link ${styles.glanceLink}`}><Icon name="qr" size={15} /> {t("product.batch")}: <span className="mono">{batch.batchNumber}</span></Link> : null}
+          </section>
           <ProductBuyBox product={dto} />
           <ul className={styles.notes}>
             {product.isPerishable ? <li><Icon name="info" size={16} />{t("product.perishable")}</li> : null}
@@ -108,7 +116,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           })()}
           {product.producer?.quote && !product.producer.isDemo ? <blockquote className={styles.quote}>“{product.producer.quote}” <cite>— {product.producer.name}</cite></blockquote> : null}
 
-          <h2 className="h3" style={{ marginTop: 40 }}>{t("product.details")}</h2>
+          <details className={styles.more}>
+            <summary><span className="h3">{t("product.moreDetails")}</span><Icon name="chevronDown" size={18} /></summary>
           <dl className={styles.dl}>
             <dt>{t("product.origin")}</dt><dd>{product.producer?.village ? `${product.producer.village}, ` : ""}{product.origin?.district}{product.origin?.division ? `, ${product.origin.division}` : ""}</dd>
             {product.originClass ? (<><dt>{t("product.originClass")}</dt><dd>{product.originClass} — {clsDef ?? t("common.definitionPending")}</dd></>) : null}
@@ -119,6 +128,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             {product.handlingInfo ? (<><dt>{t("product.handling")}</dt><dd>{localized(product, "handlingInfo", locale)}</dd></>) : null}
             <dt>{t("product.netWeight")}</dt><dd>{product.variants.map((v) => v.label).join(" · ")}</dd>
           </dl>
+          </details>
         </article>
 
         <aside className={styles.trace}>

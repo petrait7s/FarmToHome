@@ -29,6 +29,8 @@ export type ProductDTO = {
   marketFit: MarketFit;
   householdUsePerPersonWeek: number | null;
   householdUseUnit: string | null;
+  /** Current batch: "inspected" when its latest inspection passed, "pending" otherwise; null when no batch is on hand. */
+  batchState: "inspected" | "pending" | null;
   variants: VariantDTO[];
 };
 
@@ -53,8 +55,26 @@ const productInclude = {
 
 type ProductRow = Prisma.ProductGetPayload<{ include: typeof productInclude }>;
 
+/** Inspection state of each product's current batch, from real batch and inspection records. */
+async function batchStates(productIds: string[]): Promise<Map<string, "inspected" | "pending">> {
+  if (!productIds.length) return new Map();
+  const batches = await db.batch.findMany({
+    where: { productId: { in: productIds }, status: { in: ["ACTIVE", "APPROVED", "PACKED"] } },
+    orderBy: [{ packedAt: { sort: "desc", nulls: "last" } }, { collectedAt: { sort: "desc", nulls: "last" } }],
+    select: { productId: true, inspections: { orderBy: { inspectedAt: "desc" }, take: 1, select: { result: true } } },
+  });
+  const map = new Map<string, "inspected" | "pending">();
+  for (const b of batches) {
+    if (!map.has(b.productId)) map.set(b.productId, b.inspections[0]?.result === "PASSED" ? "inspected" : "pending");
+  }
+  return map;
+}
+
 async function toDTOs(rows: ProductRow[]): Promise<ProductDTO[]> {
-  const avail = await availableByVariant(rows.flatMap((r) => r.variants.map((v) => v.id)));
+  const [avail, states] = await Promise.all([
+    availableByVariant(rows.flatMap((r) => r.variants.map((v) => v.id))),
+    batchStates(rows.map((r) => r.id)),
+  ]);
   return rows
     .filter((r) => r.variants.length > 0)
     .map((r) => ({
@@ -82,6 +102,7 @@ async function toDTOs(rows: ProductRow[]): Promise<ProductDTO[]> {
       marketFit: r.marketFit,
       householdUsePerPersonWeek: r.householdUsePerPersonWeek,
       householdUseUnit: r.householdUseUnit,
+      batchState: states.get(r.id) ?? null,
       variants: r.variants.map((v) => ({
         id: v.id,
         label: v.label,
@@ -189,6 +210,13 @@ export async function productsBySlugs(slugs: string[]): Promise<ProductDTO[]> {
   const rows = await db.product.findMany({ where: { slug: { in: slugs }, status: "ACTIVE" }, include: productInclude });
   const dtos = await toDTOs(rows);
   return slugs.map((s) => dtos.find((d) => d.slug === s)).filter((d): d is ProductDTO => !!d);
+}
+
+export async function productsByIds(ids: string[]): Promise<ProductDTO[]> {
+  if (!ids.length) return [];
+  const rows = await db.product.findMany({ where: { ...whereFor({}), id: { in: ids } }, include: productInclude });
+  const dtos = await toDTOs(rows);
+  return ids.map((id) => dtos.find((d) => d.id === id)).filter((d): d is ProductDTO => !!d);
 }
 
 export async function featuredProducts(kind: "seasonal" | "new" | "featured", take = 8): Promise<ProductDTO[]> {

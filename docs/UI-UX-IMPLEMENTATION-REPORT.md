@@ -89,3 +89,40 @@ On simulated mobile, Largest Contentful Paint is set by the large photographs. V
 | Social links | No accounts are configured | — |
 | Producer portraits and verified biographies | Need real producer material | Profiles stay labelled demo/illustrative |
 | Policy texts | Need legal review | Remain DRAFT |
+
+---
+
+# Research ideas 1–6 — 25 November 2026
+
+This pass builds the first six ideas from `docs/UX-RESEARCH.md` §3. Colours and fonts are unchanged. No database migration was needed.
+
+| Idea | What was built | Files |
+|---|---|---|
+| 1 Delivery area in the header | A slim bar under the header shows the chosen area, the next slot with room, and the delivery fee with its free-delivery threshold. Without an area it invites the shopper to choose one. The choice is kept in a cookie for a year. At checkout it fills in the area when there is no saved address. | `server/area.ts`, `actions/area.ts`, `DeliveryStrip.*`, `AreaPicker.tsx`, `lib/slots.ts`, `CheckoutForm.tsx`, `checkout/page.tsx` |
+| 2 "Start here" guide | Under the hero: household size (1–2, 3–4, 5–6, 7+), then this week or this month. The link opens the market with `?people=N`. That becomes the starting household size, and is saved to the profile when signed in. | `components/home/StartGuide.*`, `market/load.tsx`, `market/weekly` and `monthly` pages, `MarketBuilder.tsx` |
+| 3 Provenance line on cards | Each product card shows the producer and the state of the current batch. "Batch inspected" appears only when the latest inspection passed; otherwise "Inspection pending". With no batch on hand it says "Sourced after you order". All from batch and inspection records. | `server/catalog.ts` (`batchState`), `ProductCard.*` |
+| 4 "At a glance" on product pages | Origin, producer with verification status, harvest/collection date, inspection result and date, storage, and the batch number. Full details are collapsed under "All product details". Missing records say so. | `products/[slug]/page.tsx`, `product.module.css` |
+| 5 Homepage in eight sections | Hero (with trust strip), start-here guide, this week's fresh picks, three steps from source to door with batch lookup, producers, categories, good to know, and start your market (with the harvest-news link). | `(store)/page.tsx`, `home.module.css` |
+| 6 Reorder row | Signed-in customers with history see "Welcome back" and their most recently used saved market (add to basket or load again). Up to six products from recent orders appear in the size bought last time, each with an add button. | `components/home/ReorderRow.*`, `BuyAgain.tsx`, `catalog.ts` (`productsByIds`) |
+
+**Removed from or merged on the homepage:**
+- the separate weekly/monthly cards (replaced by the guide)
+- the seven-step journey and the quality band (replaced by three steps)
+- collections (still reachable from Explore filters)
+- how it works and planned delivery
+- the trace band (its lookup moved into the three steps)
+- launch zones (the delivery bar now shows area, slot and fee)
+- the updates band (now a line in the final section)
+
+## Checks
+
+| Check | Result |
+|---|---|
+| TypeScript | passes |
+| Vitest | 47 / 47 pass |
+| Playwright e2e | 15 / 15 pass |
+| Production build | passes |
+| axe-core: home, two product pages, explore, weekly market; EN and BN | 0 violations |
+| Horizontal overflow: home, product, market; desktop and phone; guest and signed in | none |
+
+The "Batch inspected" label depends on inspection records being entered in admin for each batch.

@@ -117,10 +117,6 @@ html[lang="bn"] .howGrid li p { color: var(--charcoal); }
 .traceInner { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; }
 .traceInner svg { color: var(--gold); margin-bottom: 14px; }
 .traceInner p { margin-top: 8px; opacity: 0.9; }
-.traceForm { display: flex; gap: 10px; }
-.traceForm :global(.input) { flex: 1; height: 54px; border-radius: var(--r-pill); padding-left: 22px; background: rgb(244 235 221 / 0.12); border-color: rgb(244 235 221 / 0.45); color: var(--ivory); }
-.traceForm :global(.input)::placeholder { color: rgb(244 235 221 / 0.7); }
-.traceForm :global(.btn) { height: 54px; }
 
 /* ───────── Launch area ───────── */
 .launch { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(32px, 5vw, 80px); align-items: start; }
@@ -163,7 +159,6 @@ html[lang="bn"] .howGrid li p { color: var(--charcoal); }
   .catDesc { display: none; }
   .trust ul { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; }
   .trust li { white-space: nowrap; }
-  .traceForm { flex-direction: column; }
   .qualityList { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { .heroBg { animation: none; } }
@@ -179,3 +174,24 @@ html[lang="bn"] .howGrid li p { color: var(--charcoal); }
 .finalInner p { font-size: 18px; max-width: 52ch; margin-top: 14px; opacity: 0.94; }
 @media (max-width: 1100px) { .reassure { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .reassure { grid-template-columns: 1fr; } }
+
+/* Three steps from source to door. */
+.three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; list-style: none; margin: 0; padding: 0; }
+.threeItem { position: relative; display: flex; flex-direction: column; gap: 8px; }
+.threeItem p { color: var(--text-muted); font-size: 15px; }
+.threeImg { position: relative; display: block; aspect-ratio: 4 / 3; border-radius: var(--r-lg); overflow: hidden; margin-bottom: 8px; }
+.threeImg img { object-fit: cover; }
+.threeNum { position: absolute; top: 12px; left: 12px; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--ivory); color: var(--sky); font-weight: 700; font-size: 15px; }
+.traceRow { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px 32px; flex-wrap: wrap; margin-top: 32px; padding: 20px; border-radius: var(--r-lg); background: var(--white); border: 1px solid var(--border-soft); }
+.traceForm { display: grid; gap: 8px; flex: 1 1 420px; max-width: 640px; }
+.traceForm :global(.label) { display: inline-flex; align-items: center; gap: 8px; }
+.traceForm > div { display: flex; gap: 10px; }
+.traceForm :global(.input) { flex: 1; min-width: 0; height: 50px; }
+.traceForm :global(.btn) { height: 50px; flex: none; }
+.more { margin-top: 20px; }
+.updatesLine { margin-top: 22px !important; font-size: 15px !important; }
+.updatesLine :global(.link) { color: var(--gold); }
+@media (max-width: 900px) {
+  .traceRow { padding: 16px; margin-top: 20px; }
+  .traceForm { flex-basis: 100%; }
+}

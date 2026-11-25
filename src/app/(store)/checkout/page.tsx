@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { getCurrentCart } from "@/server/cart";
 import { getCurrentUser } from "@/server/auth/session";
 import { listZones } from "@/server/delivery";
+import { getChosenArea } from "@/server/area";
 import { quoteCart } from "@/server/quote";
 import { getSettings } from "@/server/settings";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
@@ -13,7 +14,7 @@ import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 export const metadata = { title: "Checkout", robots: { index: false } };
 
 export default async function CheckoutPage() {
-  const [cart, user, zones, settings] = await Promise.all([getCurrentCart(), getCurrentUser(), listZones(), getSettings()]);
+  const [cart, user, zones, settings, chosen] = await Promise.all([getCurrentCart(), getCurrentUser(), listZones(), getSettings(), getChosenArea()]);
   if (cart.productCount === 0) redirect("/basket");
   const { t } = await getT();
   const addresses = user ? await db.address.findMany({ where: { userId: user.id }, orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }] }) : [];
@@ -32,6 +33,7 @@ export default async function CheckoutPage() {
         zones={zones.map((z) => ({ id: z.id, name: z.name, division: z.division, district: z.district, areas: z.areas }))}
         initialQuote={quote}
         requireEmail={settings.requireEmail}
+        preferredArea={chosen ? { division: chosen.division, district: chosen.district, area: chosen.area } : null}
       />
     </div>
   );

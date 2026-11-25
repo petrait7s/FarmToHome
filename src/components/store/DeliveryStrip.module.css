@@ -1,0 +1,18 @@
+.strip { background: var(--white); border-bottom: 1px solid var(--border-soft); font-size: 13px; color: var(--charcoal); }
+.inner { display: flex; align-items: center; gap: 10px; min-height: 40px; padding-block: 6px; }
+.inner > svg { flex: none; color: var(--red); }
+.text { margin: 0; min-width: 0; flex: 1; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px; row-gap: 2px; line-height: 1.45; }
+.text b { font-weight: 600; }
+.sep { color: var(--muted); }
+.hint { color: var(--text-muted); }
+.change { flex: none; font: inherit; font-weight: 600; color: var(--red); background: none; border: 1px solid rgb(22 74 131 / 0.25); border-radius: var(--r-pill); padding: 5px 14px; min-height: 32px; cursor: pointer; transition: background 0.2s var(--ease); }
+.change:hover { background: rgb(22 74 131 / 0.06); }
+.form { display: grid; gap: 12px; }
+.formBody { margin: 0 0 4px; color: var(--text-muted); }
+.formActions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+
+@media (max-width: 900px) {
+  .strip { background: transparent; border-bottom: 0; }
+  .inner { font-size: 12.5px; }
+  .text { column-gap: 6px; }
+}

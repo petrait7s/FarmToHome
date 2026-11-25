@@ -28,6 +28,8 @@ type Props = {
   categories: MarketCategory[];
   traces: Record<string, TraceInfo>;
   householdSize: number | null;
+  /** From the homepage guide; overrides the remembered size and is saved as the new choice. */
+  initialPeople?: number | null;
   signedIn: boolean;
   savedMarkets: SavedMarketSummary[];
   history: { variantId: string; quantity: number }[];
@@ -48,7 +50,7 @@ function writeLocal(key: string, value: unknown) {
   try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* storage unavailable */ }
 }
 
-export function MarketBuilder({ mode, products, categories, traces, householdSize, signedIn, savedMarkets, history, zone, bundles = [] }: Props) {
+export function MarketBuilder({ mode, products, categories, traces, householdSize, initialPeople = null, signedIn, savedMarkets, history, zone, bundles = [] }: Props) {
   const { t, locale } = useI18n();
   const cart = useCart();
   const toast = useToast();
@@ -56,7 +58,7 @@ export function MarketBuilder({ mode, products, categories, traces, householdSiz
   const [cat, setCat] = useState<string>("all");
   const defaultOpen = useMemo(() => (mode === "CUSTOM" ? categories.slice(0, 1) : categories.slice(0, 2)).map((c) => c.id), [mode, categories]);
   const [open, setOpen] = useState<string[]>(defaultOpen);
-  const [household, setHousehold] = useState<number>(householdSize ?? 4);
+  const [household, setHousehold] = useState<number>(initialPeople ?? householdSize ?? 4);
   const [bundleBusy, setBundleBusy] = useState(false);
   const [dismissed, setDismissed] = useState<string[]>([]);
   const [sel, setSel] = useState<Record<string, string>>({});
@@ -77,8 +79,11 @@ export function MarketBuilder({ mode, products, categories, traces, householdSiz
   // Restore per-viewer conveniences.
   useEffect(() => {
     setOpen(readLocal(`fth:open:${mode}`, defaultOpen));
-    if (!householdSize) setHousehold(readLocal("fth:household", 4));
-  }, [mode, defaultOpen, householdSize]);
+    if (initialPeople) {
+      writeLocal("fth:household", initialPeople);
+      if (signedIn && initialPeople !== householdSize) void saveHouseholdSize(initialPeople);
+    } else if (!householdSize) setHousehold(readLocal("fth:household", 4));
+  }, [mode, defaultOpen, householdSize, initialPeople, signedIn]);
 
   const persistOpen = (next: string[]) => { setOpen(next); writeLocal(`fth:open:${mode}`, next); };
 

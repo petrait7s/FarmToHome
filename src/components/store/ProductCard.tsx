@@ -45,7 +45,23 @@ export function ProductCard({ product, priority }: { product: ProductDTO; priori
           {product.isDemo ? <span className="demo-tag">{t("common.demo")}</span> : null}
         </p>
         <h3 className={styles.name}><Link href={`/products/${product.slug}`}>{name}</Link></h3>
-        {product.producerName ? <p className={styles.producer}>{product.producerName}</p> : null}
+        {(() => {
+          // Provenance line from real records: who produced it, and the state of the current batch.
+          const toOrder = !product.batchState && product.variants.every((v) => v.fulfillmentMode === "SOURCED_TO_ORDER");
+          const state = product.batchState ?? (toOrder ? "toOrder" : null);
+          if (!product.producerName && !state) return null;
+          return (
+            <p className={styles.prov}>
+              {product.producerName ? <span className={styles.producer}>{product.producerName}</span> : null}
+              {state ? (
+                <span className={`${styles.state} ${state === "inspected" ? styles.ok : ""}`}>
+                  <Icon name={state === "inspected" ? "check" : state === "toOrder" ? "truck" : "info"} size={13} strokeWidth={2.2} />
+                  {t(`market.prov.${state}`)}
+                </span>
+              ) : null}
+            </p>
+          );
+        })()}
         <p className={styles.summary}>{localized(product, "summary", locale)}</p>
         {product.variants.length > 1 ? (
           <div className={styles.sizes} role="radiogroup" aria-label={`${name} — ${t("product.sizes")}`}>

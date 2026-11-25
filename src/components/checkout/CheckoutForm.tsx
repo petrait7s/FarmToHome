@@ -1,5 +1,6 @@
 "use client";
 
+import { slotTime } from "@/lib/slots";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { Quote } from "@/server/quote";
@@ -8,7 +9,7 @@ import { useCart } from "@/components/store/CartProvider";
 import { Field } from "@/components/ui/Field";
 import { Icon } from "@/components/ui/Icon";
 import { useI18n } from "@/i18n/client";
-import { formatMoney, formatNumber, toBanglaDigits } from "@/lib/money";
+import { formatMoney, formatNumber } from "@/lib/money";
 import { getQuote } from "@/app/actions/cart";
 import { getSlots, placeOrderAction } from "@/app/actions/checkout";
 import styles from "./CheckoutForm.module.css";
@@ -23,24 +24,23 @@ type Props = {
   zones: Zone[];
   initialQuote: Quote;
   requireEmail: boolean;
+  /** Delivery area remembered from the header picker, used when there is no saved address. */
+  preferredArea?: { division: string; district: string; area: string } | null;
 };
 
 const METHODS = ["CASH_ON_DELIVERY", "MOBILE_SIMULATED", "ONLINE_SIMULATED"] as const;
 
-function slotText(s: { startTime: string; endTime: string }, locale: string) {
-  const f = (t: string) => { const [h, m] = t.split(":").map(Number); const hh = h % 12 || 12; return `${hh}${m ? `:${String(m).padStart(2, "0")}` : ""} ${h >= 12 ? "PM" : "AM"}`; };
-  const text = `${f(s.startTime)} – ${f(s.endTime)}`;
-  return locale === "bn" ? toBanglaDigits(text) : text;
-}
+const slotText = slotTime;
 
-export function CheckoutForm({ idempotencyKey, user, addresses, zones, initialQuote, requireEmail }: Props) {
+export function CheckoutForm({ idempotencyKey, user, addresses, zones, initialQuote, requireEmail, preferredArea }: Props) {
   const { t, locale } = useI18n();
   const router = useRouter();
   const { cart } = useCart();
   const def = addresses[0];
+  const pre = def ? null : preferredArea ?? null;
   const [contact, setContact] = useState({ name: user?.name ?? "", phone: user?.phone ?? "", email: user?.email ?? "" });
   const [addressId, setAddressId] = useState<string>(def?.id ?? "new");
-  const [addr, setAddr] = useState({ division: def?.division ?? zones[0]?.division ?? "", district: def?.district ?? zones[0]?.district ?? "", area: def?.area ?? "", line1: def?.line1 ?? "", landmark: def?.landmark ?? "", instructions: def?.instructions ?? "" });
+  const [addr, setAddr] = useState({ division: def?.division ?? pre?.division ?? zones[0]?.division ?? "", district: def?.district ?? pre?.district ?? zones[0]?.district ?? "", area: def?.area ?? pre?.area ?? "", line1: def?.line1 ?? "", landmark: def?.landmark ?? "", instructions: def?.instructions ?? "" });
   const [saveAddress, setSaveAddress] = useState(!!user && addresses.length === 0);
   const [slots, setSlots] = useState<SlotView[]>([]);
   const [date, setDate] = useState<string | null>(null);

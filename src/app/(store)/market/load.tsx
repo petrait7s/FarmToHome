@@ -6,7 +6,10 @@ import { MarketBuilder } from "@/components/market/MarketBuilder";
 import type { Mode } from "@/components/market/types";
 
 /** Shared server loader for the three market-building modes (common cart and product system). */
-export async function MarketPage({ mode }: { mode: Mode }) {
+export async function MarketPage({ mode, people }: { mode: Mode; people?: string }) {
+  // Household size chosen on the homepage guide (?people=4), applied as the starting suggestion.
+  const n = Number(people);
+  const initialPeople = Number.isInteger(n) && n >= 1 && n <= 15 ? n : null;
   const fit = mode === "WEEKLY" ? (["WEEKLY", "BOTH"] as const) : mode === "MONTHLY" ? (["MONTHLY", "BOTH"] as const) : null;
   const [user, categories, products, zone] = await Promise.all([
     getCurrentUser(),
@@ -39,6 +42,7 @@ export async function MarketPage({ mode }: { mode: Mode }) {
       categories={cats}
       traces={traces}
       householdSize={profile?.householdSize ?? null}
+      initialPeople={initialPeople}
       signedIn={!!user}
       savedMarkets={saved.map((s) => ({ id: s.id, name: s.name, mode: s.mode, itemCount: s._count.items }))}
       history={history}
