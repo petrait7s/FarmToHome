@@ -18,7 +18,7 @@ export async function getOrderForViewer(reference: string, guestToken?: string |
   const order = await db.order.findUnique({
     where: { reference },
     include: {
-      items: { include: { allocations: { include: { batch: { select: { batchNumber: true } } } }, variant: { select: { product: { select: { slug: true, artKey: true } } } } } },
+      items: { include: { allocations: { include: { batch: { select: { batchNumber: true } } } }, variant: { select: { product: { select: { slug: true, artKey: true, origin: { select: { district: true, division: true } }, producer: { select: { slug: true, name: true, nameBn: true, village: true, isDemo: true } } } } } } } },
       statusHistory: { orderBy: { createdAt: "asc" } },
       payments: { orderBy: { createdAt: "asc" } },
       zone: { select: { name: true } },

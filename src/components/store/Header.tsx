@@ -7,11 +7,15 @@ import { isStaff } from "@/server/auth/guards";
 import { setLocale } from "@/app/actions/locale";
 import { NavLink } from "./NavLink";
 import { BasketButton } from "./BasketButton";
+import { SearchButton } from "./SearchButton";
+import { getChosenArea } from "@/server/area";
+import { defaultZoneRule } from "@/server/markets";
 import styles from "./Header.module.css";
 
 export async function Header() {
   const { t, locale } = await getT();
-  const user = await getCurrentUser();
+  const [user, chosen, fallback] = await Promise.all([getCurrentUser(), getChosenArea(), defaultZoneRule()]);
+  const zone = chosen ? { feeMinor: chosen.feeMinor, freeThresholdMinor: chosen.freeThresholdMinor, area: chosen.area } : fallback ? { ...fallback, area: null } : null;
   const links = [
     // The logo links home; Concierge lives in the footer, FAQ and account area.
     { href: "/explore", label: t("nav.explore") },
@@ -35,9 +39,7 @@ export async function Header() {
             ))}
           </nav>
           <div className={styles.actions}>
-            <Link href="/explore#search" className={styles.iconBtn} aria-label={t("nav.search")} title={t("nav.search")}>
-              <Icon name="search" />
-            </Link>
+            <SearchButton className={styles.iconBtn} />
             <form action={setLocale}>
               <input type="hidden" name="locale" value={locale === "en" ? "bn" : "en"} />
               <button type="submit" className={`${styles.iconBtn} ${styles.lang}`} aria-label={`${t("common.language")}: ${t("meta.other")}`} title={t("meta.other")} lang={locale === "en" ? "bn" : "en"}>
@@ -60,7 +62,7 @@ export async function Header() {
             >
               {user ? <span className={styles.avatar} aria-hidden="true">{initial}</span> : <Icon name="user" />}
             </Link>
-            <BasketButton label={t("nav.basket")} className={styles.hideMobile} />
+            <BasketButton label={t("nav.basket")} className={styles.hideMobile} zone={zone} />
           </div>
         </div>
       </div>

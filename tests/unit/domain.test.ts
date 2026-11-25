@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { applicableStages, canTransition, customerCanCancel, nextStatuses } from "@/server/orders/workflow";
 import { bdPhone } from "@/lib/validation";
-import { formatMoney, toBanglaDigits, unitPrice } from "@/lib/money";
+import { formatMoney, packSaving, toBanglaDigits, unitPrice } from "@/lib/money";
+import { slotTime } from "@/lib/slots";
 import { householdNeed, suggestPick } from "@/components/market/types";
 import { parseArtKey, artSvg } from "@/components/ui/productArt";
 import type { ProductDTO } from "@/server/catalog";
@@ -83,5 +84,28 @@ describe("i18n dictionaries", () => {
     expect(translate(en, "common.products", { n: 3 })).toBe("3 products");
     expect(translate(bn, "common.products", { n: 3 })).toBe("৩টি পণ্য");
     expect(translate(en, "does.not.exist")).toBe("does.not.exist");
+  });
+});
+
+describe("pack value comparison", () => {
+  const v = (label: string, netQuantity: number, unit: string, priceMinor: number) => ({ label, netQuantity, unit, priceMinor });
+  const small = v("500 g", 500, "g", 38000), big = v("1 kg", 1, "kg", 70000), pc = v("1 pc", 1, "pc", 5000);
+  it("reports the saving per kg against the dearest comparable pack", () => {
+    const s = packSaving(big, [small, big]);
+    expect(s?.perUnitMinor).toBe(6000);
+    expect(s?.unit).toBe("kg");
+    expect(s?.against.label).toBe("500 g");
+  });
+  it("returns null for the dearest pack, pieces, or incomparable units", () => {
+    expect(packSaving(small, [small, big])).toBeNull();
+    expect(packSaving(pc, [pc, v("2 pc", 2, "pc", 9000)])).toBeNull();
+    expect(packSaving(v("1 L", 1, "L", 20000), [v("1 L", 1, "L", 20000), small])).toBeNull();
+  });
+});
+
+describe("slot time labels", () => {
+  it("formats times in English and Bangla digits", () => {
+    expect(slotTime({ startTime: "08:00", endTime: "10:30" }, "en")).toBe("8 AM – 10:30 AM");
+    expect(slotTime({ startTime: "16:00", endTime: "18:00" }, "bn")).toBe("৪ PM – ৬ PM");
   });
 });

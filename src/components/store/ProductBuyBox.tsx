@@ -7,7 +7,7 @@ import { Icon } from "@/components/ui/Icon";
 import { ProductVisual } from "@/components/ui/ProductVisual";
 import { useCart } from "./CartProvider";
 import { useI18n } from "@/i18n/client";
-import { formatMoney, unitPrice } from "@/lib/money";
+import { formatMoney, packSaving, unitPrice } from "@/lib/money";
 import { localized } from "@/i18n/shared";
 import styles from "./ProductBuyBox.module.css";
 
@@ -59,6 +59,7 @@ export function ProductBuyBox({ product }: { product: ProductDTO }) {
             onClick={() => { if (inCart && inCart.id !== v.id) void cart.swap(inCart.id, v.id); setSelected(v.id); }}>
             <span>{locale === "bn" && v.labelBn ? v.labelBn : v.label}</span>
             <span className={styles.sizePrice}>{formatMoney(v.priceMinor, locale)}</span>
+            {v.unit !== "pc" && product.variants.length > 1 ? <span className={styles.sizeUnit}>{unitPrice(v.priceMinor, v.netQuantity, v.unit, locale)}</span> : null}
           </button>
         ))}
       </div>
@@ -66,6 +67,12 @@ export function ProductBuyBox({ product }: { product: ProductDTO }) {
         <p className={styles.price}>{formatMoney(variant.priceMinor, locale)}</p>
         <p className={styles.unit}>{unitPrice(variant.priceMinor, variant.netQuantity, variant.unit, locale)}</p>
       </div>
+      {(() => {
+        const save = packSaving(variant, product.variants);
+        if (!save) return null;
+        const size = locale === "bn" && save.against.labelBn ? save.against.labelBn : save.against.label;
+        return <p className={styles.saving}><Icon name="tag" size={15} />{t("product.value.saves", { amount: formatMoney(save.perUnitMinor, locale), unit: save.unit, size })}</p>;
+      })()}
       <p className={styles.avail}>
         <span className={`dot ${soldOut ? "" : "sky"}`} aria-hidden="true" />
         {soldOut ? t("market.outOfStock") : variant.fulfillmentMode === "SOURCED_TO_ORDER" ? t("market.sourcedToOrder") : low ? t("market.lowStock", { n: variant.available ?? 0 }) : t("product.available")}

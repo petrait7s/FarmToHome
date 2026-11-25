@@ -78,7 +78,7 @@ export default async function AdminOrder({ params, searchParams }: { params: Pro
           <tbody>
             {order.items.map((i) => (
               <tr key={i.id}>
-                <td>{i.productName} <span className="muted-note">{i.variantLabel} · {i.sku}</span>{i.fulfillmentMode === "SOURCED_TO_ORDER" ? <><br /><Badge>sourced to order</Badge></> : null}</td>
+                <td>{i.productName} <span className="muted-note">{i.variantLabel} · {i.sku}</span>{i.fulfillmentMode === "SOURCED_TO_ORDER" ? <><br /><Badge>sourced to order</Badge></> : null}<br /><span className="muted-note">If unavailable: {i.onUnavailable === "REMOVE" ? "remove, do not charge" : "call customer to agree a replacement"}</span></td>
                 <td>{i.quantity}</td>
                 <td className="tnum">{formatMoney(i.unitPriceMinor)}</td>
                 <td className="tnum">{formatMoney(i.lineTotalMinor)}{i.discountMinor ? <><br /><span className="muted-note">− {formatMoney(i.discountMinor)}</span></> : null}</td>

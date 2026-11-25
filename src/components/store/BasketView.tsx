@@ -18,7 +18,7 @@ import styles from "./BasketView.module.css";
 
 export function BasketView({ initialQuote, signedIn }: { initialQuote: Quote; signedIn: boolean }) {
   const { t, locale } = useI18n();
-  const { cart, setQuantity, pending, clear, bulk } = useCart();
+  const { cart, setQuantity, pending, clear, bulk, setPref } = useCart();
   const toast = useToast();
   const [quote, setQuote] = useState(initialQuote);
   const [code, setCode] = useState("");
@@ -58,6 +58,14 @@ export function BasketView({ initialQuote, signedIn }: { initialQuote: Quote; si
     <div className={styles.grid}>
       <section aria-label={t("basket.title")}>
         {quote.hasUnavailable ? <p className="form-error" role="alert">{t("basket.unavailableItems")}</p> : null}
+        <div className={styles.prefAll} role="group" aria-labelledby="pref-all-label">
+          <p id="pref-all-label" className={styles.prefAllLabel}><Icon name="info" size={15} />{t("basket.pref.allLabel")}</p>
+          <div className={styles.prefAllBtns}>
+            <button type="button" className="btn btn-sm" aria-pressed={cart.lines.every((l) => l.onUnavailable === "CALL")} onClick={() => void setPref(null, "CALL")}>{t("basket.pref.allCall")}</button>
+            <button type="button" className="btn btn-sm" aria-pressed={cart.lines.every((l) => l.onUnavailable === "REMOVE")} onClick={() => void setPref(null, "REMOVE")}>{t("basket.pref.allRemove")}</button>
+          </div>
+          <p className="muted-note">{t("basket.pref.note")}</p>
+        </div>
         <ul className={styles.lines}>
           {cart.lines.map((l) => {
             const name = locale === "bn" && l.productNameBn ? l.productNameBn : l.productName;
@@ -72,6 +80,13 @@ export function BasketView({ initialQuote, signedIn }: { initialQuote: Quote; si
                     {l.fulfillmentMode === "SOURCED_TO_ORDER" ? ` · ${t("market.sourcedToOrder")}` : ""}
                     {!l.available ? ` · ${l.availableQty === 0 ? t("market.outOfStock") : t("market.lowStock", { n: l.availableQty ?? 0 })}` : ""}
                   </p>
+                  <label className={styles.pref}>
+                    <span>{t("basket.pref.label")}:</span>
+                    <select value={l.onUnavailable} onChange={(e) => void setPref(l.variantId, e.target.value as "CALL" | "REMOVE")} aria-label={`${name}: ${t("basket.pref.label")}`}>
+                      <option value="CALL">{t("basket.pref.CALL")}</option>
+                      <option value="REMOVE">{t("basket.pref.REMOVE")}</option>
+                    </select>
+                  </label>
                 </div>
                 <div className={styles.lineCtrl}>
                   <QuantityStepper name={name} quantity={l.quantity} tone="line" max={l.availableQty} onChange={(n) => (n <= 0 ? void removeLine(l.variantId, l.quantity, name) : void setQuantity(l.variantId, n))} />

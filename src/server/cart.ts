@@ -29,6 +29,8 @@ export type CartLine = {
   fulfillmentMode: "STOCK" | "SOURCED_TO_ORDER";
   available: boolean;
   availableQty: number | null;
+  /** If it cannot be supplied on the day: call the customer, or remove it (not charged). */
+  onUnavailable: "CALL" | "REMOVE";
 };
 
 export type CartView = {
@@ -120,6 +122,7 @@ export async function loadCart(cartId: string | null): Promise<CartView> {
       fulfillmentMode: v.fulfillmentMode,
       available,
       availableQty,
+      onUnavailable: i.onUnavailable,
     };
   });
   const counted = lines.filter((l) => l.available);
@@ -181,6 +184,11 @@ export async function swapVariant(cartId: string, fromVariantId: string, toVaria
   if (err) return err;
   await db.cartItem.deleteMany({ where: { cartId, variantId: fromVariantId } });
   return null;
+}
+
+/** Set the "if unavailable" preference for one line, or for every line when variantId is null. */
+export async function setUnavailablePref(cartId: string, variantId: string | null, pref: "CALL" | "REMOVE"): Promise<void> {
+  await db.cartItem.updateMany({ where: { cartId, ...(variantId ? { variantId } : {}) }, data: { onUnavailable: pref } });
 }
 
 export async function clearCart(cartId: string): Promise<void> {

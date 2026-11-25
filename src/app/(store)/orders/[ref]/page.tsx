@@ -69,12 +69,56 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
                         {t("product.batch")}: {i.allocations.map((a) => <Link key={a.id} href={`/trace/${a.batch.batchNumber}`} className="link mono">{a.batch.batchNumber}</Link>)}
                       </p>
                     ) : i.fulfillmentMode === "SOURCED_TO_ORDER" ? <p className="muted-note">{t("market.sourcedToOrder")}</p> : null}
+                    <p className="muted-note">{t(`orders.prefShort.${i.onUnavailable}`)}</p>
                   </div>
                   <span className={styles.itemTotal}>{formatMoney(i.lineTotalMinor, locale)}</span>
                 </li>
               ))}
             </ul>
           </section>
+
+          {(() => {
+            // Group the order by district, then producer, from product and batch records.
+            const byDistrict = new Map<string, { producers: Map<string, { slug: string; name: string; village: string | null; isDemo: boolean; items: string[]; batches: string[] }>; loose: string[] }>();
+            for (const i of order.items) {
+              const p = i.variant.product;
+              const district = p.origin?.district;
+              if (!district) continue;
+              const d = byDistrict.get(district) ?? { producers: new Map(), loose: [] as string[] };
+              if (p.producer) {
+                const e = d.producers.get(p.producer.slug) ?? { slug: p.producer.slug, name: locale === "bn" && p.producer.nameBn ? p.producer.nameBn : p.producer.name, village: p.producer.village, isDemo: p.producer.isDemo, items: [], batches: [] };
+                e.items.push(i.productName);
+                e.batches.push(...i.allocations.map((a) => a.batch.batchNumber).filter((b) => !e.batches.includes(b)));
+                d.producers.set(p.producer.slug, e);
+              } else d.loose.push(i.productName);
+              byDistrict.set(district, d);
+            }
+            if (!byDistrict.size) return null;
+            const producerCount = [...byDistrict.values()].reduce((n, d) => n + d.producers.size, 0);
+            return (
+              <section className={styles.card} aria-labelledby="origins-title">
+                <h2 id="origins-title" className="h3">{t("orders.origins.title")}</h2>
+                <p className="muted-note">{t("orders.origins.lead")} {t("orders.origins.summary", { d: formatNumber(byDistrict.size, locale), p: formatNumber(producerCount, locale) })}</p>
+                <ul className={styles.origins}>
+                  {[...byDistrict.entries()].map(([district, d]) => (
+                    <li key={district}>
+                      <p className={styles.originDistrict}><Icon name="pin" size={16} />{district}</p>
+                      <ul>
+                        {[...d.producers.values()].map((pr) => (
+                          <li key={pr.slug}>
+                            <Link href={`/producers/${pr.slug}`} className="link">{pr.name}</Link>{pr.village ? ` · ${pr.village}` : ""} {pr.isDemo ? <span className="demo-tag">{t("common.demo")}</span> : null}
+                            <span className={styles.originItems}>{pr.items.join(", ")}</span>
+                            <span className={styles.originItems}>{t("orders.origins.batches")}: {pr.batches.length ? pr.batches.map((b, k) => <span key={b}>{k ? ", " : ""}<Link href={`/trace/${b}`} className="link mono">{b}</Link></span>) : t("orders.origins.pending")}</span>
+                          </li>
+                        ))}
+                        {d.loose.length ? <li><span className={styles.originItems}>{d.loose.join(", ")}</span></li> : null}
+                      </ul>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })()}
         </div>
 
         <aside className={styles.side}>

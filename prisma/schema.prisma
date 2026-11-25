@@ -554,9 +554,16 @@ model CartItem {
   variantId String
   variant   ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
   quantity  Int
+  /// What to do if this item cannot be supplied on the day.
+  onUnavailable UnavailablePref @default(CALL)
   addedAt   DateTime       @default(now())
 
   @@unique([cartId, variantId])
+}
+
+enum UnavailablePref {
+  CALL
+  REMOVE
 }
 
 model SavedMarket {
@@ -722,6 +729,7 @@ model OrderItem {
   lineTotalMinor Int
   discountMinor Int            @default(0)
   fulfillmentMode FulfillmentMode @default(STOCK)
+  onUnavailable UnavailablePref @default(CALL)
   allocations   OrderItemAllocation[]
 
   @@index([orderId])

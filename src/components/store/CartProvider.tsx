@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { CartView } from "@/server/cart";
 import { useI18n } from "@/i18n/client";
 import { useToast } from "@/components/ui/Toast";
@@ -10,6 +10,7 @@ type CartOp =
   | { op: "swap"; fromVariantId: string; toVariantId: string }
   | { op: "clear" }
   | { op: "mode"; mode: "WEEKLY" | "MONTHLY" | "CUSTOM" }
+  | { op: "pref"; variantId: string | null; pref: "CALL" | "REMOVE" }
   | { op: "bulk"; mode: "merge" | "replace"; lines: { variantId: string; quantity: number }[] };
 
 type Ctx = {
@@ -21,6 +22,8 @@ type Ctx = {
   swap: (fromVariantId: string, toVariantId: string) => Promise<boolean>;
   clear: () => Promise<boolean>;
   setMode: (mode: "WEEKLY" | "MONTHLY" | "CUSTOM") => Promise<boolean>;
+  /** "If unavailable" preference for one line, or all lines when variantId is null. */
+  setPref: (variantId: string | null, pref: "CALL" | "REMOVE") => Promise<boolean>;
   bulk: (mode: "merge" | "replace", lines: { variantId: string; quantity: number }[]) => Promise<{ added: number; skipped: number } | null>;
   replaceCart: (cart: CartView) => void;
 };
@@ -34,6 +37,14 @@ export function CartProvider({ initial, children }: { initial: CartView; childre
   const chain = useRef<Promise<unknown>>(Promise.resolve());
   const { t } = useI18n();
   const toast = useToast();
+
+  // Adopt the server's cart when the layout re-renders (e.g. router.refresh() after an order empties the basket).
+  const seen = useRef(initial);
+  useEffect(() => {
+    if (seen.current === initial) return;
+    seen.current = initial;
+    if (inflight === 0) setCart(initial);
+  }, [initial, inflight]);
 
   const send = useCallback(
     (payload: CartOp): Promise<{ ok: boolean; result?: { added: number; skipped: number } }> => {
@@ -101,6 +112,7 @@ export function CartProvider({ initial, children }: { initial: CartView; childre
       swap: async (fromVariantId, toVariantId) => (await send({ op: "swap", fromVariantId, toVariantId })).ok,
       clear: async () => (await send({ op: "clear" })).ok,
       setMode: async (mode) => (await send({ op: "mode", mode })).ok,
+      setPref: async (variantId, pref) => (await send({ op: "pref", variantId, pref })).ok,
       bulk: async (mode, lines) => {
         const r = await send({ op: "bulk", mode, lines });
         return r.ok ? r.result ?? { added: 0, skipped: 0 } : null;

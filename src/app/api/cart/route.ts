@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { addLinesToCart, clearCart, getCurrentCart, getOrCreateCartId, loadCart, setCartMode, setCartQuantity, swapVariant } from "@/server/cart";
+import { addLinesToCart, clearCart, getCurrentCart, getOrCreateCartId, loadCart, setCartMode, setCartQuantity, setUnavailablePref, swapVariant } from "@/server/cart";
 import { jsonError, sameOrigin } from "@/server/http";
 import { rateLimit } from "@/server/rate-limit";
 import { cuid } from "@/lib/validation";
@@ -12,6 +12,7 @@ const body = z.discriminatedUnion("op", [
   z.object({ op: z.literal("swap"), fromVariantId: cuid, toVariantId: cuid }),
   z.object({ op: z.literal("clear") }),
   z.object({ op: z.literal("mode"), mode: z.enum(["WEEKLY", "MONTHLY", "CUSTOM"]) }),
+  z.object({ op: z.literal("pref"), variantId: cuid.nullable(), pref: z.enum(["CALL", "REMOVE"]) }),
   z.object({ op: z.literal("bulk"), mode: z.enum(["merge", "replace"]), lines: z.array(z.object({ variantId: cuid, quantity: z.number().int().min(1).max(30) })).max(100) }),
 ]);
 
@@ -50,6 +51,9 @@ export async function POST(req: Request) {
       break;
     case "mode":
       await setCartMode(cartId, input.mode);
+      break;
+    case "pref":
+      await setUnavailablePref(cartId, input.variantId, input.pref);
       break;
     case "bulk": {
       const result = await addLinesToCart(cartId, input.lines, input.mode);

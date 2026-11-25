@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { slotTime } from "@/lib/slots";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -115,7 +116,7 @@ export function CheckoutForm({ idempotencyKey, user, addresses, zones, initialQu
         document.getElementById(["name", "phone", "email"].includes(first) ? "sec-contact" : first === "slotId" ? "sec-schedule" : "sec-address")?.scrollIntoView({ behavior: "smooth", block: "start" });
       } else {
         setFormError({ code: res.error ?? "generic", meta: res.meta });
-        if (res.error === "slot_full" && zone) startSlots(async () => setSlots(await getSlots(zone.id)));
+        if (res.error === "slot_full" && zone) startSlots(async () => { setSlots(await getSlots(zone.id)); setSlotId(null); });
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     });
@@ -191,7 +192,7 @@ export function CheckoutForm({ idempotencyKey, user, addresses, zones, initialQu
                 {dates.map((d) => {
                   const open = slots.some((s) => s.date === d && s.remaining > 0);
                   return (
-                    <button key={d} type="button" role="radio" aria-checked={date === d} disabled={!open} className={styles.opt} onClick={() => { setDate(d); setSlotId(null); }}>
+                    <button key={d} type="button" role="radio" aria-checked={date === d} className={`${styles.opt} ${open ? "" : styles.full}`} onClick={() => { setDate(d); setSlotId(null); }}>
                       <span className={styles.d1}>{fmtDay(d, { weekday: "short" })}</span>
                       <span className={styles.d2}>{fmtDay(d, { day: "numeric" })}</span>
                       <span className={styles.d3}>{fmtDay(d, { month: "short" })}</span>
@@ -200,6 +201,24 @@ export function CheckoutForm({ idempotencyKey, user, addresses, zones, initialQu
                 })}
               </div>
               <p className="label" id="slot-label" style={{ marginTop: 20 }}>{t("checkout.slot")}</p>
+              {(() => {
+                // No dead ends: if the chosen day is full, offer the next slot that still has room.
+                if (!date || daySlots.some((s) => s.remaining > 0)) return null;
+                const next = slots.find((s) => s.remaining > 0 && s.date > date) ?? slots.find((s) => s.remaining > 0);
+                return (
+                  <div className={styles.fallback} role="status">
+                    <p><Icon name="calendar" size={16} />{t("checkout.dayFull", { day: fmtDay(date, { weekday: "long", day: "numeric", month: "long" }) })}</p>
+                    {next ? (
+                      <p className={styles.fallbackNext}>
+                        <span>{t("checkout.slotNext", { when: `${fmtDay(next.date, { weekday: "long", day: "numeric", month: "long" })}, ${slotText(next, locale)}` })}</span>
+                        <button type="button" className="btn btn-primary btn-sm" onClick={() => { setDate(next.date); setSlotId(next.id); }}>{t("checkout.slotChoose")}</button>
+                      </p>
+                    ) : (
+                      <p><Link href="/concierge" className="link">{t("checkout.slotNone")}</Link></p>
+                    )}
+                  </div>
+                );
+              })()}
               {daySlots.length === 0 ? <p className="muted-note">{t("checkout.noSlots")}</p> : (
                 <div className={`${styles.opts} ${styles.slots}`} role="radiogroup" aria-labelledby="slot-label">
                   {daySlots.map((s) => (

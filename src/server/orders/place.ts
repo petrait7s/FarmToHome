@@ -86,7 +86,7 @@ export async function placeOrder(input: CheckoutInput, ctx: { cartId: string; us
         if (reserved !== 1) throw new OrderError("slot_full");
 
         // 4. Price every line from the database.
-        const lines: (PricedLine & { name: string; label: string; sku: string; mode: "STOCK" | "SOURCED_TO_ORDER" })[] = cart.items.map((i) => ({
+        const lines: (PricedLine & { name: string; label: string; sku: string; mode: "STOCK" | "SOURCED_TO_ORDER"; pref: "CALL" | "REMOVE" })[] = cart.items.map((i) => ({
           variantId: i.variantId,
           productId: i.variant.product.id,
           categoryId: i.variant.product.categoryId,
@@ -96,6 +96,7 @@ export async function placeOrder(input: CheckoutInput, ctx: { cartId: string; us
           label: i.variant.label,
           sku: i.variant.sku,
           mode: i.variant.fulfillmentMode,
+          pref: i.onUnavailable,
         }));
 
         // 5. Promotion (validated and counted atomically).
@@ -155,7 +156,7 @@ export async function placeOrder(input: CheckoutInput, ctx: { cartId: string; us
               create: lines.map((l) => ({
                 variantId: l.variantId, productName: l.name, variantLabel: l.label, sku: l.sku,
                 unitPriceMinor: l.unitPriceMinor, quantity: l.quantity, lineTotalMinor: l.unitPriceMinor * l.quantity,
-                discountMinor: perLine.get(l.variantId) ?? 0, fulfillmentMode: l.mode,
+                discountMinor: perLine.get(l.variantId) ?? 0, fulfillmentMode: l.mode, onUnavailable: l.pref,
               })),
             },
             statusHistory: { create: { status: "PLACED", note: "Order placed by customer", actorId: ctx.userId } },

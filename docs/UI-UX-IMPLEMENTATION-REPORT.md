@@ -126,3 +126,35 @@ This pass builds the first six ideas from `docs/UX-RESEARCH.md` §3. Colours and
 | Horizontal overflow: home, product, market; desktop and phone; guest and signed in | none |
 
 The "Batch inspected" label depends on inspection records being entered in admin for each batch.
+
+---
+
+# Research ideas 7–12 — 25 November 2026
+
+This pass builds ideas 7–12 from `docs/UX-RESEARCH.md` §3. Colours and fonts are unchanged.
+
+**One database migration is included:** `20261125120000_unavailable_preference`. It adds a `UnavailablePref` enum and an `onUnavailable` column (default `CALL`) to `CartItem` and `OrderItem`. Run `npx prisma migrate deploy` on the live database before or right after deploying.
+
+| Idea | What was built | Files |
+|---|---|---|
+| 7 Search suggestions | The header search opens a dialog. Typing two or more letters suggests products (photo, district, price), categories, districts and producers, in English or Bangla. Arrow keys and Enter work. The last option opens all results on Explore. | `server/search.ts`, `api/search/route.ts`, `SearchButton.*`, `Header.tsx` |
+| 8 Value comparison | Each pack-size button shows its price per kg or litre. When a larger pack is cheaper per unit, the product page says how much it saves per unit compared with the dearest pack. Calculated only from listed prices; savings under ৳1 are not shown. | `lib/money.ts` (`perBaseUnit`, `packSaving`), `ProductBuyBox.*` |
+| 9 If-unavailable preference | On the basket page, each line has "Call me to agree a replacement" or "Remove it, I won’t pay for it". One shortcut sets every line. The choice is saved with the order and shown on the order page and in admin. | migration, `server/cart.ts`, `api/cart/route.ts`, `CartProvider.tsx`, `BasketView.*`, `orders/place.ts`, order page, admin order page |
+| 10 Slot fallback | Full days stay selectable. Choosing one shows "All slots on … are full" with the next open slot and a "Choose this slot" button. When no slot is open at all, it points to the concierge. If a slot fills while ordering, slots reload and the suggestion appears. | `CheckoutForm.*` |
+| 11 Your market's origins | The order page groups the order by district and producer, with the batch numbers allocated to it (or "Batch assigned when packed"). From product, producer and allocation records. | `orders/access.ts`, `orders/[ref]/page.tsx`, `order.module.css` |
+| 12 Basket drawer | On desktop the header basket opens a side drawer. It shows the lines with quantity steppers and remove (with undo), a free-delivery progress bar for the chosen area (or the lowest-fee area, with a prompt to choose), the subtotal, and links to the full basket and checkout. On the basket and checkout pages the button stays a plain link. | `BasketButton.*`, `BasketDrawer.*`, `Header.tsx` |
+
+**Also fixed:** after an order was placed, the header basket count could still show the old number until a full reload. The cart now picks up the server's cart when the layout refreshes. (`CartProvider.tsx`)
+
+**Owner policy note:** the two if-unavailable options describe what the team will do. Please confirm them, or adjust the wording in `basket.pref` in `src/i18n/en.ts` and `bn.ts`.
+
+## Checks
+
+| Check | Result |
+|---|---|
+| TypeScript | passes |
+| Vitest | 50 / 50 pass (new tests for pack savings and slot labels) |
+| Playwright e2e | 15 / 15 pass |
+| Production build | passes |
+| axe-core: product page, open basket drawer, open search with suggestions, basket, checkout; EN and BN | 0 violations |
+| Manual | full-day fallback chose the next slot; an order showed its preferences and its origins by district and producer |

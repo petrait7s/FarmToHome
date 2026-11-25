@@ -40,3 +40,8 @@
 .when { display: flex; gap: 8px; align-items: center; font-size: 14px; font-weight: 600; }
 .when svg { color: var(--red); }
 @media (max-width: 1060px) { .grid { grid-template-columns: 1fr; gap: 0; } .summary { position: static; } }
+.full { opacity: 0.55; border-style: dashed; }
+.full[aria-checked="true"] { opacity: 1; }
+.fallback { margin: 14px 0 4px; padding: 14px 16px; border-radius: var(--r); background: var(--gold-25, rgb(198 161 91 / 0.18)); border: 1px solid rgb(198 161 91 / 0.5); display: grid; gap: 8px; font-size: 14.5px; }
+.fallback p { margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.fallbackNext { justify-content: space-between; font-weight: 600; }
